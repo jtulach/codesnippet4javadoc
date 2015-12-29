@@ -19,6 +19,7 @@ package org.apidesign.javadoc.codesnippet;
 
 import com.github.marschall.memoryfilesystem.MemoryFileSystemBuilder;
 import java.io.BufferedWriter;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -375,7 +376,7 @@ public class SnippetsTest {
             build("snippets" + ++cnt);
         Path file = fs.getPath("dir" + slot, name);
         Files.createDirectories(file.getParent());
-        BufferedWriter w = Files.newBufferedWriter(file);
+        BufferedWriter w = Files.newBufferedWriter(file, Charset.defaultCharset());
         w.append(content);
         w.close();
         return file;
