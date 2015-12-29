@@ -7,6 +7,7 @@
         <version>5</version>
         <relativePath />
     </parent>
+    <groupId>org.apidesign.javadoc</groupId>
     <artifactId>doclet</artifactId>
     <name>Codesnippet Doclet Code</name>
     <version>1.0-SNAPSHOT</version>
