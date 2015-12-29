@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <groupId>org.apidesign.javadoc</groupId>
-    <artifactId>doclet</artifactId>
+    <artifactId>codesnippet-doclet</artifactId>
     <name>Codesnippet Doclet Code</name>
     <version>1.0-SNAPSHOT</version>
     <properties>

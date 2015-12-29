@@ -35,7 +35,7 @@
                     <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
                     <docletArtifact>
                         <groupId>${project.groupId}</groupId>
-                        <artifactId>doclet</artifactId>
+                        <artifactId>codesnippet-doclet</artifactId>
                         <version>1.0-SNAPSHOT</version>
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
