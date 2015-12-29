@@ -25,6 +25,7 @@ import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
+import java.io.File;
 
 public final class Doclet {
     private static Snippets snippets;
@@ -55,7 +56,7 @@ public final class Doclet {
         for (String[] optionAndParams : options) {
             if (optionAndParams[0].equals("-sourcepath")) {
                 for (int i = 1; i < optionAndParams.length; i++) {
-                    snippets.addPath(optionAndParams[i]);
+                    snippets.addPath(new File(optionAndParams[i]).toPath());
                 }
             }
         }

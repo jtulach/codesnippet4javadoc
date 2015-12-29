@@ -20,5 +20,16 @@
             <scope>system</scope>
             <systemPath>${tools.jar}</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.marschall</groupId>
+            <artifactId>memoryfilesystem</artifactId>
+            <version>0.7.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
