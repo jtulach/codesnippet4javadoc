@@ -192,7 +192,7 @@ final class Snippets {
             throw new IllegalStateException(msg);
         }
     }
-    
+
     static String xmlize(CharSequence text) {
         String noAmp = text.toString().replaceAll("&", "&amp;");
         String noLt = noAmp.replaceAll("<", "&lt;");

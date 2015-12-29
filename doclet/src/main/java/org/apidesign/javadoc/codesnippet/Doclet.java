@@ -56,7 +56,9 @@ public final class Doclet {
         for (String[] optionAndParams : options) {
             if (optionAndParams[0].equals("-sourcepath")) {
                 for (int i = 1; i < optionAndParams.length; i++) {
-                    snippets.addPath(new File(optionAndParams[i]).toPath());
+                    for (String elem : optionAndParams[i].split(File.pathSeparator)) {
+                        snippets.addPath(new File(elem).toPath());
+                    }
                 }
             }
         }

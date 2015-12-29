@@ -24,4 +24,10 @@ package org.apidesign.javadoc.testing;
 public class SampleClass {
     private SampleClass() {
     }
+
+    private static void sample1() {
+        // BEGIN: sample1
+        int x = 42;
+        // END: sample1
+    }
 }

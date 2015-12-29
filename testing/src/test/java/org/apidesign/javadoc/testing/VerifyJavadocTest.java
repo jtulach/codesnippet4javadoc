@@ -42,6 +42,8 @@ public class VerifyJavadocTest {
         int start = text.indexOf("<pre>");
         assertTrue(start >= 0, "<pre> found in " + text);
         int textIndex = text.indexOf("sample1", start);
+        assertEquals(textIndex, -1, "sample1 code not found @ " + (textIndex - start));
+        textIndex = text.indexOf("int x = 42;", start);
         assertTrue(textIndex >= start, "text found in " + text);
         int end = text.indexOf("</pre>", textIndex);
         assertTrue(end >= start, "</pre> found in " + text);
