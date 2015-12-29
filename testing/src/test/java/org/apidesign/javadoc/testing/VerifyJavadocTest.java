@@ -17,10 +17,12 @@
  */
 package org.apidesign.javadoc.testing;
 
+import java.io.File;
 import static org.testng.Assert.*;
 
 import java.net.URL;
 import org.testng.annotations.Test;
+import org.testng.reporters.Files;
 
 public class VerifyJavadocTest {
 
@@ -28,10 +30,14 @@ public class VerifyJavadocTest {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testSomeMethod() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
         assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = Files.readFile(file);
+        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
     }
 
 }

@@ -18,6 +18,8 @@
 package org.apidesign.javadoc.testing;
 
 /** My sample class.
+ * {@codesnippet sample1}
+ * Rest of the text.
  */
 public class SampleClass {
     private SampleClass() {
