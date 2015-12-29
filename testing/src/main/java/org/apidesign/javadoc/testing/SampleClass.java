@@ -30,4 +30,11 @@ public class SampleClass {
         int x = 42;
         // END: sample1
     }
+
+    /** Show snippet from test code:
+     * {@codesnippet read.in.test}
+     * End of snippet.
+     */
+    public static void initialize() {
+    }
 }

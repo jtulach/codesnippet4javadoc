@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class Snippets {
-    private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([a-z0-9A-Z]*) *\\}");
+    private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z]*) *\\}");
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
     private final DocErrorReporter reporter;
@@ -59,6 +59,7 @@ final class Snippets {
                 txt.substring(match.end(0));
             element.setRawCommentText(newTxt);
         }
+        element.inlineTags();
     }
 
     String findSnippet(Doc element, String key) {
@@ -72,7 +73,7 @@ final class Snippets {
                 try {
                     scanDir(path, tmp);
                 } catch (IOException ex) {
-                    printWarning(element, "Cannot read " + path + ": " + ex.getMessage());
+                    printError(element, "Cannot read " + path + ": " + ex.getMessage());
                 }
             }
             snippets = tmp;
@@ -98,47 +99,51 @@ final class Snippets {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Map<String,CharSequence> texts = new TreeMap<>();
-                BufferedReader r = Files.newBufferedReader(file);
-                for (;;) {
-                    String line = r.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    {
-                        Matcher m = BEGIN.matcher(line);
-                        if (m.matches()) {
-                            Item sb = new Item(file);
-                            CharSequence prev = texts.put(m.group(1), sb);
-                            if (prev != null) {
-                                printError(null, "Same pattern is there twice: " + m.group(1) + " in " + file);
-                            }
-                            continue;
+                try {
+                    BufferedReader r = Files.newBufferedReader(file);
+                    for (;;) {
+                        String line = r.readLine();
+                        if (line == null) {
+                            break;
                         }
-                    }
-                    {
-                        Matcher m = END.matcher(line);
-                        if (m.matches()) {
-                            CharSequence s = texts.get(m.group(2));
-                            if (s instanceof Item) {
-                                texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH")));
+                        {
+                            Matcher m = BEGIN.matcher(line);
+                            if (m.matches()) {
+                                Item sb = new Item(file);
+                                CharSequence prev = texts.put(m.group(1), sb);
+                                if (prev != null) {
+                                    printError(null, "Same pattern is there twice: " + m.group(1) + " in " + file);
+                                }
                                 continue;
                             }
+                        }
+                        {
+                            Matcher m = END.matcher(line);
+                            if (m.matches()) {
+                                CharSequence s = texts.get(m.group(2));
+                                if (s instanceof Item) {
+                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH")));
+                                    continue;
+                                }
 
-                            if (s == null) {
-                                printError(null, "Closing unknown section: " + m.group(2) + " in " + file);
+                                if (s == null) {
+                                    printError(null, "Closing unknown section: " + m.group(2) + " in " + file);
+                                    continue;
+                                }
+                                printError(null, "Closing not opened section: " + m.group(2) + " in " + file);
                                 continue;
                             }
-                            printError(null, "Closing not opened section: " + m.group(2) + " in " + file);
-                            continue;
                         }
-                    }
 
-                    for (CharSequence charSequence : texts.values()) {
-                        if (charSequence instanceof Item) {
-                            Item sb = (Item) charSequence;
-                            sb.append(line);
+                        for (CharSequence charSequence : texts.values()) {
+                            if (charSequence instanceof Item) {
+                                Item sb = (Item) charSequence;
+                                sb.append(line);
+                            }
                         }
                     }
+                } catch (IOException ex) {
+                    printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
                 }
                 for (Map.Entry<String, CharSequence> entry : texts.entrySet()) {
                     CharSequence v = entry.getValue();

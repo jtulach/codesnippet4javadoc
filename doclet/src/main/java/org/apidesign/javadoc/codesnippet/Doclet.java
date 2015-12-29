@@ -48,13 +48,16 @@ public final class Doclet {
     }
 
     public static int optionLength(String option) {
+        if (option.equals("-snippetpath")) {
+            return 2;
+        }
         return HtmlDoclet.optionLength(option);
     }
 
     public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
         snippets = new Snippets(reporter);
         for (String[] optionAndParams : options) {
-            if (optionAndParams[0].equals("-sourcepath")) {
+            if (optionAndParams[0].equals("-sourcepath") || optionAndParams[0].equals("-snippetpath")) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     for (String elem : optionAndParams[i].split(File.pathSeparator)) {
                         snippets.addPath(new File(elem).toPath());

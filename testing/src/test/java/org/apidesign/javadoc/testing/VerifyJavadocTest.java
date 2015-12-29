@@ -42,6 +42,22 @@ public class VerifyJavadocTest {
         assertSnippet(text, "sample1", "int x = 42;");
     }
 
+    @Test
+    public void testSnippetFromTest() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        // BEGIN: read.in.test
+        String text = Files.readFile(file);
+        // END: read.in.test
+        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+
+        assertSnippet(text, "read.in.test", "String text = Files.readFile(file);");
+    }
+
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {
