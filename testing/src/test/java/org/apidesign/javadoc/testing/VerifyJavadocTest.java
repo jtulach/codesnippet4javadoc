@@ -30,7 +30,7 @@ public class VerifyJavadocTest {
     }
 
     @Test
-    public void testSomeMethod() throws Exception {
+    public void testSnippetInMainClassFound() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
         assertNotNull(url, "Generated page found");
@@ -39,14 +39,28 @@ public class VerifyJavadocTest {
         String text = Files.readFile(file);
         assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
 
-        int start = text.indexOf("<pre>");
-        assertTrue(start >= 0, "<pre> found in " + text);
-        int textIndex = text.indexOf("sample1", start);
-        assertEquals(textIndex, -1, "sample1 code not found @ " + (textIndex - start));
-        textIndex = text.indexOf("int x = 42;", start);
-        assertTrue(textIndex >= start, "text found in " + text);
-        int end = text.indexOf("</pre>", textIndex);
-        assertTrue(end >= start, "</pre> found in " + text);
+        assertSnippet(text, "sample1", "int x = 42;");
+    }
+
+    private void assertSnippet(String text, final String snippetKey, final String snippetText) {
+        int from = 0;
+        for (;;) {
+            int start = text.indexOf("<pre>", from);
+            assertTrue(start >= 0, snippetText + " found in " + text + " from " + from);
+            int end = text.indexOf("</pre>", start);
+            assertTrue(end >= start, "</pre> found in " + text);
+
+            String snippet = text.substring(start, end);
+            int textIndex = snippet.indexOf(snippetKey);
+            assertEquals(textIndex, -1, snippetKey + " code not found @ " + (textIndex - start));
+
+            textIndex = snippet.indexOf(snippetText);
+            if (textIndex == -1) {
+                from = end;
+                continue;
+            }
+            return;
+        }
     }
 
 }
