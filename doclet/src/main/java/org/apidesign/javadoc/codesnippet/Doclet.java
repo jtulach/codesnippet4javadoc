@@ -33,8 +33,7 @@ public final class Doclet {
         return HtmlDoclet.optionLength(option);
     }
 
-    public static boolean validOptions(String[][] options,
-        DocErrorReporter reporter) {
+    public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
         return HtmlDoclet.validOptions(options, reporter);
     }
 

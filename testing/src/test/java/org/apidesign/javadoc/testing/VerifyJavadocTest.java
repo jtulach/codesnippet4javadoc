@@ -17,7 +17,9 @@
  */
 package org.apidesign.javadoc.testing;
 
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
+
+import java.net.URL;
 import org.testng.annotations.Test;
 
 public class VerifyJavadocTest {
@@ -27,7 +29,9 @@ public class VerifyJavadocTest {
 
     @Test
     public void testSomeMethod() {
-        fail("The test case is a prototype.");
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
+        assertNotNull(url, "Generated page found");
     }
 
 }
