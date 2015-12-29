@@ -9,7 +9,7 @@
     </parent>
     <artifactId>doclet</artifactId>
     <name>Codesnippet Doclet Code</name>
-    <version>0.1</version>
+    <version>1.0-SNAPSHOT</version>
     <properties>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </properties>
@@ -48,8 +48,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <scm>
-    <tag>release-0.1</tag>
-  </scm>
 </project>
