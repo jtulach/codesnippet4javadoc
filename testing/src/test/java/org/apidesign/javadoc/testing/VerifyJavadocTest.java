@@ -38,6 +38,13 @@ public class VerifyJavadocTest {
         assertTrue(file.exists(), "File found " + file);
         String text = Files.readFile(file);
         assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+
+        int start = text.indexOf("<pre>");
+        assertTrue(start >= 0, "<pre> found in " + text);
+        int textIndex = text.indexOf("sample1", start);
+        assertTrue(textIndex >= start, "text found in " + text);
+        int end = text.indexOf("</pre>", textIndex);
+        assertTrue(end >= start, "</pre> found in " + text);
     }
 
 }

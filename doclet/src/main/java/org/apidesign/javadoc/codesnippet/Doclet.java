@@ -19,29 +19,28 @@ package org.apidesign.javadoc.codesnippet;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 
 public final class Doclet {
     private Doclet() {
     }
     public static boolean start(RootDoc root) {
+        Snippets snippets = new Snippets();
         for (ClassDoc clazz : root.classes()) {
-            fixCodesnippets(clazz);
+            snippets.fixCodesnippets(clazz);
             for (MethodDoc method : clazz.methods()) {
-                fixCodesnippets(method);
+                snippets.fixCodesnippets(method);
             }
             for (FieldDoc field : clazz.fields()) {
-                fixCodesnippets(field);
+                snippets.fixCodesnippets(field);
             }
             for (ConstructorDoc con : clazz.constructors()) {
-                fixCodesnippets(con);
+                snippets.fixCodesnippets(con);
             }
         }
         return HtmlDoclet.start(root);
@@ -58,11 +57,4 @@ public final class Doclet {
     public static LanguageVersion languageVersion() {
         return HtmlDoclet.languageVersion();
     }
-
-    private static void fixCodesnippets(Doc element) {
-        for (Tag tag : element.inlineTags()) {
-
-        }
-    }
-
 }
