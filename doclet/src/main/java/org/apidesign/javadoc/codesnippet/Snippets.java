@@ -18,11 +18,24 @@
 package org.apidesign.javadoc.codesnippet;
 
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.DocErrorReporter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([a-z0-9A-Z]*) *\\}");
+    private final DocErrorReporter reporter;
+    private List<String> search = new ArrayList<>();
+    private Map<String,String> snippets;
+
+    Snippets(DocErrorReporter reporter) {
+        this.reporter = reporter;
+    }
 
     void fixCodesnippets(Doc element) {
         final String txt = element.getRawCommentText();
@@ -32,13 +45,36 @@ final class Snippets {
                 break;
             }
             String newTxt = txt.substring(0, match.start(0)) +
-                findSnippet(match.group(1)) +
+                findSnippet(element, match.group(1)) +
                 txt.substring(match.end(0));
             element.setRawCommentText(newTxt);
         }
     }
 
-    private static String findSnippet(String text) {
-        return "<pre>\n" + text + "</pre>";
+    private String findSnippet(Doc element, String key) {
+        if (snippets == null) {
+            Map<String,String> tmp = new TreeMap<>();
+            for (String path : search) {
+                File dir = new File(path);
+                if (!dir.isDirectory()) {
+                    reporter.printWarning("Cannot scan " + dir + " not a directory!");
+                    continue;
+                }
+                scanDir(dir, tmp);
+            }
+            snippets = tmp;
+        }
+        String code = snippets.get(key);
+        if (code == null) {
+            reporter.printWarning(element.position(), code = "Snippet '" + key + "' not found.");
+        }
+        return "<pre>\n" + code + "</pre>";
+    }
+
+    void addPath(String path) {
+        search.add(path);
+    }
+
+    private static void scanDir(File dir, Map<String, String> tmp) {
     }
 }

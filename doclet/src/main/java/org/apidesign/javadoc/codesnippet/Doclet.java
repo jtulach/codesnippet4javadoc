@@ -27,10 +27,10 @@ import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 
 public final class Doclet {
+    private static Snippets snippets;
     private Doclet() {
     }
     public static boolean start(RootDoc root) {
-        Snippets snippets = new Snippets();
         for (ClassDoc clazz : root.classes()) {
             snippets.fixCodesnippets(clazz);
             for (MethodDoc method : clazz.methods()) {
@@ -51,6 +51,14 @@ public final class Doclet {
     }
 
     public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
+        snippets = new Snippets(reporter);
+        for (String[] optionAndParams : options) {
+            if (optionAndParams[0].equals("-sourcepath")) {
+                for (int i = 1; i < optionAndParams.length; i++) {
+                    snippets.addPath(optionAndParams[i]);
+                }
+            }
+        }
         return HtmlDoclet.validOptions(options, reporter);
     }
 
