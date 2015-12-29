@@ -21,6 +21,7 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -100,7 +101,7 @@ final class Snippets {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Map<String,CharSequence> texts = new TreeMap<>();
                 try {
-                    BufferedReader r = Files.newBufferedReader(file);
+                    BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
                     for (;;) {
                         String line = r.readLine();
                         if (line == null) {
