@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.apidesign.javadoc</groupId>
         <artifactId>pom</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1</version>
     </parent>
     <artifactId>testing</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <debug></debug>
+        <debug />
     </properties>
     <build>
         <plugins>
