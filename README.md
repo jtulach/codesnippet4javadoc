@@ -74,3 +74,7 @@ $ javadoc \
 ## License
 
 Feel free to use the Codesnippet Doclet binary to generate any public or private Javadoc. If you include the Codesnippet Doclet in your product or make modifications to it, please obey its *GPL 3.0* license.
+
+## Projects Using Codesnippet Doclet
+
+* [Truffle](https://github.com/graalvm/truffle) in its [Javadoc](http://lafo.ssw.uni-linz.ac.at/javadoc/truffle/latest/)
