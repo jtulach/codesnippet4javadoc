@@ -21,8 +21,8 @@ import java.io.File;
 import static org.testng.Assert.*;
 
 import java.net.URL;
+import java.nio.file.Files;
 import org.testng.annotations.Test;
-import org.testng.reporters.Files;
 
 public class VerifyJavadocTest {
 
@@ -36,7 +36,7 @@ public class VerifyJavadocTest {
         assertNotNull(url, "Generated page found");
         File file = new File(url.toURI());
         assertTrue(file.exists(), "File found " + file);
-        String text = Files.readFile(file);
+        String text = new String(Files.readAllBytes(file.toPath()));
         assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
 
         assertSnippet(text, "sample1", "<b>int</b> x = 42;");
@@ -51,11 +51,13 @@ public class VerifyJavadocTest {
         assertTrue(file.exists(), "File found " + file);
 
         // BEGIN: read.in.test
-        String text = Files.readFile(file);
+        byte[] data = Files.readAllBytes(file.toPath());
         // END: read.in.test
+        String text = new String(data);
         assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
 
-        assertSnippet(text, "read.in.test", "String text = Files.readFile(file);");
+        assertSnippet(text, "read.in.test", "readAllBytes(file.toPath());");
+        assertSnippet(text, "read.in.test", "java.nio.file\"><code>Files</code></a>");
     }
 
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
