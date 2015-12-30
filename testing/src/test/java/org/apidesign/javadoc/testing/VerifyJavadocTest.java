@@ -39,7 +39,7 @@ public class VerifyJavadocTest {
         String text = Files.readFile(file);
         assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
 
-        assertSnippet(text, "sample1", "int x = 42;");
+        assertSnippet(text, "sample1", "<b>int</b> x = 42;");
     }
 
     @Test

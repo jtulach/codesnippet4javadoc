@@ -206,6 +206,77 @@ final class Snippets {
         return noGt;
     }
 
+    private static Pattern WORDS = Pattern.compile("\\w+");
+    static String boldJavaKeywords(String text) {
+        Matcher m = WORDS.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String append;
+            switch (m.group(0)) {
+                case "abstract":
+                case "assert":
+                case "boolean":
+                case "break":
+                case "byte":
+                case "case":
+                case "catch":
+                case "class":
+                case "const":
+                case "continue":
+                case "default":
+                case "do":
+                case "double":
+                case "else":
+                case "enum":
+                case "extends":
+                case "final":
+                case "finally":
+                case "float":
+                case "for":
+                case "goto":
+                case "char":
+                case "if":
+                case "implements":
+                case "import":
+                case "instanceof":
+                case "int":
+                case "interface":
+                case "long":
+                case "native":
+                case "new":
+                case "package":
+                case "private":
+                case "protected":
+                case "public":
+                case "return":
+                case "short":
+                case "static":
+                case "strictfp":
+                case "super":
+                case "switch":
+                case "synchronized":
+                case "this":
+                case "throw":
+                case "throws":
+                case "transient":
+                case "try":
+                case "void":
+                case "volatile":
+                case "while":
+                case "true":
+                case "false":
+                case "null":
+                    append = "<b>" + m.group(0) + "</b>";
+                    break;
+                default:
+                    append = m.group(0);
+            }
+            m.appendReplacement(sb, append);
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
     static final int countChar(CharSequence seq, char ch) {
         int cnt = 0;
         for (int i = 0; i < seq.length(); i++) {
@@ -299,7 +370,12 @@ final class Snippets {
         }
 
         private String colorify(StringBuilder text, Path file) {
-            return xmlize(text.toString());
+            String xml = xmlize(text.toString());
+            if (file.getFileName().toString().endsWith(".java")) {
+                return boldJavaKeywords(xml);
+            } else {
+                return xml;
+            }
         }
     } // end of Item}
 }
