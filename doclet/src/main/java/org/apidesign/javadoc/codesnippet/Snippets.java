@@ -28,8 +28,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -37,7 +39,7 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z]*) *\\}");
-    private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.]+)(\\*)?;");
+    private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
     private final DocErrorReporter reporter;
@@ -103,6 +105,7 @@ final class Snippets {
                 boolean isJava = isJavaFile(file);
                 Map<String,CharSequence> texts = new TreeMap<>();
                 Map<String,String> imports = new TreeMap<>();
+                Set<String> packages = new LinkedHashSet<>();
                 try {
                     BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
                     for (;;) {
@@ -113,10 +116,13 @@ final class Snippets {
                         if (isJava) {
                             Matcher m = IMPORT.matcher(line);
                             if (m.matches()) {
-                                boolean starImport = m.groupCount() == 2;
                                 final String fqn = m.group(1);
-                                int lastDot = fqn.lastIndexOf('.');
-                                imports.put(fqn.substring(lastDot + 1), fqn);
+                                if (fqn.endsWith(".*")) {
+                                    packages.add(fqn.substring(0, fqn.length() - 2));
+                                } else {
+                                    int lastDot = fqn.lastIndexOf('.');
+                                    imports.put(fqn.substring(lastDot + 1), fqn);
+                                }
                             }
                         }
                         {
@@ -135,7 +141,7 @@ final class Snippets {
                             if (m.matches()) {
                                 CharSequence s = texts.get(m.group(2));
                                 if (s instanceof Item) {
-                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH"), imports));
+                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH"), imports, packages));
                                     continue;
                                 }
 
@@ -223,7 +229,7 @@ final class Snippets {
     }
 
     private static Pattern WORDS = Pattern.compile("\\w+");
-    static String boldJavaKeywords(String text, Map<String,String> imports) {
+    static String boldJavaKeywords(String text, Map<String,String> imports, Set<String> packages) {
         Matcher m = WORDS.matcher(text);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
@@ -288,11 +294,14 @@ final class Snippets {
                     String fqn;
                     fqn = imports.get(m.group(0));
                     if (fqn == null) {
-                        try {
-                            fqn = "java.lang." + m.group(0);
-                            Class.forName(fqn);
-                        } catch (ClassNotFoundException ex) {
-                            fqn = null;
+                        fqn = tryLoad("java.lang", m.group(0));
+                        if (fqn == null && packages != null) {
+                            for (String p : packages) {
+                                fqn = tryLoad(p, m.group(0));
+                                if (fqn != null) {
+                                    break;
+                                }
+                            }
                         }
                     }
                     if (fqn == null) {
@@ -305,6 +314,16 @@ final class Snippets {
         }
         m.appendTail(sb);
         return sb.toString();
+    }
+
+    private static String tryLoad(String pkg, String name) {
+        try {
+            String loaded = pkg + "." + name;
+            Class.forName(loaded);
+            return loaded;
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
     }
 
     static final int countChar(CharSequence seq, char ch) {
@@ -353,12 +372,7 @@ final class Snippets {
             sb.append('\n');
         }
 
-        @Override
-        public String toString() {
-            return toString(false, null);
-        }
-
-        public String toString(boolean finish, Map<String,String> imports) {
+        public String toString(boolean finish, Map<String,String> imports, Set<String> packages) {
             final int len = 80;
             if (remove != null) {
                 while (!remove.isEmpty()) {
@@ -396,13 +410,9 @@ final class Snippets {
                 }
 
             }
-            return colorify(sb, file, imports);
-        }
-
-        private String colorify(StringBuilder text, Path file, Map<String,String> imports) {
-            String xml = xmlize(text.toString());
+            String xml = xmlize(sb.toString());
             if (isJavaFile(file)) {
-                return boldJavaKeywords(xml, imports);
+                return boldJavaKeywords(xml, imports, packages);
             } else {
                 return xml;
             }
