@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z]*) *\\}");
+    private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.]+)(\\*)?;");
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
     private final DocErrorReporter reporter;
@@ -99,13 +100,24 @@ final class Snippets {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                boolean isJava = isJavaFile(file);
                 Map<String,CharSequence> texts = new TreeMap<>();
+                Map<String,String> imports = new TreeMap<>();
                 try {
                     BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
                     for (;;) {
                         String line = r.readLine();
                         if (line == null) {
                             break;
+                        }
+                        if (isJava) {
+                            Matcher m = IMPORT.matcher(line);
+                            if (m.matches()) {
+                                boolean starImport = m.groupCount() == 2;
+                                final String fqn = m.group(1);
+                                int lastDot = fqn.lastIndexOf('.');
+                                imports.put(fqn.substring(lastDot + 1), fqn);
+                            }
                         }
                         {
                             Matcher m = BEGIN.matcher(line);
@@ -123,7 +135,7 @@ final class Snippets {
                             if (m.matches()) {
                                 CharSequence s = texts.get(m.group(2));
                                 if (s instanceof Item) {
-                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH")));
+                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH"), imports));
                                     continue;
                                 }
 
@@ -206,8 +218,12 @@ final class Snippets {
         return noGt;
     }
 
+    static boolean isJavaFile(Path file1) {
+        return file1.getFileName().toString().endsWith(".java");
+    }
+
     private static Pattern WORDS = Pattern.compile("\\w+");
-    static String boldJavaKeywords(String text) {
+    static String boldJavaKeywords(String text, Map<String,String> imports) {
         Matcher m = WORDS.matcher(text);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
@@ -269,7 +285,21 @@ final class Snippets {
                     append = "<b>" + m.group(0) + "</b>";
                     break;
                 default:
-                    append = m.group(0);
+                    String fqn;
+                    fqn = imports.get(m.group(0));
+                    if (fqn == null) {
+                        try {
+                            fqn = "java.lang." + m.group(0);
+                            Class.forName(fqn);
+                        } catch (ClassNotFoundException ex) {
+                            fqn = null;
+                        }
+                    }
+                    if (fqn == null) {
+                        append = m.group(0);
+                    } else {
+                        append = "{@link " + fqn + "}";
+                    }
             }
             m.appendReplacement(sb, append);
         }
@@ -325,10 +355,10 @@ final class Snippets {
 
         @Override
         public String toString() {
-            return toString(false);
+            return toString(false, null);
         }
 
-        public String toString(boolean finish) {
+        public String toString(boolean finish, Map<String,String> imports) {
             final int len = 80;
             if (remove != null) {
                 while (!remove.isEmpty()) {
@@ -366,13 +396,13 @@ final class Snippets {
                 }
 
             }
-            return colorify(sb, file);
+            return colorify(sb, file, imports);
         }
 
-        private String colorify(StringBuilder text, Path file) {
+        private String colorify(StringBuilder text, Path file, Map<String,String> imports) {
             String xml = xmlize(text.toString());
-            if (file.getFileName().toString().endsWith(".java")) {
-                return boldJavaKeywords(xml);
+            if (isJavaFile(file)) {
+                return boldJavaKeywords(xml, imports);
             } else {
                 return xml;
             }

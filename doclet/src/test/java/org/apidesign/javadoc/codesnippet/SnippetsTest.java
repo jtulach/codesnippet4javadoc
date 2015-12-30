@@ -52,6 +52,43 @@ public class SnippetsTest {
         assertEquals("<b>public</b> <b>interface</b> I {\n}\n", r);
     }
 
+    @Test public void testJavaLangImportRecognized() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "public interface I {\n"
+            + "// BEGIN: xyz\n"
+            + "  public String get();\n"
+            + "// FINISH: xyz\n"
+            + "}"
+            + "";
+        Path src = createPath(1, "I.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        snippets.addPath(src.getParent());
+        String r = snippets.findSnippet(null, "xyz");
+
+        assertEquals("<b>public</b> {@link java.lang.String} get();\n", r);
+    }
+
+    @Test public void testImportRecognized() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "import java.io.File;\n"
+            + "public interface I {\n"
+            + "// BEGIN: xyz\n"
+            + "  public File get();\n"
+            + "// FINISH: xyz\n"
+            + "}"
+            + "";
+        Path src = createPath(1, "I.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        snippets.addPath(src.getParent());
+        String r = snippets.findSnippet(null, "xyz");
+
+        assertEquals("<b>public</b> {@link java.io.File} get();\n", r);
+    }
+
     @Test public void testSpacesAtBeginingAreStripped() throws Exception {
         String c1
             = "package ahoj;\n"
