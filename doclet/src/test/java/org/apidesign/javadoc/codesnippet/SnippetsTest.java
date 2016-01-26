@@ -209,6 +209,36 @@ public class SnippetsTest {
         }
     }
 
+    @Test public void testIncludedTextsZav() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "public class C {\n"
+            + "  // BEGIN: method\n"
+            + "  @Deprecated\n"
+            + "  public void change(int x) { x &= 10; }\n"
+            + "  // END: method\n"
+            + "}\n"
+            + "";
+        Path src = createPath(1, "C.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        snippets.addPath(src.getParent());
+        String r = snippets.findSnippet(null, "method");
+
+        if (r.indexOf("&=") >= 0) {
+            fail("Wrong XML: " + r);
+        }
+        if (r.indexOf("&amp;=") == -1) {
+            fail("Wrong XML, we need &amp;: " + r);
+        }
+        if (r.indexOf("@D") >= 0) {
+            fail("No @ in XML: " + r);
+        }
+        if (r.indexOf("&#064;") == -1) {
+            fail("Wrong XML, we need &amp;: " + r);
+        }
+    }
+
     @Test public void testIncludedTextsAmperAndGenerics() throws Exception {
         String c1
             = "package org.apidesign.api.security;\n"

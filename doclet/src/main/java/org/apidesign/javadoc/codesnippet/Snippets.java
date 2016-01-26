@@ -274,7 +274,8 @@ final class Snippets {
 
     static String xmlize(CharSequence text) {
         String noAmp = text.toString().replaceAll("&", "&amp;");
-        String noLt = noAmp.replaceAll("<", "&lt;");
+        String noZav = noAmp.toString().replaceAll("@", "&#064;");
+        String noLt = noZav.replaceAll("<", "&lt;");
         String noGt = noLt.replaceAll(">", "&gt;");
         return noGt;
     }
