@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z]*) *\\}");
+    private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
     private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
@@ -94,6 +95,7 @@ final class Snippets {
     }
 
     private void scanDir(Path dir, final Map<String, String> collect) throws IOException {
+        final Map<String,String> topClasses = new TreeMap<>();
         Files.walkFileTree(dir, new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -102,9 +104,48 @@ final class Snippets {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                boolean isJava = isJavaFile(file);
+                String javaName = javaName(file);
+                if (javaName != null) {
+                    try {
+                        BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
+                        for (;;) {
+                            String line = r.readLine();
+                            if (line == null) {
+                                break;
+                            }
+                            Matcher pkgMatch = PACKAGE.matcher(line);
+                            if (pkgMatch.matches()) {
+                                final String fqn = pkgMatch.group(1);
+                                topClasses.put(javaName, fqn + '.' + javaName);
+                            }
+                        }
+                    } catch (IOException ex) {
+                        printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.TERMINATE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        Files.walkFileTree(dir, new FileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                String javaName = javaName(file);
                 Map<String,CharSequence> texts = new TreeMap<>();
-                Map<String,String> imports = new TreeMap<>();
+                Map<String,String> imports = new TreeMap<>(topClasses);
                 Set<String> packages = new LinkedHashSet<>();
                 try {
                     BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
@@ -113,7 +154,7 @@ final class Snippets {
                         if (line == null) {
                             break;
                         }
-                        if (isJava) {
+                        if (javaName != null) {
                             Matcher m = IMPORT.matcher(line);
                             if (m.matches()) {
                                 final String fqn = m.group(1);
@@ -224,8 +265,9 @@ final class Snippets {
         return noGt;
     }
 
-    static boolean isJavaFile(Path file1) {
-        return file1.getFileName().toString().endsWith(".java");
+    static String javaName(Path file1) {
+        final String name = file1.getFileName().toString();
+        return name.endsWith(".java") ? name.substring(0, name.length() - 5) : null;
     }
 
     private static Pattern WORDS = Pattern.compile("\\w+");
@@ -411,7 +453,7 @@ final class Snippets {
 
             }
             String xml = xmlize(sb.toString());
-            if (isJavaFile(file)) {
+            if (javaName(file) != null) {
                 return boldJavaKeywords(xml, imports, packages);
             } else {
                 return xml;

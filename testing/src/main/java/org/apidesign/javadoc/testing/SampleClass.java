@@ -22,8 +22,11 @@ package org.apidesign.javadoc.testing;
  * Rest of the text.
  */
 public class SampleClass {
+    // BEGIN: annotation.link
+    @SampleAnno
     private SampleClass() {
     }
+    // END: annotation.link
 
     private static void sample1() {
         // BEGIN: sample1
@@ -38,6 +41,14 @@ public class SampleClass {
      * Great, we are done.
      */
     public static void initialize() {
+    }
+
+    /**
+     * This is how you apply an annotation. ANNOBEG:
+     * {@codesnippet annotation.link}
+     * ANNOEND found.
+     */
+    public static void showUseOfAnnotation() {
     }
 
     /** Snippet on an inner class:

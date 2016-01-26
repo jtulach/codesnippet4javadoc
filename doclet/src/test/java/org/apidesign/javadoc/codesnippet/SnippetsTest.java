@@ -49,7 +49,7 @@ public class SnippetsTest {
         snippets.addPath(src.getParent());
         String r = snippets.findSnippet(null, "xyz");
 
-        assertEquals("<b>public</b> <b>interface</b> I {\n}\n", r);
+        assertEquals("<b>public</b> <b>interface</b> {@link ahoj.I} {\n}\n", r);
     }
 
     @Test public void testJavaLangImportRecognized() throws Exception {
@@ -124,7 +124,7 @@ public class SnippetsTest {
         Snippets snippets = new Snippets(null);
         snippets.addPath(src.getParent());
         String r = snippets.findSnippet(null, "xyz");
-        String result = "<b>public</b> <b>interface</b> I {\n"
+        String result = "<b>public</b> <b>interface</b> {@link ahoj.I} {\n"
             + "  <b>public</b> <b>void</b> ahoj();\n"
             + "}\n";
         assertEquals(result, r);
@@ -178,7 +178,7 @@ public class SnippetsTest {
         if (r.indexOf("END") >= 0) {
             fail("END is there: " + r);
         }
-        if (r.indexOf("<b>interface</b> I") < 0) {
+        if (r.indexOf("<b>interface</b> {@link ahoj.I}") < 0) {
             fail("Missing interface: " + r);
         }
         if (r.indexOf("<b>void</b> get()") < 0) {
