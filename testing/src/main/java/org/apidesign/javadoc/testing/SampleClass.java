@@ -23,7 +23,7 @@ package org.apidesign.javadoc.testing;
  */
 public class SampleClass {
     // BEGIN: annotation.link
-    @SampleAnno
+    @SampleAnno(reference = SampleClass.class)
     private SampleClass() {
     }
     // END: annotation.link

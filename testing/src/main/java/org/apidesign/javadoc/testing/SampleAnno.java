@@ -18,4 +18,5 @@
 package org.apidesign.javadoc.testing;
 
 public @interface SampleAnno {
+    Class<?> reference();
 }

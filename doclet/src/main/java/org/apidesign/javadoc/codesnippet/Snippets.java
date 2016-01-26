@@ -70,13 +70,25 @@ final class Snippets {
     String findSnippet(Doc element, String key) {
         if (snippets == null) {
             Map<String,String> tmp = new TreeMap<>();
+            final Map<String,String> topClasses = new TreeMap<>();
             for (Path path : search) {
                 if (!Files.isDirectory(path)) {
                     printWarning(null, "Cannot scan " + path + " not a directory!");
                     continue;
                 }
                 try {
-                    scanDir(path, tmp);
+                    collectClasses(path, topClasses);
+                } catch (IOException ex) {
+                    printError(element, "Cannot read " + path + ": " + ex.getMessage());
+                }
+            }
+            for (Path path : search) {
+                if (!Files.isDirectory(path)) {
+                    printWarning(null, "Cannot scan " + path + " not a directory!");
+                    continue;
+                }
+                try {
+                    scanDir(path, topClasses, tmp);
                 } catch (IOException ex) {
                     printError(element, "Cannot read " + path + ": " + ex.getMessage());
                 }
@@ -94,47 +106,7 @@ final class Snippets {
         search.add(path);
     }
 
-    private void scanDir(Path dir, final Map<String, String> collect) throws IOException {
-        final Map<String,String> topClasses = new TreeMap<>();
-        Files.walkFileTree(dir, new FileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                String javaName = javaName(file);
-                if (javaName != null) {
-                    try {
-                        BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
-                        for (;;) {
-                            String line = r.readLine();
-                            if (line == null) {
-                                break;
-                            }
-                            Matcher pkgMatch = PACKAGE.matcher(line);
-                            if (pkgMatch.matches()) {
-                                final String fqn = pkgMatch.group(1);
-                                topClasses.put(javaName, fqn + '.' + javaName);
-                            }
-                        }
-                    } catch (IOException ex) {
-                        printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
-                    }
-                }
-                return FileVisitResult.CONTINUE;
-            }
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                return FileVisitResult.TERMINATE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-        });
+    private void scanDir(Path dir, final Map<String,String> topClasses, final Map<String, String> collect) throws IOException {
         Files.walkFileTree(dir, new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -232,6 +204,48 @@ final class Snippets {
 //                String out = linize(text);
 //            }
 
+    }
+
+    private void collectClasses(Path dir, final Map<String, String> topClasses) throws IOException {
+        Files.walkFileTree(dir, new FileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                String javaName = javaName(file);
+                if (javaName != null) {
+                    try {
+                        BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
+                        for (;;) {
+                            String line = r.readLine();
+                            if (line == null) {
+                                break;
+                            }
+                            Matcher pkgMatch = PACKAGE.matcher(line);
+                            if (pkgMatch.matches()) {
+                                final String fqn = pkgMatch.group(1);
+                                topClasses.put(javaName, fqn + '.' + javaName);
+                            }
+                        }
+                    } catch (IOException ex) {
+                        printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.TERMINATE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private void printWarning(Doc where, String msg) {
