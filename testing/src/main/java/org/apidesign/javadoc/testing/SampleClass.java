@@ -31,10 +31,23 @@ public class SampleClass {
         // END: sample1
     }
 
-    /** Show snippet from test code:
+    /** Show snippet from test code. Here it is:
      * {@codesnippet read.in.test}
-     * End of snippet.
+     * End of snippet and here goes another one:
+     * {@codesnippet sample1}
+     * Great, we are done.
      */
     public static void initialize() {
+    }
+
+    /** Snippet on an inner class:
+     * {@codesnippet read.in.test}
+     * End of the code.
+     */
+    public static abstract class Inner {
+        /** Method on a innerclass with code snippet:
+         * {@codesnippet read.in.test}
+         */
+        protected abstract void documented();
     }
 }

@@ -51,9 +51,9 @@ final class Snippets {
     }
 
     void fixCodesnippets(Doc element) {
-        final String txt = element.getRawCommentText();
-        Matcher match = TAG.matcher(txt);
         for (;;) {
+            final String txt = element.getRawCommentText();
+            Matcher match = TAG.matcher(txt);
             if (!match.find()) {
                 break;
             }
