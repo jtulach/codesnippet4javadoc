@@ -43,7 +43,7 @@ final class Snippets {
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
     private final DocErrorReporter reporter;
-    private List<Path> search = new ArrayList<>();
+    private final List<Path> search = new ArrayList<>();
     private Map<String,String> snippets;
 
     Snippets(DocErrorReporter reporter) {
