@@ -463,7 +463,7 @@ final class Snippets {
                 }
 
                 if (countChar(sb, '{') != countChar(sb, '}')) {
-                    printError(null, "not paired amount of braces in " + file + "\n" + sb);
+                    printError(null, "not paired amount of braces (consider using '// FINISH:' instead of '// END:') in " + file + "\n" + sb);
                 }
 
             }
