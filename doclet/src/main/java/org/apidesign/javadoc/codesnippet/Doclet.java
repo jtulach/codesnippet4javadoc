@@ -57,10 +57,17 @@ public final class Doclet {
     public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
         snippets = new Snippets(reporter);
         for (String[] optionAndParams : options) {
-            if (optionAndParams[0].equals("-sourcepath") || optionAndParams[0].equals("-snippetpath")) {
+            Boolean visible = null;
+            if (optionAndParams[0].equals("-sourcepath")) {
+                visible = true;
+            }
+            if (optionAndParams[0].equals("-snippetpath")) {
+                visible = false;
+            }
+            if (visible != null) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     for (String elem : optionAndParams[i].split(File.pathSeparator)) {
-                        snippets.addPath(new File(elem).toPath());
+                        snippets.addPath(new File(elem).toPath(), visible);
                     }
                 }
             }

@@ -45,6 +45,7 @@ final class Snippets {
     private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
     private final DocErrorReporter reporter;
     private final List<Path> search = new ArrayList<>();
+    private final List<Path> visible = new ArrayList<>();
     private Map<String,String> snippets;
 
     Snippets(DocErrorReporter reporter) {
@@ -71,7 +72,7 @@ final class Snippets {
         if (snippets == null) {
             Map<String,String> tmp = new TreeMap<>();
             final Map<String,String> topClasses = new TreeMap<>();
-            for (Path path : search) {
+            for (Path path : visible) {
                 if (!Files.isDirectory(path)) {
                     printWarning(null, "Cannot scan " + path + " not a directory!");
                     continue;
@@ -102,8 +103,11 @@ final class Snippets {
         return code;
     }
 
-    void addPath(Path path) {
+    void addPath(Path path, boolean useLink) {
         search.add(path);
+        if (useLink) {
+            visible.add(path);
+        }
     }
 
     private void scanDir(Path dir, final Map<String,String> topClasses, final Map<String, String> collect) throws IOException {

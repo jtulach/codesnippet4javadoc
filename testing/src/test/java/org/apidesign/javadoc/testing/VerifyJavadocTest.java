@@ -24,10 +24,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import org.testng.annotations.Test;
 
+// BEGIN: sampleClass
 public class VerifyJavadocTest {
-
     public VerifyJavadocTest() {
     }
+// FINISH: sampleClass
 
     @Test
     public void testSnippetInMainClassFound() throws Exception {
@@ -74,6 +75,20 @@ public class VerifyJavadocTest {
 
         assertSnippet(text, "ANNO", "SampleAnno");
         assertSnippet(text, "ANNO", "javadoc.testing\"><code>SampleAnno</code></a>");
+    }
+
+    @Test
+    public void testDontLinkToImplClasses() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        byte[] data = Files.readAllBytes(file.toPath());
+        String text = new String(data);
+        assertEquals(text.indexOf("org.apidesign.javadoc.testing.VerifyJavadocTest"), -1, "FQN reference to VerifyJavadocTest shouldn't be found");
+        assertNotEquals(text.indexOf("VerifyJavadocTest"), -1, "Simple name reference to VerifyJavadocTest shouldn't be found");
     }
 
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {

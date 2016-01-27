@@ -46,7 +46,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "xyz");
 
         assertEquals("<b>public</b> <b>interface</b> {@link ahoj.I} {\n}\n", r);
@@ -64,7 +64,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.lang.String} get();\n", r);
@@ -83,7 +83,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.io.File} get();\n", r);
@@ -102,7 +102,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.io.File} get();\n", r);
@@ -122,7 +122,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "xyz");
         String result = "<b>public</b> <b>interface</b> {@link ahoj.I} {\n"
             + "  <b>public</b> <b>void</b> ahoj();\n"
@@ -144,7 +144,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
 
         try {
             String r = snippets.findSnippet(null, "xyz");
@@ -169,7 +169,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "clazz");
 
         if (r.indexOf("BEGIN") >= 0) {
@@ -198,7 +198,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "method");
 
         if (r.indexOf("&=") >= 0) {
@@ -222,7 +222,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "method");
 
         if (r.indexOf("&=") >= 0) {
@@ -289,7 +289,7 @@ public class SnippetsTest {
 
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "day.end.bridges.Digest");
 
         if (r.indexOf("&=") >= 0) {
@@ -309,7 +309,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.xml", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "clazz");
 
         if (r.indexOf("BEGIN") >= 0) {
@@ -345,7 +345,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "x");
 
         assertNotNull(r);
@@ -371,7 +371,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
 
         try {
             String r = snippets.findSnippet(null, "day.end.bridges.Digest");
@@ -403,7 +403,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "day.end.bridges.Digest");
 
         assertNotNull(r);
@@ -418,7 +418,7 @@ public class SnippetsTest {
         Path src = createPath(1, "I.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
 
         try {
             String r = snippets.findSnippet(null, "clazz");
@@ -450,7 +450,7 @@ public class SnippetsTest {
         Path src = createPath(1, "C.java", c1);
 
         Snippets snippets = new Snippets(null);
-        snippets.addPath(src.getParent());
+        addPath(snippets, src.getParent());
         String r = snippets.findSnippet(null, "day.end.bridges.Digest");
 
         assertNotNull(r);
@@ -466,6 +466,10 @@ public class SnippetsTest {
         w.append(content);
         w.close();
         return file;
+    }
+
+    private static void addPath(Snippets snippets, Path parent) {
+        snippets.addPath(parent, true);
     }
 
 }

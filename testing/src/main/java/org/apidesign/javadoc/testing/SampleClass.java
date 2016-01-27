@@ -19,7 +19,9 @@ package org.apidesign.javadoc.testing;
 
 /** My sample class.
  * {@codesnippet sample1}
- * Rest of the text.
+ * Rest of the text. With sample code in with a test class:
+ * {@codesnippet sampleClass}
+ * And we are done.
  */
 public class SampleClass {
     // BEGIN: annotation.link
