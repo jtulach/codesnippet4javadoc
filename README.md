@@ -71,6 +71,38 @@ $ javadoc \
   -snippetpath src/test:src/sample # in case you want to pick the samples from other locations as well
 ```
 
+## Embed Snippets in API files
+
+You may prefer to include code snippets into the same files as your API to
+improve life of people who browse the source in an IDE. In such case follow
+the sample described in **EmbeddingSampleCode** file - e.g. add yet another
+class to the end of your file, give it a special name (for example My**Snippet**)
+and put code snippet there.
+
+In addition to that you can reference your class as `{@link MySnippet}` if you
+pass in additional parameter to specify format of your snippet classes:
+```bash
+$ javadoc \
+  -snippetclasses .*Snippet.*
+```
+The doclet will then convert all links to classes that match such pattern
+into appropriate code snippets.
+
+You may want to exclude these sample classes from the final *JAR* file. The
+easiest way to do so is to configure your JAR packager to ignore such files:
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>2.6</version>
+    <configuration>
+        <excludes>
+            <exclude>**/*Snippet*.class</exclude>
+        </excludes>
+    </configuration>
+</plugin>
+```
+
 ## License
 
 Feel free to use the Codesnippet Doclet binary to generate any public or private Javadoc. If you include the Codesnippet Doclet in your product or make modifications to it, please obey its *GPL 3.0* license.

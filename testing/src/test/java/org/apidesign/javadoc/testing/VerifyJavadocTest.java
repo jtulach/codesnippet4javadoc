@@ -62,6 +62,19 @@ public class VerifyJavadocTest {
     }
 
     @Test
+    public void testSnippetSecondaryFileAsALink() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/EmbeddingSampleCode.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        byte[] data = Files.readAllBytes(file.toPath());
+        String text = new String(data);
+        assertSnippet(text, "EmbeddedSnippet#fourtyTwo", "mul(6, 7);");
+    }
+
+    @Test
     public void testLinkForAnnotation() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");

@@ -38,7 +38,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class Snippets {
-    private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z]*) *\\}");
+    private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z#]*) *\\}");
+    private static final Pattern LINKTAG = Pattern.compile("\\{ *@link *([\\.\\-a-z0-9A-Z#]*) *\\}");
     private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
     private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
     private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
@@ -46,6 +47,7 @@ final class Snippets {
     private final DocErrorReporter reporter;
     private final List<Path> search = new ArrayList<>();
     private final List<Path> visible = new ArrayList<>();
+    private final List<Pattern> classes = new ArrayList<>();
     private Map<String,String> snippets;
 
     Snippets(DocErrorReporter reporter) {
@@ -57,7 +59,24 @@ final class Snippets {
             final String txt = element.getRawCommentText();
             Matcher match = TAG.matcher(txt);
             if (!match.find()) {
-                break;
+                if (classes.isEmpty()) {
+                    break;
+                }
+                match = LINKTAG.matcher(txt);
+                if (!match.find()) {
+                    break;
+                }
+                String className = match.group(1);
+                boolean found = false;
+                for(Pattern p : classes) {
+                    if (p.matcher(className).matches()) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    break;
+                }
             }
             final String code = "<pre>" + findSnippet(element, match.group(1)) + "</pre>";
             String newTxt = txt.substring(0, match.start(0)) +
@@ -108,6 +127,10 @@ final class Snippets {
         if (useLink) {
             visible.add(path);
         }
+    }
+
+    void addClasses(String classRegExp) {
+        classes.add(Pattern.compile(classRegExp));
     }
 
     private void scanDir(Path dir, final Map<String,String> topClasses, final Map<String, String> collect) throws IOException {
@@ -396,6 +419,7 @@ final class Snippets {
         }
         return cnt;
     }
+
     private final class Item implements CharSequence {
 
         private StringBuilder sb = new StringBuilder();

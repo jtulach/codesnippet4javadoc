@@ -51,6 +51,9 @@ public final class Doclet {
         if (option.equals("-snippetpath")) {
             return 2;
         }
+        if (option.equals("-snippetclasses")) {
+            return 2;
+        }
         return HtmlDoclet.optionLength(option);
     }
 
@@ -69,6 +72,11 @@ public final class Doclet {
                     for (String elem : optionAndParams[i].split(File.pathSeparator)) {
                         snippets.addPath(new File(elem).toPath(), visible);
                     }
+                }
+            }
+            if (optionAndParams[0].equals("-snippetclasses")) {
+                for (int i = 1; i < optionAndParams.length; i++) {
+                    snippets.addClasses(optionAndParams[i]);
                 }
             }
         }
