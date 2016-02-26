@@ -24,13 +24,15 @@ public final class EmbeddingSampleCode {
     }
 
     /** Here is a way to include snippet code next to your API.
-     * If you want the sample code to be available in the sources of your
-     * application and easily navigate to it in an IDE, you can use regular
-     * <b>link</b> tag with a reference to a class named in a special way:
+     * If you want the sample code to be available in 
+     * {@link EmbeddingSampleCode the sources of your application}
+     * and easily navigate to it in an IDE, you can use regular
+     * <b>link</b> tag with a reference to a {@link Class}
+     * named in a special way:
      * {@link EmbeddedSnippet#fourtyTwo}
      * Put the class at the end of the API file (it needs to be package private)
      * and it is guaranteed your snippet code will properly compile every
-     * time your API compiles.
+     * time your {@link Compiler API compiles}.
      *
      * @param x first number
      * @param y second number

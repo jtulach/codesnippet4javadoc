@@ -75,7 +75,7 @@ $ javadoc \
 
 You may prefer to include code snippets into the same files as your API to
 improve life of people who browse the source in an IDE. In such case follow
-the sample described in **EmbeddingSampleCode** file - e.g. add yet another
+the sample described in [EmbeddingSampleCode file](https://github.com/jtulach/codesnippet4javadoc/blob/515fdd141c8caed9d86afce859afb15a81054f7f/testing/src/main/java/org/apidesign/javadoc/testing/EmbeddingSampleCode.java) - e.g. add yet another
 class to the end of your file, give it a special name (for example My**Snippet**)
 and put code snippet there.
 
@@ -102,6 +102,7 @@ easiest way to do so is to configure your JAR packager to ignore such files:
     </configuration>
 </plugin>
 ```
+Real life example is available [here](https://github.com/jtulach/codesnippet4javadoc/blob/515fdd141c8caed9d86afce859afb15a81054f7f/testing/pom.xml#L45).
 
 ## License
 

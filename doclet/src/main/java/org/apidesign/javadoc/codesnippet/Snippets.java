@@ -63,18 +63,7 @@ final class Snippets {
                     break;
                 }
                 match = LINKTAG.matcher(txt);
-                if (!match.find()) {
-                    break;
-                }
-                String className = match.group(1);
-                boolean found = false;
-                for(Pattern p : classes) {
-                    if (p.matcher(className).matches()) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
+                if (!findLinkSnippet(match)) {
                     break;
                 }
             }
@@ -85,6 +74,20 @@ final class Snippets {
             element.setRawCommentText(newTxt);
         }
         element.inlineTags();
+    }
+
+    private boolean findLinkSnippet(Matcher match) {
+        for (;;) {
+            if (!match.find()) {
+                return false;
+            }
+            String className = match.group(1);
+            for(Pattern p : classes) {
+                if (p.matcher(className).matches()) {
+                    return true;
+                }
+            }
+        }
     }
 
     String findSnippet(Doc element, String key) {
