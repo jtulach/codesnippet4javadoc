@@ -54,6 +54,9 @@ public final class Doclet {
         if (option.equals("-snippetclasses")) {
             return 2;
         }
+        if (option.equals("-maxLineLength")) {
+            return 2;
+        }
         return HtmlDoclet.optionLength(option);
     }
 
@@ -77,6 +80,11 @@ public final class Doclet {
             if (optionAndParams[0].equals("-snippetclasses")) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     snippets.addClasses(optionAndParams[i]);
+                }
+            }
+            if (optionAndParams[0].equals("-maxLineLength")) {
+                if ( optionAndParams.length > 1 ) {
+                    snippets.setMaxLineLength( optionAndParams[1] );
                 }
             }
         }
