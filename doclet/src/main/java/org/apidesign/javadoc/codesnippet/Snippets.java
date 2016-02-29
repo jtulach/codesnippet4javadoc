@@ -49,6 +49,7 @@ final class Snippets {
     private final List<Path> visible = new ArrayList<>();
     private final List<Pattern> classes = new ArrayList<>();
     private Map<String,String> snippets;
+    private int maxLineLength = 80;
 
     Snippets(DocErrorReporter reporter) {
         this.reporter = reporter;
@@ -423,6 +424,17 @@ final class Snippets {
         return cnt;
     }
 
+    void setMaxLineLength(String maxLineLength) {
+        if ( maxLineLength != null ) {
+            try {
+                this.maxLineLength = Integer.parseInt( maxLineLength );
+            }
+            catch (NumberFormatException ex) {
+
+            }
+        }
+    }
+
     private final class Item implements CharSequence {
 
         private StringBuilder sb = new StringBuilder();
@@ -461,7 +473,7 @@ final class Snippets {
         }
 
         public String toString(boolean finish, Map<String,String> imports, Set<String> packages) {
-            final int len = 80;
+            final int len = maxLineLength;
             if (remove != null) {
                 while (!remove.isEmpty()) {
                     Integer pos = remove.pop();
