@@ -29,7 +29,7 @@ The rendered Javadoc for the class will include:
 ```
 My sample class.
 int x = 42;
-Rest of the text.  
+Rest of the text.
 ```
 
 Identify important pieces of code and add line comment **BEGIN: samplename** before start of each snippet. Put **END: samplename** or **FINISH: samplename** at the end of the code snippet. Then you can reference the snippet in Javadoc with
@@ -103,6 +103,16 @@ easiest way to do so is to configure your JAR packager to ignore such files:
 </plugin>
 ```
 Real life example is available [here](https://github.com/jtulach/codesnippet4javadoc/blob/515fdd141c8caed9d86afce859afb15a81054f7f/testing/pom.xml#L45).
+
+## Maximum line length
+By default Codesnippet will raise an error when the line length of the snippet exceeds 80 characters. This default
+can be altered by specifying the maximum line length as parameter, like demonstrated below.
+```bash
+$ javadoc \
+  -doclet org.apidesign.javadoc.codesnippet.Doclet \
+  -docletpath path/to/downloaded/codesnippet-doclet.jar \
+  --maxLineLength 120
+```
 
 ## License
 
