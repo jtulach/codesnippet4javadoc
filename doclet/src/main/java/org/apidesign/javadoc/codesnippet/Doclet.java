@@ -33,15 +33,15 @@ public final class Doclet {
     }
     public static boolean start(RootDoc root) {
         for (ClassDoc clazz : root.classes()) {
-            snippets.fixCodesnippets(clazz);
+            snippets.fixCodesnippets(root, clazz);
             for (MethodDoc method : clazz.methods()) {
-                snippets.fixCodesnippets(method);
+                snippets.fixCodesnippets(clazz, method);
             }
             for (FieldDoc field : clazz.fields()) {
-                snippets.fixCodesnippets(field);
+                snippets.fixCodesnippets(clazz, field);
             }
             for (ConstructorDoc con : clazz.constructors()) {
-                snippets.fixCodesnippets(con);
+                snippets.fixCodesnippets(clazz, con);
             }
         }
         return HtmlDoclet.start(root);
