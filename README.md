@@ -114,6 +114,21 @@ $ javadoc \
   -maxLineLength 120
 ```
 
+## Verify @since tag
+
+Quality of an API documentation can be increased if one requires that
+*every API element has a @since tag*. To verify such statement
+an automated tool is needed. This doclet is such tool. Just pass
+`verifysincepresent` parameter
+```bash
+$ javadoc \
+  -doclet org.apidesign.javadoc.codesnippet.Doclet \
+  -docletpath path/to/downloaded/codesnippet-doclet.jar \
+  -verifysincepresent
+```
+and warning will be printed for every element without the **@since** tag.
+
+
 ## License
 
 Feel free to use the Codesnippet Doclet binary to generate any public or private Javadoc. If you include the Codesnippet Doclet in your product or make modifications to it, please obey its *GPL 3.0* license.

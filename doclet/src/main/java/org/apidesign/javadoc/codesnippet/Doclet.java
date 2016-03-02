@@ -57,6 +57,12 @@ public final class Doclet {
         if (option.equals("-maxLineLength")) {
             return 2;
         }
+        if (option.equals("-verifysincepresent")) {
+            return 1;
+        }
+        if (option.equals("-verifysince")) {
+            return 2;
+        }
         return HtmlDoclet.optionLength(option);
     }
 
@@ -85,6 +91,16 @@ public final class Doclet {
             if (optionAndParams[0].equals("-maxLineLength")) {
                 if ( optionAndParams.length > 1 ) {
                     snippets.setMaxLineLength( optionAndParams[1] );
+                }
+            }
+            if (
+                optionAndParams[0].equals("-verifysincepresent") ||
+                optionAndParams[0].equals("-verifysince")
+            ) {
+                if ( optionAndParams.length > 1 ) {
+                    snippets.setVerifySince(optionAndParams[1]);
+                } else {
+                    snippets.setVerifySince("");
                 }
             }
         }
