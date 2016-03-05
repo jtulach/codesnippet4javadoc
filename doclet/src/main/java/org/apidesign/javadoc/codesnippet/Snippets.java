@@ -115,7 +115,7 @@ final class Snippets {
     private void addSinceTag(Doc element, final String version) throws IOException {
         final File f = element.position().file();
         int index = element.position().line();
-        List<String> lines = Files.readAllLines(f.toPath());
+        List<String> lines = Files.readAllLines(f.toPath(), Charset.forName("UTF-8"));
         boolean second = false;
         for (;;) {
             String l = lines.get(--index);
