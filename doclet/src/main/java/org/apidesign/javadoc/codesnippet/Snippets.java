@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -275,6 +276,8 @@ final class Snippets {
                             }
                         }
                     }
+                } catch (MalformedInputException ex) {
+                    printWarning(null, "Skipping binary file " + file.toString());
                 } catch (IOException ex) {
                     printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
                 }
