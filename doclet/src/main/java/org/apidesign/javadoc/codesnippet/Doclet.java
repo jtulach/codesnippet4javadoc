@@ -23,6 +23,7 @@ import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import java.io.File;
@@ -43,6 +44,9 @@ public final class Doclet {
             for (ConstructorDoc con : clazz.constructors()) {
                 snippets.fixCodesnippets(clazz, con);
             }
+        }
+        for (PackageDoc pkg : root.specifiedPackages()) {
+            snippets.fixCodesnippets(root, pkg);
         }
         return HtmlDoclet.start(root);
     }
