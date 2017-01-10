@@ -82,6 +82,25 @@ public class VerifyJavadocTest {
     }
 
     @Test
+    public void hidingClassWithOwnAnnotation() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        {
+            URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/HiddenSnippets.html");
+            assertNotNull(url, "page generated for HiddenSnippets.html");
+        }
+
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/package-summary.html");
+        assertNotNull(url, "package summary found as well");
+
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+
+        assertTrue(text.contains("SampleClass"), "This callsis found");
+        assertEquals(text.indexOf("HiddenSnippets"), -1, "No HiddenSnippets found");
+    }
+
+    @Test
     public void testSnippetFromTest() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
