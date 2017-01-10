@@ -39,7 +39,7 @@
                         <version>1.0-SNAPSHOT</version>
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
-                    <additionalparam>-snippetpath "${basedir}/src/test/java" -snippetclasses ".*Snippet.*" -maxLineLength 80</additionalparam>
+                    <additionalparam>-snippetpath "${basedir}/src/test/java" -snippetclasses ".*Snippet.*" -maxLineLength 80 -hiddingannotation java.lang.Deprecated</additionalparam>
                 </configuration>
             </plugin>
             <plugin>

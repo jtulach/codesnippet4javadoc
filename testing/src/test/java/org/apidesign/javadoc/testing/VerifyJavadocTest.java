@@ -44,6 +44,19 @@ public class VerifyJavadocTest {
     }
 
     @Test
+    public void deprecatedMethodCanBeHidden() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+
+        assertTrue(text.contains("showUseOfAnnotation"), "This method is found");
+        assertEquals(text.indexOf("hiddenMethod"), -1, "No hiddenMethod() found");
+    }
+
+    @Test
     public void testSnippetFromTest() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");

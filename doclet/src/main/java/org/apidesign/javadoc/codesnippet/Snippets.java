@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ final class Snippets {
     private Map<String,String> snippets;
     private int maxLineLength = 80;
     private String verifySince;
+    private Set<String> hiddenAnno;
 
     Snippets(DocErrorReporter reporter) {
         this.reporter = reporter;
@@ -510,6 +512,17 @@ final class Snippets {
 
     void setVerifySince(String sinceCheck) {
         this.verifySince = sinceCheck;
+    }
+
+    void addHiddenAnnotation(String fqn) {
+        if (this.hiddenAnno == null) {
+            this.hiddenAnno = new HashSet<>();
+        }
+        this.hiddenAnno.add(fqn);
+    }
+
+    boolean isHiddingAnnotation(String name) {
+        return this.hiddenAnno != null && this.hiddenAnno.contains(name);
     }
 
     private final class Item implements CharSequence {

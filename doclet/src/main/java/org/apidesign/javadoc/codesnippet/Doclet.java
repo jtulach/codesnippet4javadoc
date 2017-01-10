@@ -17,16 +17,26 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import java.io.File;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Doclet {
     private static Snippets snippets;
@@ -48,7 +58,7 @@ public final class Doclet {
         for (PackageDoc pkg : root.specifiedPackages()) {
             snippets.fixCodesnippets(root, pkg);
         }
-        return HtmlDoclet.start(root);
+        return HtmlDoclet.start(hideElements(RootDoc.class, root));
     }
 
     public static int optionLength(String option) {
@@ -65,6 +75,9 @@ public final class Doclet {
             return 1;
         }
         if (option.equals("-verifysince")) {
+            return 2;
+        }
+        if (option.equals("-hiddingannotation")) {
             return 2;
         }
         return HtmlDoclet.optionLength(option);
@@ -107,11 +120,102 @@ public final class Doclet {
                     snippets.setVerifySince("");
                 }
             }
+            if (
+                optionAndParams[0].equals("-hiddingannotation")
+            ) {
+                snippets.addHiddenAnnotation(optionAndParams[1]);
+            }
         }
         return HtmlDoclet.validOptions(options, reporter);
     }
 
     public static LanguageVersion languageVersion() {
         return HtmlDoclet.languageVersion();
+    }
+
+    private static <T> T hideElement(Class<T> clazz, final Object obj) {
+        return hideElements(clazz, clazz.cast(obj));
+    }
+
+    private static <T> T hideElements(Class<T> clazz, final T obj) {
+        if (clazz == MethodDoc.class || clazz == FieldDoc.class) {
+            return obj;
+        }
+        if (obj instanceof ExecutableMemberDoc) {
+            return obj;
+        }
+        Class<?> c = clazz;
+        if (clazz.isAssignableFrom(ClassDoc.class)) {
+            if (((ClassDoc) obj).isAnnotationType()) {
+                c = AnnotationTypeDoc.class;
+            }
+        }
+        InvocationHandler h = new DocProxy(obj);
+        return clazz.cast(Proxy.newProxyInstance(obj.getClass().getClassLoader(), new Class[]{c}, h));
+    }
+
+    private static class DocProxy<T> implements InvocationHandler {
+        private final T obj;
+
+        public DocProxy(T obj) {
+            this.obj = obj;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (args != null && (
+                method.getName().equals("equals") ||
+                method.getName().equals("compareTo")
+            )) {
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] == null) {
+                        continue;
+                    }
+                    InvocationHandler handler = null;
+                    try {
+                        handler = Proxy.getInvocationHandler(args[i]);
+                    } catch (IllegalArgumentException ignore) {
+                        continue;
+                    }
+                    if (handler instanceof DocProxy) {
+                        args[i] = ((DocProxy)handler).obj;
+                    }
+                }
+            }
+
+            boolean doSkip = true;
+            if (method.getName().equals("allClasses")) {
+                doSkip = false;
+            }
+
+            Object ret = method.invoke(obj, args);
+            final Class<?> requestedType = method.getReturnType();
+            if (requestedType.isArray()) {
+                final Class<?> componentType = requestedType.getComponentType();
+                if (componentType.getPackage() == RootDoc.class.getPackage()) {
+                    Object[] arr = (Object[]) ret;
+                    List<Object> copy = new ArrayList<>();
+                    for (Object element : arr) {
+                        boolean skip = false;
+                        if (element instanceof ProgramElementDoc) {
+                            ProgramElementDoc ped = (ProgramElementDoc) element;
+                            for (AnnotationDesc desc : ped.annotations()) {
+                                String name = desc.annotationType().qualifiedName();
+                                if (snippets.isHiddingAnnotation(name)) {
+                                    skip = doSkip;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!skip) {
+                            copy.add(hideElement(componentType, element));
+                        }
+                    }
+                    Object[] reqArr = (Object[])Array.newInstance(requestedType.getComponentType(), 0);
+                    return copy.toArray(reqArr);
+                }
+            }
+            return ret;
+        }
     }
 }

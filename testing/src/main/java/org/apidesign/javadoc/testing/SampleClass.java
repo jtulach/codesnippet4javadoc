@@ -53,6 +53,10 @@ public class SampleClass {
     public static void showUseOfAnnotation() {
     }
 
+    @Deprecated
+    public static void hiddenMethod() {
+    }
+
     /** Snippet on an inner class:
      * {@codesnippet read.in.test}
      * End of the code.
