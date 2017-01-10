@@ -57,6 +57,31 @@ public class VerifyJavadocTest {
     }
 
     @Test
+    public void deprecatedClassCanBeHiddenFromPackageList() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        {
+            URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/DeprecatedClass.html");
+            assertNotNull(url, "page generated for DeprecatedClass.html");
+
+            File file = new File(url.toURI());
+            assertTrue(file.exists(), "File found " + file);
+            String text = new String(Files.readAllBytes(file.toPath()));
+
+            assertTrue(text.contains("initialize"), "Method initialize() found");
+        }
+
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/package-summary.html");
+        assertNotNull(url, "package summary found as well");
+
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+
+        assertTrue(text.contains("SampleClass"), "This callsis found");
+        assertEquals(text.indexOf("DeprecatedClass"), -1, "No DeprecatedClass found");
+    }
+
+    @Test
     public void testSnippetFromTest() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
