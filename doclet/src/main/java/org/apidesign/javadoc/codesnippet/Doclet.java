@@ -197,14 +197,11 @@ public final class Doclet {
                     List<Object> copy = new ArrayList<>();
                     for (Object element : arr) {
                         boolean skip = false;
-                        if (element instanceof ProgramElementDoc) {
-                            ProgramElementDoc ped = (ProgramElementDoc) element;
-                            for (AnnotationDesc desc : ped.annotations()) {
-                                String name = desc.annotationType().qualifiedName();
-                                if (snippets.isHiddingAnnotation(name)) {
-                                    skip = doSkip;
-                                    break;
-                                }
+                        for (AnnotationDesc desc : findAnnotations(element)) {
+                            String name = desc.annotationType().qualifiedName();
+                            if (snippets.isHiddingAnnotation(name)) {
+                                skip = doSkip;
+                                break;
                             }
                         }
                         if (!skip) {
@@ -216,6 +213,17 @@ public final class Doclet {
                 }
             }
             return ret;
+        }
+
+        private AnnotationDesc[] findAnnotations(Object element) {
+            if (element instanceof ProgramElementDoc) {
+                ProgramElementDoc ped = (ProgramElementDoc) element;
+                return ped.annotations();
+            }
+            if (element instanceof PackageDoc) {
+                return ((PackageDoc) element).annotations();
+            }
+            return new AnnotationDesc[0];
         }
     }
 }
