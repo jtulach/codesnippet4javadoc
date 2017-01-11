@@ -1,5 +1,7 @@
 # Codesnippet Javadoc Doclet
 
+[![Build Status](https://travis-ci.org/jtulach/codesnippet4javadoc.svg?branch=master)](https://travis-ci.org/jtulach/codesnippet4javadoc)
+
 Say farewell to **broken** or **outdated samples** in your Javadoc! The *Codesnippet Doclet* helps you include real code snippets in the documentation ensuring they are **always compilable**. If you make the samples part of your test suite, even ensuring they **execute properly**.
 
 Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc! The doclet uses the same infrastructure as was used when publishing [Practical API Design](http://practical.apidesign.org) and [20 API Paradoxes](http://buy.apidesign.org) books making sure **all code samples** were **correct**, **compilable** and printed with **pretty syntax** coloring.
