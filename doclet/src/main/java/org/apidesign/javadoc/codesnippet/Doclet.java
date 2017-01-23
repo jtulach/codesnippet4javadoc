@@ -29,6 +29,7 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
+import com.sun.javadoc.Tag;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import java.io.File;
 import java.lang.reflect.Array;
@@ -144,6 +145,9 @@ public final class Doclet {
         if (obj instanceof ExecutableMemberDoc) {
             return obj;
         }
+        if (!toBeHiddenInterface(clazz)) {
+            return obj;
+        }
         Class<?> c = clazz;
         if (clazz.isAssignableFrom(ClassDoc.class)) {
             if (obj instanceof ClassDoc && ((ClassDoc) obj).isAnnotationType()) {
@@ -152,6 +156,27 @@ public final class Doclet {
         }
         InvocationHandler h = new DocProxy(obj);
         return clazz.cast(Proxy.newProxyInstance(obj.getClass().getClassLoader(), new Class[]{c}, h));
+    }
+
+    private static boolean toBeHiddenInterface(final Class<?> type) {
+        if (type == null) {
+            return false;
+        }
+        if (Tag.class.isAssignableFrom(type)) {
+            return false;
+        }
+        if (type.getPackage() == RootDoc.class.getPackage()) {
+            return true;
+        }
+        for (Class<?> interfce : type.getInterfaces()) {
+            if (toBeHiddenInterface(interfce)) {
+                return true;
+            }
+        }
+        if (toBeHiddenInterface(type.getSuperclass())) {
+            return true;
+        }
+        return false;
     }
 
     private static class DocProxy<T> implements InvocationHandler {
@@ -192,7 +217,7 @@ public final class Doclet {
             final Class<?> requestedType = method.getReturnType();
             if (requestedType.isArray()) {
                 final Class<?> componentType = requestedType.getComponentType();
-                if (componentType.getPackage() == RootDoc.class.getPackage()) {
+                if (toBeHiddenInterface(componentType)) {
                     Object[] arr = (Object[]) ret;
                     List<Object> copy = new ArrayList<>();
                     for (Object element : arr) {
@@ -211,6 +236,9 @@ public final class Doclet {
                     Object[] reqArr = (Object[])Array.newInstance(requestedType.getComponentType(), 0);
                     return copy.toArray(reqArr);
                 }
+            }
+            if (ret instanceof Object && toBeHiddenInterface(ret.getClass())) {
+                ret = hideElement(ret.getClass().getInterfaces()[0], ret);
             }
             return ret;
         }

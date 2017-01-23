@@ -154,6 +154,8 @@ public class VerifyJavadocTest {
         byte[] data = Files.readAllBytes(file.toPath());
         String text = new String(data);
         assertSnippet(text, "EmbeddedSnippet#fourtyTwo", "mul(6, 7);");
+
+        assertNotEquals(text.indexOf("SampleClass"), -1, "Contains {@link SampleClass}");
     }
 
     @Test

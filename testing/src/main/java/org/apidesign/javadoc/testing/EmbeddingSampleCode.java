@@ -18,6 +18,7 @@
 package org.apidesign.javadoc.testing;
 
 /** Show snippet {@link #mul(int, int) embedded} in the API source.
+ * Accompanies {@link SampleClass} examples.
  */
 public final class EmbeddingSampleCode {
     private EmbeddingSampleCode() {
