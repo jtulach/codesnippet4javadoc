@@ -82,6 +82,31 @@ public class VerifyJavadocTest {
     }
 
     @Test
+    public void deprecatedParametricClassCanBeHiddenFromPackageList() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        {
+            URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/DeprecatedParametricClass.html");
+            assertNotNull(url, "page generated for DeprecatedParametricClass.html");
+
+            File file = new File(url.toURI());
+            assertTrue(file.exists(), "File found " + file);
+            String text = new String(Files.readAllBytes(file.toPath()));
+
+            assertTrue(text.contains("initialize"), "Method initialize() found");
+        }
+
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/package-summary.html");
+        assertNotNull(url, "package summary found as well");
+
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+
+        assertTrue(text.contains("SampleClass"), "This callsis found");
+        assertEquals(text.indexOf("DeprecatedParametricClass"), -1, "No DeprecatedParametricClass found");
+    }
+
+    @Test
     public void hidingClassWithOwnAnnotation() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         {

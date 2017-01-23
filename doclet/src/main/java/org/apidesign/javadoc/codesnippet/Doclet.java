@@ -146,7 +146,7 @@ public final class Doclet {
         }
         Class<?> c = clazz;
         if (clazz.isAssignableFrom(ClassDoc.class)) {
-            if (((ClassDoc) obj).isAnnotationType()) {
+            if (obj instanceof ClassDoc && ((ClassDoc) obj).isAnnotationType()) {
                 c = AnnotationTypeDoc.class;
             }
         }
