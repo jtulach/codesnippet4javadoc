@@ -28,7 +28,7 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
+import com.sun.javadoc.SeeTag;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import java.io.File;
 import java.lang.reflect.Array;
@@ -147,15 +147,17 @@ public final class Doclet {
                 c = AnnotationTypeDoc.class;
             }
         }
+        if (clazz.isAssignableFrom(SeeTag.class)) {
+            if (obj instanceof SeeTag) {
+                c = SeeTag.class;
+            }
+        }
         InvocationHandler h = new DocProxy(obj);
         return clazz.cast(Proxy.newProxyInstance(obj.getClass().getClassLoader(), new Class[]{c}, h));
     }
 
     private static boolean toBeHiddenInterface(final Class<?> type) {
         if (type == null) {
-            return false;
-        }
-        if (Tag.class.isAssignableFrom(type)) {
             return false;
         }
         if (type.getPackage() == RootDoc.class.getPackage()) {

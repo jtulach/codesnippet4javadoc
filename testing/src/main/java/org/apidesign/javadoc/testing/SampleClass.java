@@ -41,8 +41,9 @@ public class SampleClass {
      * End of snippet and here goes another one:
      * {@codesnippet sample1}
      * Great, we are done.
+     * @throws org.apidesign.javadoc.testing.RealException
      */
-    public static void initialize() {
+    public static void initialize() throws RealException {
     }
 
     /**
