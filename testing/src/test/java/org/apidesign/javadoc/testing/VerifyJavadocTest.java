@@ -141,6 +141,8 @@ public class VerifyJavadocTest {
 
         assertSnippet(text, "read.in.test", "readAllBytes(file.toPath());");
         assertSnippet(text, "read.in.test", "java.nio.file\"><code>Files</code></a>");
+
+        assertEquals(text.indexOf("Description copied from class"), -1, "Descriptions shouldn't be copied");
     }
 
     @Test

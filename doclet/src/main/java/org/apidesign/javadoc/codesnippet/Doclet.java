@@ -22,7 +22,6 @@ import com.sun.javadoc.AnnotationTypeDoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
@@ -139,12 +138,6 @@ public final class Doclet {
     }
 
     private static <T> T hideElements(Class<T> clazz, final T obj) {
-        if (clazz == MethodDoc.class || clazz == FieldDoc.class) {
-            return obj;
-        }
-        if (obj instanceof ExecutableMemberDoc) {
-            return obj;
-        }
         if (!toBeHiddenInterface(clazz)) {
             return obj;
         }
@@ -188,10 +181,7 @@ public final class Doclet {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (args != null && (
-                method.getName().equals("equals") ||
-                method.getName().equals("compareTo")
-            )) {
+            if (args != null) {
                 for (int i = 0; i < args.length; i++) {
                     if (args[i] == null) {
                         continue;
