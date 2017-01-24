@@ -53,7 +53,7 @@ Add the doclet to your Maven Javadoc plugin configuration (as done [here](https:
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.10</version> <!-- or any newer version -->
+       <version>0.11</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath "${basedir}/src/test/java"</additionalparam>
@@ -130,6 +130,22 @@ $ javadoc \
 ```
 and warning will be printed for every element without the **@since** tag.
 
+## Hide @Deprecated Classes
+
+The code snippet doclet can, since version 0.11, exclude Javadoc elements annotated by some annotation from the Javadoc.
+This is especially useful with `java.lang.Deprecated` annotation, by using:
+
+```bash
+$ javadoc \
+  -doclet org.apidesign.javadoc.codesnippet.Doclet \
+  -docletpath path/to/downloaded/codesnippet-doclet.jar \
+  -hiddingannotation java.lang.Deprecated
+```
+
+one can eliminate deprecated fields and methods from the Javadoc and also hide classes and interfaces from the Javadoc
+overview (however their individual HTML pages still remain in Javadoc for those who keep permanent links to them). One
+can use the `-hddingannotation` parameter with other annotations as well and even repeat the parameter multiple times
+to hide multiple annotations at once.
 
 ## License
 
