@@ -110,6 +110,7 @@
     </build>
     <modules>
         <module>doclet</module>
+        <module>doclet-test</module>
         <module>testing</module>
     </modules>
     <dependencyManagement>
