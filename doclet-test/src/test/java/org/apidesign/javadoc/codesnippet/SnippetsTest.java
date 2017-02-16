@@ -401,6 +401,55 @@ public class SnippetsTest {
         assertEquals(assume, r);
     }
 
+    @Test public void testStringsWithSpecialCharacters() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "public class C {\n"
+            + "  // BEGIN: str\n" +
+"        Source src = Source.newBuilder(\"\\n\"\n" +
+"            + \"(function() {\\n\"\n" +
+"            + \"  var seconds = 0;\\n\"\n" +
+"            + \"  function addTime(h, m, s) {\\n\"\n" +
+"            + \"    seconds += 3600 * h;\\n\"\n" +
+"            + \"    seconds += 60 * m;\\n\"\n" +
+"            + \"    seconds += s;\\n\"\n" +
+"            + \"  }\\n\"\n" +
+"            + \"  function time() {\\n\"\n" +
+"            + \"    return seconds;\\n\"\n" +
+"            + \"  }\\n\"\n" +
+"            + \"  return {\\n\"\n" +
+"            + \"    'addTime': addTime,\\n\"\n" +
+"            + \"    'timeInSeconds': time\\n\"\n" +
+"            + \"  }\\n\"\n" +
+"            + \"})\\n\"\n" +
+"        ).build();\n" +
+""
+            + "  // END: str\n"
+            + "}\n"
+            + "";
+        Path src = createPath(1, "C.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.findSnippet(null, "str");
+
+        int at = -1;
+        int counter = 0;
+        for (;;) {
+            at = r.indexOf("</em>", 1 + at);
+            if (at == -1) {
+                break;
+            }
+            final String msg = "New line at " + at + ":" + r.substring(at - 5);
+            assertEquals(msg, '"', r.charAt(at - 1));
+            assertEquals(msg, 'n', r.charAt(at - 2));
+            assertEquals(msg, '\\', r.charAt(at - 3));
+            counter++;
+        }
+
+        assertTrue("Expecting at least ten lines: " + counter, counter > 10);
+    }
+
     @Test public void testInXML() throws Exception {
         String c1
             = "<!-- BEGIN: clazz -->\n"
