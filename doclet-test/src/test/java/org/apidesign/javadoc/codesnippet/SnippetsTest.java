@@ -326,6 +326,33 @@ public class SnippetsTest {
         }
     }
 
+    @Test public void testLineCommentsInItalic() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "public class C {\n"
+            + "  // BEGIN: comment\n"
+            + "  class Comment {\n"
+            + "    // no keywords for this comment\n"
+            + "    private int x;\n"
+            + "  }\n"
+            + "  // END: comment\n"
+            + "}\n"
+            + "";
+        Path src = createPath(1, "C.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.findSnippet(null, "comment");
+
+        String assume = ""
+            + "<b>class</b> Comment {\n"
+            + "  <em>// no keywords for this comment</em>\n"
+            + "  <b>private</b> <b>int</b> x;\n"
+            + "}\n";
+
+        assertEquals(assume, r);
+    }
+
     @Test public void testInXML() throws Exception {
         String c1
             = "<!-- BEGIN: clazz -->\n"
