@@ -391,7 +391,7 @@ final class Snippets {
         return name.endsWith(".java") ? name.substring(0, name.length() - 5) : null;
     }
 
-    private static final Pattern WORDS = Pattern.compile("(\\w+)|(//.*)\n");
+    private static final Pattern WORDS = Pattern.compile("(\\w+)|(//.*)\n|(\"[^\"]*\")");
     static String boldJavaKeywords(String text, Map<String,String> imports, Set<String> packages) {
         Matcher m = WORDS.matcher(text);
         StringBuffer sb = new StringBuffer();
@@ -456,6 +456,10 @@ final class Snippets {
                 default:
                     if (m.group(0).startsWith("//")) {
                         append = "<em>" + m.group(0).substring(0, m.group(0).length() - 1) + "</em>\n";
+                        break;
+                    }
+                    if (m.group(0).startsWith("\"")) {
+                        append = "<em>" + m.group(0) + "</em>";
                         break;
                     }
                     String fqn;

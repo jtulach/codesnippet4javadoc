@@ -353,6 +353,54 @@ public class SnippetsTest {
         assertEquals(assume, r);
     }
 
+    @Test public void testStrings() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "public class C {\n"
+            + "  // BEGIN: str\n"
+            + "  public String str = \"this is my long string\";\n"
+            + "  private int length = str.length();\n"
+            + "  // END: str\n"
+            + "}\n"
+            + "";
+        Path src = createPath(1, "C.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.findSnippet(null, "str");
+
+        String assume = ""
+            + "<b>public</b> {@link java.lang.String} str = <em>\"this is my long string\"</em>;\n"
+            + "<b>private</b> <b>int</b> length = str.length();\n"
+            + "";
+
+        assertEquals(assume, r);
+    }
+
+    @Test public void testConcatenateStrings() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "import net.java.html.js.JavaScriptBody;\n"
+            + "public class C {\n"
+            + "  private static String space = \" \";\n"
+            + "  // BEGIN: str\n"
+            + "  private static String str = \"Jaroslav\" + space + \"Tulach\";\n"
+            + "  // END: str\n"
+            + "}\n"
+            + "";
+        Path src = createPath(1, "C.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.findSnippet(null, "str");
+
+        String assume = ""
+            + "<b>private</b> <b>static</b> {@link java.lang.String} str = <em>\"Jaroslav\"</em> + space + <em>\"Tulach\"</em>;\n"
+            + "";
+
+        assertEquals(assume, r);
+    }
+
     @Test public void testInXML() throws Exception {
         String c1
             = "<!-- BEGIN: clazz -->\n"
