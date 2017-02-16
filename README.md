@@ -41,7 +41,10 @@ Having correct samples in Javadoc has never been easier!
 
 ## Use in a Maven Project
 
-Add the doclet to your Maven Javadoc plugin configuration (as done [here](https://github.com/jtulach/codesnippet4javadoc/commit/16fd9cf7114d9ddc087cb3c0fcaec3d44acb2ed2#diff-74a104b8e241b27d093230d1c9a23dc4R16)):
+The bits of the [codesnippet-doclet](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22codesnippet-doclet%22)
+are being uploaded to [Maven central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22codesnippet-doclet%22).
+Add the doclet to your Maven Javadoc plugin configuration
+(as done [here](https://github.com/jtulach/codesnippet4javadoc/commit/16fd9cf7114d9ddc087cb3c0fcaec3d44acb2ed2#diff-74a104b8e241b27d093230d1c9a23dc4R16)):
 
 ```xml
 <plugin>
@@ -53,7 +56,7 @@ Add the doclet to your Maven Javadoc plugin configuration (as done [here](https:
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.11</version> <!-- or any newer version -->
+       <version>0.12</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath "${basedir}/src/test/java"</additionalparam>
