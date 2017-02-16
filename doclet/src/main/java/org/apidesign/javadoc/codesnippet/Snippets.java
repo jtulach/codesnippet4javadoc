@@ -525,6 +525,35 @@ final class Snippets {
         return this.hiddenAnno != null && this.hiddenAnno.contains(name);
     }
 
+    static int findMissingIndentation(String unclosedText) {
+        int closed = 0;
+        int i = unclosedText.length() - 1;
+        while (i >= 0) {
+            char ch = unclosedText.charAt(i--);
+            if (ch == '}') {
+                closed++;
+            }
+            if (ch == '{') {
+                if (closed-- == 0) {
+                    break;
+                }
+            }
+        }
+        int spaces = 0;
+        while (i >= 0) {
+            char ch = unclosedText.charAt(i--);
+            if (ch == ' ') {
+                spaces++;
+                continue;
+            }
+            if (ch == '\n' || ch == '\r') {
+                break;
+            }
+            spaces = 0;
+        }
+        return spaces;
+    }
+
     private final class Item implements CharSequence {
 
         private StringBuilder sb = new StringBuilder();
@@ -591,6 +620,10 @@ final class Snippets {
                 int end = countChar(sb, '}');
                 if (finish) {
                     for (int i = 0; i < open - end; i++) {
+                        int missingBraceIndent = findMissingIndentation(sb.toString());
+                        while (missingBraceIndent-- > 0) {
+                            sb.append(" ");
+                        }
                         sb.append("}\n");
                     }
                 }

@@ -52,6 +52,32 @@ public class SnippetsTest {
         assertEquals("<b>public</b> <b>interface</b> {@link ahoj.I} {\n}\n", r);
     }
 
+    @Test
+    public void properIndentationForMultipleFinish() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "// BEGIN: xyz\n"
+            + "public interface I {\n"
+            + "  public void call() {\n"
+            + "// FINISH: xyz\n"
+            + "  }\n"
+            + "}"
+            + "";
+        Path src = createPath(1, "I.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.findSnippet(null, "xyz");
+
+        assertEquals(""
+            + "<b>public</b> <b>interface</b> {@link ahoj.I} {\n"
+            + "  <b>public</b> <b>void</b> call() {\n"
+            + "  }\n"
+            + "}\n"
+            + "", r
+        );
+    }
+
     @Test public void testJavaLangImportRecognized() throws Exception {
         String c1
             = "package ahoj;\n"
