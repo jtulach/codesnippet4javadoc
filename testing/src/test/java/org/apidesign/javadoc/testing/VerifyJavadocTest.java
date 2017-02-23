@@ -31,6 +31,13 @@ public class VerifyJavadocTest {
 // FINISH: sampleClass
 
     @Test
+    public void docFilesCopied() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/doc-files/addon.js");
+        assertNotNull(url, "doc-files file found");
+    }
+
+    @Test
     public void testSnippetInMainClassFound() throws Exception {
         ClassLoader l = VerifyJavadocTest.class.getClassLoader();
         URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SampleClass.html");
