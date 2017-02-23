@@ -77,32 +77,26 @@ final class RootDocImplProxy extends RootDocImpl {
         }
     }
 
-    @Override
     public boolean showTagMessages() {
         return invoke("showTagMessages");
     }
 
-    @Override
     public boolean isFunctionalInterface(AnnotationDesc ad) {
         return invoke("isFunctionalInterface", ad);
     }
 
-    @Override
     public void initDocLint(Collection<String> clctn, Collection<String> clctn1) {
         invoke("initDocLint", clctn, clctn1);
     }
 
-    @Override
     public JavaFileManager getFileManager() {
         return invoke("getFileManager");
     }
 
-    @Override
     public Locale getLocale() {
         return invoke("getLocale");
     }
 
-    @Override
     public SourcePosition position() {
         return invoke("position");
     }
