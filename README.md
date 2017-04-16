@@ -147,7 +147,7 @@ $ javadoc \
 
 one can eliminate deprecated fields and methods from the Javadoc and also hide classes and interfaces from the Javadoc
 overview (however their individual HTML pages still remain in Javadoc for those who keep permanent links to them). One
-can use the `-hddingannotation` parameter with other annotations as well and even repeat the parameter multiple times
+can use the `-hiddingannotation` parameter with other annotations as well and even repeat the parameter multiple times
 to hide multiple annotations at once.
 
 ## License
