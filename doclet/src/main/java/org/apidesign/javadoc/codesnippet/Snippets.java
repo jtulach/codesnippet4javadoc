@@ -324,16 +324,17 @@ final class Snippets {
                 String javaName = javaName(file);
                 if (javaName != null) {
                     try {
-                        BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
-                        for (;;) {
-                            String line = r.readLine();
-                            if (line == null) {
-                                break;
-                            }
-                            Matcher pkgMatch = PACKAGE.matcher(line);
-                            if (pkgMatch.matches()) {
-                                final String fqn = pkgMatch.group(1);
-                                topClasses.put(javaName, fqn + '.' + javaName);
+                        try (BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset())) {
+                            for (;;) {
+                                String line = r.readLine();
+                                if (line == null) {
+                                    break;
+                                }
+                                Matcher pkgMatch = PACKAGE.matcher(line);
+                                if (pkgMatch.matches()) {
+                                    final String fqn = pkgMatch.group(1);
+                                    topClasses.put(javaName, fqn + '.' + javaName);
+                                }
                             }
                         }
                     } catch (IOException ex) {
