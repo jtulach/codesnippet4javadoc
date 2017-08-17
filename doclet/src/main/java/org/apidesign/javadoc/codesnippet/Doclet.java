@@ -19,6 +19,7 @@ package org.apidesign.javadoc.codesnippet;
 
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.AnnotationTypeElementDoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.DocErrorReporter;
@@ -56,6 +57,11 @@ public final class Doclet {
             }
             for (ConstructorDoc con : clazz.constructors()) {
                 snippets.fixCodesnippets(clazz, con);
+            }
+            if (clazz instanceof AnnotationTypeDoc) {
+                for (AnnotationTypeElementDoc element : ((AnnotationTypeDoc) clazz).elements()) {
+                    snippets.fixCodesnippets(clazz, element);
+                }
             }
         }
         for (PackageDoc pkg : root.specifiedPackages()) {

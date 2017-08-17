@@ -18,5 +18,10 @@
 package org.apidesign.javadoc.testing;
 
 public @interface SampleAnno {
+    /** Reference. Sample code:
+     * {@codesnippet sample1}
+     *
+     * @return a class
+     */
     Class<?> reference();
 }
