@@ -223,8 +223,7 @@ final class Snippets {
                 Map<String,CharSequence> texts = new TreeMap<>();
                 Map<String,String> imports = new TreeMap<>(topClasses);
                 Set<String> packages = new LinkedHashSet<>();
-                try {
-                    BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset());
+                try (BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset())) {
                     for (;;) {
                         String line = r.readLine();
                         if (line == null) {
