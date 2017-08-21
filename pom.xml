@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apidesign.javadoc</groupId>
     <artifactId>pom</artifactId>
-    <version>0.22</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Codesnippet Javadoc Doclet</name>
     <parent>
@@ -30,7 +30,7 @@
         <connection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</connection>
         <developerConnection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</developerConnection>
         <url>https://github.com/jtulach/codesnippet4javadoc</url>
-        <tag>release-0.22</tag>
+        <tag>master</tag>
     </scm>
     <repositories>
         <repository>
