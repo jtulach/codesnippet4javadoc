@@ -36,7 +36,7 @@
                     <docletArtifact>
                         <groupId>${project.groupId}</groupId>
                         <artifactId>codesnippet-doclet</artifactId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>${project.version}</version>
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
                     <additionalparam>
