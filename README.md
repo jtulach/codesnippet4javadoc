@@ -56,7 +56,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.20</version> <!-- or any newer version -->
+       <version>0.22</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath "${basedir}/src/test/java"</additionalparam>
@@ -156,4 +156,6 @@ Feel free to use the Codesnippet Doclet binary to generate any public or private
 
 ## Projects Using Codesnippet Doclet
 
-* [Truffle](https://github.com/graalvm/truffle) in its [Javadoc](http://lafo.ssw.uni-linz.ac.at/javadoc/truffle/latest/)
+* [Truffle](https://github.com/oracle/graal/tree/master/truffle#readme) in its [Javadoc](http://www.graalvm.org/truffle/javadoc/)
+* [Graal](https://github.com/oracle/graal/) in its [Graph I/O API](http://www.graalvm.org/graphio/javadoc/org/graalvm/graphio/package-summary.html)
+* [Apache HTML/Java API](https://github.com/apache/incubator-netbeans-html4j#readme) in its [Javadoc](https://builds.apache.org/job/incubator-netbeans-html4j-linux/javadoc/net/java/html/BrwsrCtx.html#execute-java.lang.Runnable-)
