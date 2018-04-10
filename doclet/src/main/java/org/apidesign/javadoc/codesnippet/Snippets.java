@@ -25,8 +25,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.UnmappableCharacterException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -279,6 +281,8 @@ final class Snippets {
                     }
                 } catch (MalformedInputException ex) {
                     printWarning(null, "Skipping binary file " + file.toString());
+                } catch (CharacterCodingException ex) {
+                    printWarning(null, "Skipping binary file " + file.toString());
                 } catch (IOException ex) {
                     printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
                 }
@@ -354,7 +358,7 @@ final class Snippets {
         });
     }
 
-    private void printWarning(Doc where, String msg) {
+    final void printWarning(Doc where, String msg) {
         if (reporter != null) {
             if (where == null) {
                 reporter.printWarning(msg);
@@ -366,7 +370,7 @@ final class Snippets {
         }
     }
 
-    private void printError(Doc where, String msg) {
+    final void printError(Doc where, String msg) {
         if (reporter != null) {
             if (where == null) {
                 reporter.printError(msg);

@@ -40,7 +40,7 @@
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
                     <additionalparam>
--snippetpath "${basedir}/src/test/java"
+-snippetpath src/test/java
 -snippetclasses ".*Snippet.*" 
 -maxLineLength 80 
 -hiddingannotation java.lang.Deprecated 

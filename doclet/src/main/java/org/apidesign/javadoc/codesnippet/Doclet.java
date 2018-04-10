@@ -39,6 +39,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +129,7 @@ public final class Doclet {
             if (visible != null) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     for (String elem : optionAndParams[i].split(File.pathSeparator)) {
-                        snippets.addPath(new File(elem).toPath(), visible);
+                        snippets.addPath(findAbsolutePath(elem), visible);
                     }
                 }
             }
@@ -159,6 +160,21 @@ public final class Doclet {
             }
         }
         return HtmlDoclet.validOptions(options, reporter);
+    }
+
+    private static Path findAbsolutePath(String elem) {
+        File file = new File(elem);
+        if (file.isAbsolute()) {
+            return file.toPath();
+        } else {
+            File root = new File(".").getAbsoluteFile();
+            while (!file.exists() && root != null) {
+                file = new File(root, elem);
+                root = root.getParentFile();
+            }
+            return file.getAbsoluteFile().toPath();
+        }
+
     }
 
     public static LanguageVersion languageVersion() {

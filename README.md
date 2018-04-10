@@ -56,10 +56,10 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.22</version> <!-- or any newer version -->
+       <version>0.23</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
-     <additionalparam>-snippetpath "${basedir}/src/test/java"</additionalparam>
+     <additionalparam>-snippetpath src/test/java</additionalparam>
     </configuration>
 </plugin>
 ```
