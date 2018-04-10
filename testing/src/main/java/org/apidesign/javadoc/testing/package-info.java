@@ -1,6 +1,6 @@
 /**
  * Codesnippet Javadoc Doclet
- * Copyright (C) 2015-2017 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2015-2018 Jaroslav Tulach - jaroslav.tulach@apidesign.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://opensource.org/licenses/GPL-3.0.
  */
-
 /**
  * Also make sure package infos are processed correctly:
  * {@codesnippet sample1}
