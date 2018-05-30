@@ -158,6 +158,11 @@ public final class Doclet {
             ) {
                 snippets.addHiddenAnnotation(optionAndParams[1]);
             }
+            if (
+                optionAndParams[0].equals("-encoding")
+            ) {
+                snippets.setEncoding(optionAndParams[1]);
+            }
         }
         return HtmlDoclet.validOptions(options, reporter);
     }
