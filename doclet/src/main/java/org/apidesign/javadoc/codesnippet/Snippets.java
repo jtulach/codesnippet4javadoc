@@ -61,6 +61,7 @@ final class Snippets {
     private Map<String,String> snippets;
     private int maxLineLength = 80;
     private String verifySince;
+    private String encoding;
     private Set<String> hiddenAnno;
 
     Snippets(DocErrorReporter reporter) {
@@ -225,7 +226,11 @@ final class Snippets {
                 Map<String,CharSequence> texts = new TreeMap<>();
                 Map<String,String> imports = new TreeMap<>(topClasses);
                 Set<String> packages = new LinkedHashSet<>();
-                try (BufferedReader r = Files.newBufferedReader(file, Charset.defaultCharset())) {
+                Charset charset = Charset.defaultCharset();
+                if (encoding != null && !encoding.isEmpty()) {
+                    charset = Charset.forName(encoding);
+                }
+                try (BufferedReader r = Files.newBufferedReader(file, charset)) {
                     for (;;) {
                         String line = r.readLine();
                         if (line == null) {
@@ -565,6 +570,10 @@ final class Snippets {
             spaces = 0;
         }
         return spaces;
+    }
+
+    void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     private final class Item implements CharSequence {
