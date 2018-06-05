@@ -223,6 +223,20 @@ public class VerifyJavadocTest {
         assertSnippet(text, "sample1", "<b>int</b> x = 42;");
     }
 
+    @Test
+    public void testSnippetWithSpecialCharacters() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/SpecialCharacters.html");
+        assertNotNull(url, "Generated page for package found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        byte[] data = Files.readAllBytes(file.toPath());
+        String text = new String(data);
+        assertSnippet(text, "dollarSnippet1", "MY_MONEY = <em>\"$100.00\"</em>");
+        assertSnippet(text, "dollarSnippet2", "MONEY_SIGNS = <em>\"$ € £\"</em>");
+    }
+
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {
