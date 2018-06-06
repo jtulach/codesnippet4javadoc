@@ -490,7 +490,8 @@ final class Snippets {
                         append = "{@link " + fqn + "}";
                     }
             }
-            append = append.replace("\\", "\\\\");
+            append = append.replace("\\", "\\\\")
+                    .replace("$", "\\$");
             m.appendReplacement(sb, append);
         }
         m.appendTail(sb);
