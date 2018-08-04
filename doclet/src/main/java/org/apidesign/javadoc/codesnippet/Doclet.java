@@ -31,17 +31,15 @@ import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
-import com.sun.tools.javadoc.DocEnv;
-import com.sun.tools.javadoc.DocImpl;
 import java.io.File;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public final class Doclet {
     private static Snippets snippets;
@@ -68,30 +66,8 @@ public final class Doclet {
         for (PackageDoc pkg : root.specifiedPackages()) {
             snippets.fixCodesnippets(root, pkg);
         }
-        RootDoc rootProxy = directRootDocImplProxy(root);
-        if (rootProxy == null) {
-            rootProxy = hideElements(RootDoc.class, root);
-        }
+        RootDoc rootProxy = hideElements(RootDoc.class, root);
         return HtmlDoclet.start(rootProxy);
-    }
-
-    private static RootDocImplProxy directRootDocImplProxy(RootDoc root) {
-        try {
-            DocEnv env;
-            try {
-                final Field field = DocImpl.class.getDeclaredField("env");
-                field.setAccessible(true);
-                env = (DocEnv) field.get(root);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                env = null;
-            }
-
-            return new RootDocImplProxy(env, new DocProxy(root));
-        } catch (Throwable t) {
-            t.printStackTrace();
-            return null;
-        }
     }
 
     public static int optionLength(String option) {
@@ -227,11 +203,16 @@ public final class Doclet {
         return false;
     }
 
-    private static class DocProxy<T> implements InvocationHandler {
+    private static class DocProxy<T> implements InvocationHandler, Callable<T> {
         private final T obj;
 
         public DocProxy(T obj) {
             this.obj = obj;
+        }
+
+        @Override
+        public T call() {
+            return obj;
         }
 
         @Override

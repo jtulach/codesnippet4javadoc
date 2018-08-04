@@ -50,7 +50,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
-import com.sun.tools.javac.nio.PathFileManager;
+import javax.tools.JavaFileManager;
 
 
 /**
@@ -64,13 +64,14 @@ import com.sun.tools.javac.nio.PathFileManager;
  * @since 1.8
  */
 class PathDocFileFactory extends DocFileFactory {
-    private final PathFileManager fileManager;
+    private final JavaFileManager fileManager;
     private final Path destDir;
 
     public PathDocFileFactory(Configuration configuration) {
         super(configuration);
-        fileManager = (PathFileManager) configuration.getFileManager();
+        fileManager = configuration.getFileManager();
 
+        /*
         if (!configuration.destDirName.isEmpty()
                 || !fileManager.hasLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT)) {
             try {
@@ -83,14 +84,18 @@ class PathDocFileFactory extends DocFileFactory {
         }
 
         destDir = fileManager.getLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT).iterator().next();
+        */
+        throw new DocletAbortException("Cannot find destDir: " + configuration.destDirName);
     }
 
     public DocFile createFileForDirectory(String file) {
-        return new StandardDocFile(fileManager.getDefaultFileSystem().getPath(file));
+        throw new IllegalStateException();
+//        return new StandardDocFile(fileManager.getDefaultFileSystem().getPath(file));
     }
 
     public DocFile createFileForInput(String file) {
-        return new StandardDocFile(fileManager.getDefaultFileSystem().getPath(file));
+        throw new IllegalStateException();
+//        return new StandardDocFile(fileManager.getDefaultFileSystem().getPath(file));
     }
 
     public DocFile createFileForOutput(DocPath path) {
@@ -104,6 +109,10 @@ class PathDocFileFactory extends DocFileFactory {
 
         Set<DocFile> files = new LinkedHashSet<DocFile>();
         if (fileManager.hasLocation(location)) {
+            if (true) {
+                throw new IllegalStateException();
+            }
+            /*
             for (Path f: fileManager.getLocation(location)) {
                 if (Files.isDirectory(f)) {
                     f = f.resolve(path.getPath());
@@ -111,6 +120,7 @@ class PathDocFileFactory extends DocFileFactory {
                         files.add(new StandardDocFile(f));
                 }
             }
+            */
         }
         return files;
     }
@@ -292,7 +302,8 @@ class PathDocFileFactory extends DocFileFactory {
         }
 
         private JavaFileObject getJavaFileObjectForInput(Path file) {
-            return fileManager.getJavaFileObjects(file).iterator().next();
+            throw new IllegalStateException();
+    //        return fileManager.getJavaFileObjects(file).iterator().next();
         }
 
         private FileObject getFileObjectForOutput(DocPath path) throws IOException {

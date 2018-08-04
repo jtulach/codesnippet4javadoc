@@ -33,6 +33,7 @@ import com.sun.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
+import org.apidesign.javadoc.codesnippet.Profiles;
 
 /**
  * Converts Java Source Code to HTML.
@@ -150,8 +151,9 @@ public class SourceToHTMLConverter {
                 return;
             Reader r;
             // temp hack until we can update SourcePosition API.
-            if (sp instanceof com.sun.tools.javadoc.SourcePositionImpl) {
-                FileObject fo = ((com.sun.tools.javadoc.SourcePositionImpl) sp).fileObject();
+            FileObject[] optional = Profiles.findFileObject(sp);
+            if (optional != null) {
+                FileObject fo = optional[0];
                 if (fo == null)
                     return;
                 r = fo.openReader(true);
