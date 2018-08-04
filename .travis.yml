@@ -1,5 +1,19 @@
 language: java
-jdk:
-  - oraclejdk8
 os:
   - linux
+
+matrix:
+  fast_finish: true
+
+  include:
+    # JDK 8
+    - jdk: oraclejdk8
+
+    # JDK 9
+    - jdk: oraclejdk9
+
+    # JDK 10
+    - jdk: oraclejdk10
+
+    # JDK 11
+    - jdk: oraclejdk11
