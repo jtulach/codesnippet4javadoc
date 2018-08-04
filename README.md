@@ -64,6 +64,30 @@ Add the doclet to your Maven Javadoc plugin configuration
 </plugin>
 ```
 
+## Use with JDK9+
+
+The Codesnippet doclet supports JDK9+ and newer as well as JDK8. There have
+been major changes to the javadoc API in JDK9, but it seems I found a way
+to support older as well as new style. In order to use the doclet on
+JDK9+ it may however be necessary to open up one implementation package and
+pass `-J--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED` parameter
+when invoking the `javadoc` command.
+In case of Maven [one can do](https://github.com/jtulach/codesnippet4javadoc/commit/056ce1e78a95e2540ab81b0d973d7ce655029148)
+it like this:
+```xml
+                <configuration>
+                    <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+                    <docletArtifact>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>codesnippet-doclet</artifactId>
+                        <version>${project.version}</version>
+                    </docletArtifact>
+                    <additionalJOptions>
+                        <opt>-J--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED</opt>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
+```
 
 ## Use with Command Line Javadoc Tool
 
