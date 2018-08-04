@@ -30,7 +30,7 @@ import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
-import com.sun.tools.doclets.formats.html.HtmlDoclet;
+import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import com.sun.tools.javadoc.DocEnv;
 import com.sun.tools.javadoc.DocImpl;
 import java.io.File;
