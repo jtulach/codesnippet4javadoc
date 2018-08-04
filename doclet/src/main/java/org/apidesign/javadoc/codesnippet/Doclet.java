@@ -41,6 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+/**
+ * Enhance your own Javadoc with professionally looking
+ * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc#readme">code snippets</a>.
+ * Find out more at the 
+ * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc">project page</a>.
+ */
 public final class Doclet {
     private static Snippets snippets;
     private Doclet() {

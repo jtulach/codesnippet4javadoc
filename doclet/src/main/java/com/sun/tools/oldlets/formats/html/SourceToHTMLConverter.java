@@ -33,7 +33,7 @@ import com.sun.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
-import org.apidesign.javadoc.codesnippet.Profiles;
+import org.apidesign.javadoc.codesnippet.impl.Profiles;
 
 /**
  * Converts Java Source Code to HTML.

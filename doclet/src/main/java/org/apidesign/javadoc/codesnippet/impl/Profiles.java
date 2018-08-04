@@ -15,7 +15,7 @@
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://opensource.org/licenses/GPL-3.0.
  */
-package org.apidesign.javadoc.codesnippet;
+package org.apidesign.javadoc.codesnippet.impl;
 
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;

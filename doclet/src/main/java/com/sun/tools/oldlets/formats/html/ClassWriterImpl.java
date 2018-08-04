@@ -35,7 +35,7 @@ import com.sun.tools.oldlets.internal.toolkit.builders.*;
 import com.sun.tools.oldlets.internal.toolkit.taglets.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 import java.io.IOException;
-import org.apidesign.javadoc.codesnippet.Profiles;
+import org.apidesign.javadoc.codesnippet.impl.Profiles;
 
 /**
  * Generate the Class Information Page.

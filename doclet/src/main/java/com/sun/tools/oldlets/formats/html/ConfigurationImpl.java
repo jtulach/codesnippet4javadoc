@@ -38,7 +38,7 @@ import com.sun.tools.doclint.DocLint;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.StringUtils;
-import org.apidesign.javadoc.codesnippet.Profiles;
+import org.apidesign.javadoc.codesnippet.impl.Profiles;
 
 /**
  * Configure the output based on the command line options.

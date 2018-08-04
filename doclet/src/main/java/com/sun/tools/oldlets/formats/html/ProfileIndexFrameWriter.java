@@ -25,7 +25,7 @@
 
 package com.sun.tools.oldlets.formats.html;
 
-import org.apidesign.javadoc.codesnippet.Profiles;
+import org.apidesign.javadoc.codesnippet.impl.Profiles;
 import java.io.*;
 
 import com.sun.tools.oldlets.formats.html.markup.*;
