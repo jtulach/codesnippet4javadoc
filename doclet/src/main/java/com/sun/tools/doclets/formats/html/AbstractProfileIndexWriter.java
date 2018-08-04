@@ -25,9 +25,9 @@
 
 package com.sun.tools.doclets.formats.html;
 
+import org.apidesign.javadoc.codesnippet.Profiles;
 import java.io.*;
 
-import com.sun.tools.javac.sym.Profiles;
 import com.sun.tools.doclets.formats.html.markup.*;
 import com.sun.tools.doclets.internal.toolkit.*;
 import com.sun.tools.doclets.internal.toolkit.util.DocPath;

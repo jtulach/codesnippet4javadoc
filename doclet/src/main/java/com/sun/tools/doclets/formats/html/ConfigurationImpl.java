@@ -38,8 +38,7 @@ import com.sun.tools.doclint.DocLint;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.StringUtils;
-import com.sun.tools.javadoc.JavaScriptScanner;
-import com.sun.tools.javadoc.RootDocImpl;
+import org.apidesign.javadoc.codesnippet.Profiles;
 
 /**
  * Configure the output based on the command line options.
@@ -307,31 +306,6 @@ public class ConfigurationImpl extends Configuration {
         }
         setCreateOverview();
         setTopFile(root);
-
-        if (root instanceof RootDocImpl) {
-            ((RootDocImpl) root).initDocLint(doclintOpts, tagletManager.getCustomTagNames());
-            JavaScriptScanner jss = ((RootDocImpl) root).initJavaScriptScanner(isAllowScriptInComments());
-            if (jss != null) {
-                // In a more object-oriented world, this would be done by methods on the Option objects.
-                // Note that -windowtitle silently removes any and all HTML elements, and so does not need
-                // to be handled here.
-                checkJavaScript(jss, "-header", header);
-                checkJavaScript(jss, "-footer", footer);
-                checkJavaScript(jss, "-top", top);
-                checkJavaScript(jss, "-bottom", bottom);
-                checkJavaScript(jss, "-doctitle", doctitle);
-                checkJavaScript(jss, "-packagesheader", packagesheader);
-            }
-        }
-    }
-
-    private void checkJavaScript(JavaScriptScanner jss, final String opt, String value) {
-        jss.parse(value, new JavaScriptScanner.Reporter() {
-            public void report() {
-                root.printError(getText("doclet.JavaScript_in_option", opt));
-                throw new FatalError();
-            }
-        });
     }
 
     /**
@@ -592,10 +566,7 @@ public class ConfigurationImpl extends Configuration {
      */
     @Override
     public Locale getLocale() {
-        if (root instanceof RootDocImpl)
-            return ((RootDocImpl)root).getLocale();
-        else
-            return Locale.getDefault();
+        return Profiles.getLocale(root);
     }
 
     /**
@@ -604,10 +575,7 @@ public class ConfigurationImpl extends Configuration {
     @Override
     public JavaFileManager getFileManager() {
         if (fileManager == null) {
-            if (root instanceof RootDocImpl)
-                fileManager = ((RootDocImpl) root).getFileManager();
-            else
-                fileManager = new JavacFileManager(new Context(), false, null);
+            fileManager = Profiles.findFileManager(root);
         }
         return fileManager;
     }
@@ -616,9 +584,6 @@ public class ConfigurationImpl extends Configuration {
 
     @Override
     public boolean showMessage(SourcePosition pos, String key) {
-        if (root instanceof RootDocImpl) {
-            return pos == null || ((RootDocImpl) root).showTagMessages();
-        }
         return true;
     }
 

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import javax.tools.JavaFileManager;
 
 import com.sun.javadoc.*;
-import com.sun.tools.javac.sym.Profiles;
+import org.apidesign.javadoc.codesnippet.Profiles;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.doclets.internal.toolkit.builders.BuilderFactory;
 import com.sun.tools.doclets.internal.toolkit.taglets.*;

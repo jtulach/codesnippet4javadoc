@@ -340,11 +340,6 @@ public class TagletManager {
     private void checkTaglet(Object taglet) {
         if (taglet instanceof Taglet) {
             checkTagName(((Taglet) taglet).getName());
-        } else if (taglet instanceof com.sun.tools.doclets.Taglet) {
-            com.sun.tools.doclets.Taglet legacyTaglet = (com.sun.tools.doclets.Taglet) taglet;
-            customTags.remove(legacyTaglet.getName());
-            customTags.put(legacyTaglet.getName(), new LegacyTaglet(legacyTaglet));
-            checkTagName(legacyTaglet.getName());
         } else {
             throw new IllegalArgumentException("Given object is not a taglet.");
         }

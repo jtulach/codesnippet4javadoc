@@ -28,7 +28,6 @@ import java.io.*;
 import java.util.*;
 
 import com.sun.javadoc.*;
-import com.sun.tools.javac.sym.Profiles;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.doclets.internal.toolkit.*;
 import com.sun.tools.doclets.internal.toolkit.builders.*;

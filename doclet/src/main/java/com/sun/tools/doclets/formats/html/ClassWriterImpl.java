@@ -29,13 +29,13 @@ import java.util.*;
 
 import com.sun.javadoc.*;
 import com.sun.tools.javac.jvm.Profile;
-import com.sun.tools.javadoc.RootDocImpl;
 import com.sun.tools.doclets.formats.html.markup.*;
 import com.sun.tools.doclets.internal.toolkit.*;
 import com.sun.tools.doclets.internal.toolkit.builders.*;
 import com.sun.tools.doclets.internal.toolkit.taglets.*;
 import com.sun.tools.doclets.internal.toolkit.util.*;
 import java.io.IOException;
+import org.apidesign.javadoc.codesnippet.Profiles;
 
 /**
  * Generate the Class Information Page.
@@ -530,7 +530,7 @@ public class ClassWriterImpl extends SubWriterHolderWriter
      * {@inheritDoc}
      */
     public void addFunctionalInterfaceInfo (Content classInfoTree) {
-        if (isFunctionalInterface()) {
+        if (Profiles.isFunctionalInterface(configuration.root, classDoc)) {
             Content dt = HtmlTree.DT(getResource("doclet.Functional_Interface"));
             Content dl = HtmlTree.DL(dt);
             Content dd = new HtmlTree(HtmlTag.DD);
@@ -538,19 +538,6 @@ public class ClassWriterImpl extends SubWriterHolderWriter
             dl.addContent(dd);
             classInfoTree.addContent(dl);
         }
-    }
-
-    public boolean isFunctionalInterface() {
-        if (configuration.root instanceof RootDocImpl) {
-            RootDocImpl root = (RootDocImpl) configuration.root;
-            AnnotationDesc[] annotationDescList = classDoc.annotations();
-            for (AnnotationDesc annoDesc : annotationDescList) {
-                if (root.isFunctionalInterface(annoDesc)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
