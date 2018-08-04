@@ -56,7 +56,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.24</version> <!-- or any newer version -->
+       <version>0.30</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath src/test/java</additionalparam>
@@ -75,19 +75,20 @@ when invoking the `javadoc` command.
 In case of Maven [one can do](https://github.com/jtulach/codesnippet4javadoc/commit/056ce1e78a95e2540ab81b0d973d7ce655029148)
 it like this:
 ```xml
-                <configuration>
-                    <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
-                    <docletArtifact>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>codesnippet-doclet</artifactId>
-                        <version>${project.version}</version>
-                    </docletArtifact>
-                    <additionalJOptions>
-                        <opt>-J--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED</opt>
-                    </additionalJOptions>
-                </configuration>
-            </plugin>
+<configuration>
+    <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+    <docletArtifact>
+        <groupId>org.apidesign.javadoc</groupId>
+        <artifactId>codesnippet-doclet</artifactId>
+        <version>0.30</version>
+    </docletArtifact>
+    <additionalJOptions>
+        <opt>-J--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED</opt>
+    </additionalJOptions>
+</configuration>
 ```
+The doclet can run without the opened package, but some features (like copying
+`doc-files`) may not work properly.
 
 ## Use with Command Line Javadoc Tool
 
