@@ -39,6 +39,8 @@ import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 /**
@@ -254,8 +256,7 @@ public final class Doclet {
                     List<Object> copy = new ArrayList<>();
                     for (Object element : arr) {
                         boolean skip = false;
-                        for (AnnotationDesc desc : findAnnotations(element)) {
-                            String name = desc.annotationType().qualifiedName();
+                        for (String name : findAnnotationsNames(element)) {
                             if (snippets.isHiddingAnnotation(name)) {
                                 skip = doSkip;
                                 break;
@@ -284,6 +285,19 @@ public final class Doclet {
                 return ((PackageDoc) element).annotations();
             }
             return new AnnotationDesc[0];
+        }
+
+        private Iterable<String> findAnnotationsNames(Object element) {
+            Set<String> names = new TreeSet<>();
+            for (AnnotationDesc desc : findAnnotations(element)) {
+                try {
+                    String name = desc.annotationType().qualifiedName();
+                    names.add(name);
+                } catch (RuntimeException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return names;
         }
     }
 }
