@@ -64,6 +64,26 @@ Add the doclet to your Maven Javadoc plugin configuration
 </plugin>
 ```
 
+## Use in a Gradle Project
+
+Add the doclet to your Gradle javadoc configuration
+
+```groovy
+configurations {
+    snippetdoclet
+}
+
+dependencies {
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.31'
+}
+
+javadoc {
+    options.doclet = "org.apidesign.javadoc.codesnippet.Doclet"
+    options.docletpath = configurations.snippetdoclet.files.asType(List)
+    options.addStringOption "snippetpath", "src/test/java"
+}
+```
+
 ## Use with JDK9+
 
 The Codesnippet doclet supports JDK9+ and newer as well as JDK8. There have
