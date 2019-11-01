@@ -33,7 +33,7 @@ import java.util.*;
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileManager;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 import com.sun.tools.javac.util.StringUtils;
 

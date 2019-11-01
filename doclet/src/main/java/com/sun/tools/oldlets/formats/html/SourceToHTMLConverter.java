@@ -29,7 +29,7 @@ import java.io.*;
 
 import javax.tools.FileObject;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

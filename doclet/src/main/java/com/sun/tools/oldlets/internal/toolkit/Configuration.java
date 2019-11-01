@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.tools.JavaFileManager;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import org.apidesign.javadoc.codesnippet.impl.Profiles;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.oldlets.internal.toolkit.builders.BuilderFactory;

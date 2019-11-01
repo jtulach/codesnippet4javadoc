@@ -28,7 +28,7 @@ package com.sun.tools.oldlets.internal.toolkit;
 import java.io.*;
 import java.util.*;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * The interface for writing constants summary output.

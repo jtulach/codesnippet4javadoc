@@ -26,7 +26,7 @@
 
 package com.sun.tools.oldlets.formats.html;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.formats.html.markup.StringContent;
 import com.sun.tools.oldlets.internal.toolkit.Content;

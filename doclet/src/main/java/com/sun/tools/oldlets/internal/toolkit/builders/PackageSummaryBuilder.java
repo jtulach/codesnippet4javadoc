@@ -27,7 +27,7 @@ package com.sun.tools.oldlets.internal.toolkit.builders;
 
 import java.io.*;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 

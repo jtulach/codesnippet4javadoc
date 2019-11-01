@@ -28,7 +28,7 @@ package com.sun.tools.oldlets.internal.toolkit.util;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 
 /**

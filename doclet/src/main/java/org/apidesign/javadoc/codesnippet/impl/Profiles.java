@@ -17,10 +17,10 @@
  */
 package org.apidesign.javadoc.codesnippet.impl;
 
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.SourcePosition;
+import com.sun.tools.oldlets.javadoc.AnnotationDesc;
+import com.sun.tools.oldlets.javadoc.ClassDoc;
+import com.sun.tools.oldlets.javadoc.RootDoc;
+import com.sun.tools.oldlets.javadoc.SourcePosition;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.util.Context;
 import java.io.File;

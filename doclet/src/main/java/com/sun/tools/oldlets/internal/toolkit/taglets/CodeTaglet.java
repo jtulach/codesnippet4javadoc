@@ -25,7 +25,7 @@
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
 import java.util.Map;
-import com.sun.javadoc.Tag;
+import com.sun.tools.oldlets.javadoc.Tag;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 
 /**

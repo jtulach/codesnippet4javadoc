@@ -30,8 +30,8 @@ import java.lang.annotation.ElementType;
 import java.util.*;
 import javax.tools.StandardLocation;
 
-import com.sun.javadoc.*;
-import com.sun.javadoc.AnnotationDesc.ElementValuePair;
+import com.sun.tools.oldlets.javadoc.*;
+import com.sun.tools.oldlets.javadoc.AnnotationDesc.ElementValuePair;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.javac.util.StringUtils;
 

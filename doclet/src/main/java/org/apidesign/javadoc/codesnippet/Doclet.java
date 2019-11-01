@@ -17,19 +17,19 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.AnnotationTypeElementDoc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.MethodDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.SeeTag;
+import com.sun.tools.oldlets.javadoc.AnnotationDesc;
+import com.sun.tools.oldlets.javadoc.AnnotationTypeDoc;
+import com.sun.tools.oldlets.javadoc.AnnotationTypeElementDoc;
+import com.sun.tools.oldlets.javadoc.ClassDoc;
+import com.sun.tools.oldlets.javadoc.ConstructorDoc;
+import com.sun.tools.oldlets.javadoc.DocErrorReporter;
+import com.sun.tools.oldlets.javadoc.FieldDoc;
+import com.sun.tools.oldlets.javadoc.LanguageVersion;
+import com.sun.tools.oldlets.javadoc.MethodDoc;
+import com.sun.tools.oldlets.javadoc.PackageDoc;
+import com.sun.tools.oldlets.javadoc.ProgramElementDoc;
+import com.sun.tools.oldlets.javadoc.RootDoc;
+import com.sun.tools.oldlets.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import java.io.File;
 import java.lang.reflect.Array;

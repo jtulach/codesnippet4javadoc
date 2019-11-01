@@ -27,7 +27,7 @@ package com.sun.tools.oldlets.internal.toolkit;
 
 import java.io.*;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * The interface for writing profile package summary output.

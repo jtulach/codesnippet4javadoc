@@ -17,9 +17,9 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Tag;
+import com.sun.tools.oldlets.javadoc.Doc;
+import com.sun.tools.oldlets.javadoc.DocErrorReporter;
+import com.sun.tools.oldlets.javadoc.Tag;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

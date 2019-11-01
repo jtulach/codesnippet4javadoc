@@ -25,7 +25,7 @@
 
 package com.sun.tools.oldlets.internal.toolkit;
 
-import com.sun.javadoc.*;
+import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * The interface for writing annotation type optional member output.
