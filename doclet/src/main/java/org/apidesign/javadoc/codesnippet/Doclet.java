@@ -39,19 +39,25 @@ import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import javax.lang.model.SourceVersion;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
 
 /**
  * Enhance your own Javadoc with professionally looking
  * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc#readme">code snippets</a>.
- * Find out more at the 
+ * Find out more at the
  * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc">project page</a>.
  */
-public final class Doclet {
+public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static Snippets snippets;
-    private Doclet() {
+    private Locale locale;
+    private Reporter reporter;
+    public Doclet() {
     }
     public static boolean start(RootDoc root) {
         for (ClassDoc clazz : root.classes()) {
@@ -78,23 +84,47 @@ public final class Doclet {
         return HtmlDoclet.start(rootProxy);
     }
 
+    enum SnippetOption {
+
+        SOURCEPATH(2, "-sourcepath"),
+        SNIPPETPATH(2, "-snippetpath"),
+        SNIPPETCLASSES(2, "-snippetclasses"),
+        MAXLINELENGTH(2, "-maxLineLength"),
+        HIDINGANNOTATION(2, "-hiddingannotation"),
+        VERIFYSINCE(1, "-verifysince"),
+        VERIFYSINCEPRESENT(1, "-verifysincepresent"),
+        ENCODING(2, "-encoding");
+
+        final int length;
+        final String name;
+
+        private SnippetOption(int length, String name) {
+            this.length = length;
+            this.name = name;
+        }
+
+        public boolean matches(String option) {
+            return option.equals(name);
+        }
+    }
+
     public static int optionLength(String option) {
-        if (option.equals("-snippetpath")) {
+        if (SnippetOption.SNIPPETPATH.matches(option)) {
             return 2;
         }
-        if (option.equals("-snippetclasses")) {
+        if (SnippetOption.SNIPPETCLASSES.matches(option)) {
             return 2;
         }
-        if (option.equals("-maxLineLength")) {
+        if (SnippetOption.MAXLINELENGTH.matches(option)) {
             return 2;
         }
-        if (option.equals("-verifysincepresent")) {
+        if (SnippetOption.VERIFYSINCEPRESENT.matches(option)) {
             return 1;
         }
-        if (option.equals("-verifysince")) {
+        if (SnippetOption.VERIFYSINCE.matches(option)) {
             return 2;
         }
-        if (option.equals("-hiddingannotation")) {
+        if (SnippetOption.HIDINGANNOTATION.matches(option)) {
             return 2;
         }
         return HtmlDoclet.optionLength(option);
@@ -104,10 +134,10 @@ public final class Doclet {
         snippets = new Snippets(reporter);
         for (String[] optionAndParams : options) {
             Boolean visible = null;
-            if (optionAndParams[0].equals("-sourcepath")) {
+            if (SnippetOption.SOURCEPATH.matches(optionAndParams[0])) {
                 visible = true;
             }
-            if (optionAndParams[0].equals("-snippetpath")) {
+            if (SnippetOption.SNIPPETPATH.matches(optionAndParams[0])) {
                 visible = false;
             }
             if (visible != null) {
@@ -117,19 +147,19 @@ public final class Doclet {
                     }
                 }
             }
-            if (optionAndParams[0].equals("-snippetclasses")) {
+            if (SnippetOption.SNIPPETCLASSES.matches(optionAndParams[0])) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     snippets.addClasses(optionAndParams[i]);
                 }
             }
-            if (optionAndParams[0].equals("-maxLineLength")) {
+            if (SnippetOption.MAXLINELENGTH.matches(optionAndParams[0])) {
                 if ( optionAndParams.length > 1 ) {
                     snippets.setMaxLineLength( optionAndParams[1] );
                 }
             }
             if (
-                optionAndParams[0].equals("-verifysincepresent") ||
-                optionAndParams[0].equals("-verifysince")
+                SnippetOption.VERIFYSINCEPRESENT.matches(optionAndParams[0]) ||
+                SnippetOption.VERIFYSINCE.matches(optionAndParams[0])
             ) {
                 if ( optionAndParams.length > 1 ) {
                     snippets.setVerifySince(optionAndParams[1]);
@@ -138,12 +168,12 @@ public final class Doclet {
                 }
             }
             if (
-                optionAndParams[0].equals("-hiddingannotation")
+                SnippetOption.HIDINGANNOTATION.matches(optionAndParams[0])
             ) {
                 snippets.addHiddenAnnotation(optionAndParams[1]);
             }
             if (
-                optionAndParams[0].equals("-encoding")
+                SnippetOption.ENCODING.matches(optionAndParams[0])
             ) {
                 snippets.setEncoding(optionAndParams[1]);
             }
@@ -209,6 +239,27 @@ public final class Doclet {
             return true;
         }
         return false;
+    }
+
+    public void init(Locale locale, Reporter reporter) {
+        this.locale = locale;
+        this.reporter = reporter;
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Set<? extends Option> getSupportedOptions() {
+        throw new UnsupportedOperationException();
+    }
+
+    public SourceVersion getSupportedSourceVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean run(DocletEnvironment environment) {
+        throw new UnsupportedOperationException();
     }
 
     private static class DocProxy<T> implements InvocationHandler, Callable<T> {
