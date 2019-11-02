@@ -38,6 +38,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -84,7 +86,17 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         return HtmlDoclet.start(rootProxy);
     }
 
-    enum SnippetOption {
+    enum SnippetOption implements jdk.javadoc.doclet.Doclet.Option {
+        AUTHOR(1, "-author"),
+        BOTTOM(2, "-bottom"),
+        CHARSET(2, "-charset"),
+        D(2, "-d"),
+        DOCENCODING(2, "-docencoding"),
+        DOCTITLE(2, "-doctitle"),
+        WINDOWTITLE(2, "-windowtitle"),
+        LINKOFFLINE(3, "-linkoffline"),
+        USE(1, "-use"),
+        VERSION(1, "-version"),
 
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
@@ -105,6 +117,33 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
         public boolean matches(String option) {
             return option.equals(name);
+        }
+
+        public int getArgumentCount() {
+            return length - 1;
+        }
+
+        public String getDescription() {
+            return null;
+        }
+
+        public jdk.javadoc.doclet.Doclet.Option.Kind getKind() {
+            return jdk.javadoc.doclet.Doclet.Option.Kind.STANDARD;
+        }
+
+        public List<String> getNames() {
+            return Arrays.asList(name);
+        }
+
+        public String getParameters() {
+            return null;
+        }
+
+        public boolean process(String option, List<String> arguments) {
+            ArrayList<String> all = new ArrayList<>();
+            all.add(name);
+            all.addAll(arguments);
+            return validOptions(new String[][] { all.toArray(new String[0]) }, null);
         }
     }
 
@@ -131,7 +170,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
-        snippets = new Snippets(reporter);
+        if (snippets == null) {
+            snippets = new Snippets(reporter);
+        }
         for (String[] optionAndParams : options) {
             Boolean visible = null;
             if (SnippetOption.SOURCEPATH.matches(optionAndParams[0])) {
@@ -247,11 +288,11 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     public String getName() {
-        throw new UnsupportedOperationException();
+        return "CodesnippetDoclet";
     }
 
-    public Set<? extends Option> getSupportedOptions() {
-        throw new UnsupportedOperationException();
+    public Set<? extends jdk.javadoc.doclet.Doclet.Option> getSupportedOptions() {
+        return EnumSet.allOf(SnippetOption.class);
     }
 
     public SourceVersion getSupportedSourceVersion() {
