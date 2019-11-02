@@ -17,6 +17,8 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
+import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.Log;
 import com.sun.tools.oldlets.javadoc.AnnotationDesc;
 import com.sun.tools.oldlets.javadoc.AnnotationTypeDoc;
 import com.sun.tools.oldlets.javadoc.AnnotationTypeElementDoc;
@@ -31,6 +33,9 @@ import com.sun.tools.oldlets.javadoc.ProgramElementDoc;
 import com.sun.tools.oldlets.javadoc.RootDoc;
 import com.sun.tools.oldlets.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
+import com.sun.tools.oldlets.javadoc.main.JavadocTool;
+import com.sun.tools.oldlets.javadoc.main.Messager;
+import com.sun.tools.oldlets.javadoc.main.Start;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
@@ -39,6 +44,7 @@ import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -300,7 +306,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     public boolean run(DocletEnvironment environment) {
-        throw new UnsupportedOperationException();
+        Start start = new Start(getName());
+        boolean result = start.begin(Doclet.class, Collections.emptyList(), Collections.emptyList());
+        return result;
     }
 
     private static class DocProxy<T> implements InvocationHandler, Callable<T> {
