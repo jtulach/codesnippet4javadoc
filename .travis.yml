@@ -17,3 +17,6 @@ matrix:
 
     # JDK 11
     - jdk: oraclejdk11
+
+    # JDK 13
+    - jdk: oraclejdk13
