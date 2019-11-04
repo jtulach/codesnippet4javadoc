@@ -33,6 +33,7 @@ import com.sun.tools.oldlets.javadoc.ProgramElementDoc;
 import com.sun.tools.oldlets.javadoc.RootDoc;
 import com.sun.tools.oldlets.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
+import com.sun.tools.oldlets.javadoc.SourcePosition;
 import com.sun.tools.oldlets.javadoc.main.JavadocTool;
 import com.sun.tools.oldlets.javadoc.main.Messager;
 import com.sun.tools.oldlets.javadoc.main.Start;
@@ -52,6 +53,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import javax.lang.model.SourceVersion;
+import javax.tools.Diagnostic;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 
@@ -65,6 +67,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static Snippets snippets;
     private Locale locale;
     private Reporter reporter;
+    private static List<String> allOptions;
+    private static DocErrorReporter docErrorReporter;
+
     public Doclet() {
     }
     public static boolean start(RootDoc root) {
@@ -149,7 +154,10 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(name);
             all.addAll(arguments);
-            return validOptions(new String[][] { all.toArray(new String[0]) }, null);
+            if (allOptions == null) {
+                allOptions = all;
+            }
+            return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
         }
     }
 
@@ -291,6 +299,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     public void init(Locale locale, Reporter reporter) {
         this.locale = locale;
         this.reporter = reporter;
+        docErrorReporter = new DelegatingDocErrorReporter(reporter);
     }
 
     public String getName() {
@@ -307,7 +316,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
     public boolean run(DocletEnvironment environment) {
         Start start = new Start(getName());
-        boolean result = start.begin(Doclet.class, Collections.emptyList(), Collections.emptyList());
+        boolean result = start.begin(Doclet.class, allOptions, Collections.emptyList());
         return result;
     }
 
@@ -400,4 +409,5 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             return names;
         }
     }
+
 }

@@ -43,6 +43,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import com.sun.tools.javac.code.ClassFinder;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.Completer;
 import com.sun.tools.javac.code.Symbol.ModuleSymbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
@@ -202,16 +203,18 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
             includedPackages = t.getIncludedPackages();
 
             // Parse the files in the packages to be documented
-            ListBuffer<JCCompilationUnit> packageTrees = new ListBuffer<>();
+            ListBuffer<JCCompilationUnit> allTrees = new ListBuffer<>();
             for (String packageName: includedPackages) {
                 List<JavaFileObject> files = t.getFiles(packageName);
                 docenv.notice("main.Loading_source_files_for_package", packageName);
 
                 if (files.isEmpty())
                     messager.warning(Messager.NOPOS, "main.no_source_files_for_package", packageName);
-                parse(files, packageTrees, false);
+                allTrees.addAll(classTrees);
+                parse(files, allTrees, false);
             }
-            modules.enter(packageTrees.toList(), null);
+            modules.newRound();
+            modules.initModules(allTrees.toList());
 
             if (messager.nerrors() != 0) {
                 return null;
@@ -219,7 +222,7 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
 
             // Enter symbols for all files
             docenv.notice("main.Building_tree");
-            javadocEnter.main(classTrees.toList().appendList(packageTrees.toList()));
+            javadocEnter.main(classTrees.toList().appendList(allTrees.toList()));
         } catch (Abort ex) {}
 
         if (messager.nerrors() != 0)
