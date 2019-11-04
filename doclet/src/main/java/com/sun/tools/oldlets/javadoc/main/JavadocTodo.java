@@ -40,7 +40,7 @@ import com.sun.tools.javac.util.Context.Factory;
  *
  *  @author Neal Gafter
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class JavadocTodo extends Todo {
     public static void preRegister(Context context) {

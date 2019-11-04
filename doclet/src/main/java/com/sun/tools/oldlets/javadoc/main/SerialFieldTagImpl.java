@@ -51,7 +51,7 @@ import com.sun.tools.oldlets.javadoc.*;
  *
  * @see java.io.ObjectStreamField
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class SerialFieldTagImpl
     extends TagImpl

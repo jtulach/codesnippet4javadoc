@@ -40,7 +40,7 @@ import java.util.Locale;
  * @since 1.4
  * @author Robert Field
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class DocLocale {
 

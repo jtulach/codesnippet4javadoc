@@ -48,7 +48,7 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  * @since 1.5
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class AnnotationTypeDocImpl
         extends ClassDocImpl implements AnnotationTypeDoc {

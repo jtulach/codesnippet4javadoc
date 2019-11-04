@@ -49,7 +49,7 @@ import com.sun.tools.javac.main.JavaCompiler;
  *
  *  @author Neal Gafter
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class JavadocEnter extends Enter {
     public static JavadocEnter instance(Context context) {

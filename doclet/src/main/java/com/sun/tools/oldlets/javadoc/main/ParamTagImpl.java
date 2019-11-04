@@ -41,7 +41,7 @@ import com.sun.tools.oldlets.javadoc.*;
  * @author Robert Field
  *
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class ParamTagImpl extends TagImpl implements ParamTag {
 

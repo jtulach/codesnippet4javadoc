@@ -37,7 +37,7 @@ import com.sun.tools.javac.util.List;
  * @author Mahmood Ali
  * @since 1.8
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class AnnotatedTypeImpl
         extends AbstractTypeImpl implements AnnotatedType {

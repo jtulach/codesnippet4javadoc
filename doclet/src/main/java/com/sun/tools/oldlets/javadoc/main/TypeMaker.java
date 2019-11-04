@@ -42,7 +42,7 @@ import static com.sun.tools.javac.code.TypeTag.ARRAY;
  *  This code and its internal interfaces are subject to change or
  *  deletion without notice.</b>
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class TypeMaker {
 

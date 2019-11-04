@@ -47,7 +47,7 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  *
  *  @author Neal Gafter
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class JavadocMemberEnter extends MemberEnter {
     public static JavadocMemberEnter instance0(Context context) {

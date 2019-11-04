@@ -33,7 +33,7 @@ import com.sun.tools.oldlets.javadoc.*;
  *  This code and its internal interfaces are subject to change or
  *  deletion without notice.</b>
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class PrimitiveType implements com.sun.tools.oldlets.javadoc.Type {
 

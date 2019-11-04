@@ -53,7 +53,7 @@ import com.sun.tools.javac.util.Log;
  * @see java.text.MessageFormat
  * @author Neal Gafter (rewrite)
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class Messager extends Log implements DocErrorReporter {
     public static final SourcePosition NOPOS = null;

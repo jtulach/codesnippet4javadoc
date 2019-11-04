@@ -50,7 +50,7 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  * @author Atul M Dambalkar
  *
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 

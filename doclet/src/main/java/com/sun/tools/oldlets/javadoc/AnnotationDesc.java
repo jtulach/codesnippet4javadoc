@@ -38,7 +38,7 @@ package com.sun.tools.oldlets.javadoc;
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public interface AnnotationDesc {
 
@@ -78,7 +78,7 @@ public interface AnnotationDesc {
      *   in the package {@code jdk.javadoc.doclet}.
      *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
      */
-    @Deprecated(since="9", forRemoval=true)
+    @Deprecated
     public interface ElementValuePair {
 
         /**

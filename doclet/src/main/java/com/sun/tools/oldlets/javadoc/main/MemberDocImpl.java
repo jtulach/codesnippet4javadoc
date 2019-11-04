@@ -49,7 +49,7 @@ import com.sun.tools.javac.code.Symbol;
  * @author Neal Gafter
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public abstract class MemberDocImpl
     extends ProgramElementDocImpl

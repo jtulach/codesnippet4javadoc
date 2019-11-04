@@ -43,7 +43,7 @@ import static com.sun.tools.javac.code.TypeTag.BOOLEAN;
  * @since 1.5
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class AnnotationValueImpl implements AnnotationValue {
 

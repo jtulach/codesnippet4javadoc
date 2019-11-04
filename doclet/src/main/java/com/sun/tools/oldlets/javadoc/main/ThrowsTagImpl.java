@@ -43,7 +43,7 @@ import com.sun.tools.oldlets.javadoc.*;
  * @see ExecutableMemberDocImpl#throwsTags()
  *
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class ThrowsTagImpl extends TagImpl implements ThrowsTag {
 

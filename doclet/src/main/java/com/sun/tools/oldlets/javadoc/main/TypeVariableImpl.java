@@ -52,7 +52,7 @@ import com.sun.tools.javac.util.Names;
  * @author Scott Seligman
  * @since 1.5
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class TypeVariableImpl extends AbstractTypeImpl implements TypeVariable {
 

@@ -46,7 +46,7 @@ package com.sun.tools.oldlets.javadoc;
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public interface ClassDoc extends ProgramElementDoc, Type {
 
@@ -342,7 +342,7 @@ public interface ClassDoc extends ProgramElementDoc, Type {
      *          should not be exposed here.  In addition, not all imported
      *          classes are imported through single-type-import declarations.
      */
-    @Deprecated(since="9", forRemoval=true)
+    @Deprecated
     ClassDoc[] importedClasses();
 
     /**
@@ -357,6 +357,6 @@ public interface ClassDoc extends ProgramElementDoc, Type {
      *          return type does not allow for all type-import-on-demand
      *          declarations to be returned.
      */
-    @Deprecated(since="9", forRemoval=true)
+    @Deprecated
     PackageDoc[] importedPackages();
 }

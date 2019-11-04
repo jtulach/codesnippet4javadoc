@@ -72,7 +72,7 @@ import com.sun.tools.javac.util.Names;
  * @author Neal Gafter (rewrite)
  * @author Scott Seligman (generics)
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class DocEnv {
     protected static final Context.Key<DocEnv> docEnvKey = new Context.Key<>();

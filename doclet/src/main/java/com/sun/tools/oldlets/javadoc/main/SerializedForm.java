@@ -66,7 +66,7 @@ import static com.sun.tools.javac.code.Scope.LookupKind.NON_RECURSIVE;
  * @author Joe Fialli
  * @author Neal Gafter (rewrite but not too proud)
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 class SerializedForm {
     ListBuffer<MethodDoc> methods = new ListBuffer<>();

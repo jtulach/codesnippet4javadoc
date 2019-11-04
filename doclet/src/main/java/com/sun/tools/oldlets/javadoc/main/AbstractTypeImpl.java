@@ -43,7 +43,7 @@ import com.sun.tools.javac.code.Type;
  * @author Scott Seligman
  * @since 1.5
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 abstract class AbstractTypeImpl implements com.sun.tools.oldlets.javadoc.Type {
 

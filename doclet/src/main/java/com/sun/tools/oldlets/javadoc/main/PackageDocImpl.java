@@ -62,7 +62,7 @@ import static com.sun.tools.javac.code.Scope.LookupKind.NON_RECURSIVE;
  * @author Scott Seligman (package-info.java)
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class PackageDocImpl extends DocImpl implements PackageDoc {
 

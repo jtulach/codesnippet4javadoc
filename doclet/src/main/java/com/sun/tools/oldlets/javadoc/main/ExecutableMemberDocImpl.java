@@ -51,7 +51,7 @@ import com.sun.tools.javac.util.ListBuffer;
  * @author Scott Seligman (generics, annotations)
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public abstract class ExecutableMemberDocImpl
         extends MemberDocImpl implements ExecutableMemberDoc {

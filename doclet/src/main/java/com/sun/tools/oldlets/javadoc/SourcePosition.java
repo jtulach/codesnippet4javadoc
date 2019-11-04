@@ -39,7 +39,7 @@ import java.io.File;
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public interface SourcePosition {
     /** The source file. Returns null if no file information is

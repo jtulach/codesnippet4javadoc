@@ -86,7 +86,7 @@ import static com.sun.tools.javac.tree.JCTree.Tag.*;
  * @author Scott Seligman (generics, enums, annotations)
  */
 
-@Deprecated(since="9", forRemoval=true)
+@Deprecated
 @SuppressWarnings("removal")
 public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
 
@@ -1092,7 +1092,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      *          should not be exposed here.  In addition, not all imported
      *          classes are imported through single-type-import declarations.
      */
-    @Deprecated(since="9", forRemoval=true)
+    @Deprecated
     public ClassDoc[] importedClasses() {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new ClassDoc[0];
@@ -1130,7 +1130,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      *          return type does not allow for all type-import-on-demand
      *          declarations to be returned.
      */
-    @Deprecated(since="9", forRemoval=true)
+    @Deprecated
     public PackageDoc[] importedPackages() {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new PackageDoc[0];
