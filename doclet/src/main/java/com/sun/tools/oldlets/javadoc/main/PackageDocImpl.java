@@ -34,6 +34,7 @@ import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Scope;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.tree.JCTree;
@@ -145,10 +146,10 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
         if (allClassesFiltered != null && filtered) {
             return allClassesFiltered;
         }
-        ListBuffer<ClassDocImpl> classes = new ListBuffer<ClassDocImpl>();
-        for (Scope.Entry e = sym.members().elems; e != null; e = e.sibling) {
-            if (e.sym != null) {
-                ClassSymbol s = (ClassSymbol)e.sym;
+        ListBuffer<ClassDocImpl> classes = new ListBuffer<>();
+        for (Symbol enumerated : SymbolKind.getSymbols(sym.members(), false)) {
+            if (enumerated != null) {
+                ClassSymbol s = (ClassSymbol)enumerated;
                 ClassDocImpl c = env.getClassDoc(s);
                 if (c != null && !c.isSynthetic())
                     c.addAllClasses(classes, filtered);

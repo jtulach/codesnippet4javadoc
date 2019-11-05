@@ -29,6 +29,7 @@ import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Scope;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
@@ -159,9 +160,9 @@ class SerializedForm {
         /* SERIALIZABLE_FIELDS can be private,
          * so must lookup by ClassSymbol, not by ClassDocImpl.
          */
-        for (Scope.Entry e = def.members().lookup(names.fromString(SERIALIZABLE_FIELDS)); e.scope != null; e = e.next()) {
-            if (e.sym.kind == Kinds.VAR) {
-                VarSymbol f = (VarSymbol)e.sym;
+        for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, names.fromString(SERIALIZABLE_FIELDS))) {
+            if (SymbolKind.VAR.same(sym)) {
+                VarSymbol f = (VarSymbol)sym;
                 if ((f.flags() & Flags.STATIC) != 0 &&
                     (f.flags() & Flags.PRIVATE) != 0) {
                     return f;
@@ -180,9 +181,9 @@ class SerializedForm {
     private void computeDefaultSerializableFields(DocEnv env,
                                                   ClassSymbol def,
                                                   ClassDocImpl cd) {
-        for (Scope.Entry e = def.members().elems; e != null; e = e.sibling) {
-            if (e.sym != null && e.sym.kind == Kinds.VAR) {
-                VarSymbol f = (VarSymbol)e.sym;
+        for (Symbol sym : SymbolKind.getSymbols(def.members(), false)) {
+            if (sym != null && SymbolKind.VAR.same(sym)) {
+                VarSymbol f = (VarSymbol)sym;
                 if ((f.flags() & Flags.STATIC) == 0 &&
                     (f.flags() & Flags.TRANSIENT) == 0) {
                     //### No modifier filtering applied here.
@@ -209,9 +210,9 @@ class SerializedForm {
     private void addMethodIfExist(DocEnv env, ClassSymbol def, String methodName) {
         Names names = def.name.table.names;
 
-        for (Scope.Entry e = def.members().lookup(names.fromString(methodName)); e.scope != null; e = e.next()) {
-            if (e.sym.kind == Kinds.MTH) {
-                MethodSymbol md = (MethodSymbol)e.sym;
+        for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, names.fromString(methodName))) {
+            if (SymbolKind.MTH.same(sym)) {
+                MethodSymbol md = (MethodSymbol)sym;
                 if ((md.flags() & Flags.STATIC) == 0) {
                     /*
                      * WARNING: not robust if unqualifiedMethodName is overloaded
@@ -240,15 +241,23 @@ class SerializedForm {
             if (sfTag[i].fieldName() == null || sfTag[i].fieldType() == null) // ignore malformed @serialField tags
                 continue;
 
-            Name fieldName = names.fromString(sfTag[i].fieldName());
-
             // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
-            for (Scope.Entry e = def.members().lookup(fieldName); e.scope != null; e = e.next()) {
-                if (e.sym.kind == Kinds.VAR) {
-                    VarSymbol f = (VarSymbol)e.sym;
-                    FieldDocImpl fdi = env.getFieldDoc(f);
-                    ((SerialFieldTagImpl)(sfTag[i])).mapToFieldDocImpl(fdi);
-                    break;
+            for (SerialFieldTag tag : spfDoc.serialFieldTags()) {
+                if (tag.fieldName() == null || tag.fieldType() == null) // ignore malformed @serialField tags
+                {
+                    continue;
+                }
+
+                Name fieldName = names.fromString(tag.fieldName());
+
+                // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
+                for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, fieldName)) {
+                    if (SymbolKind.VAR.same(sym)) {
+                        VarSymbol f = (VarSymbol) sym;
+                        FieldDocImpl fdi = env.getFieldDoc(f);
+                        ((SerialFieldTagImpl) (tag)).mapToFieldDocImpl(fdi);
+                        break;
+                    }
                 }
             }
         }

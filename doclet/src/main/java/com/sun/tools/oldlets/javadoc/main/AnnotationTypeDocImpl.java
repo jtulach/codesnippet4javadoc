@@ -28,9 +28,9 @@ package com.sun.tools.oldlets.javadoc.main;
 import com.sun.tools.oldlets.javadoc.*;
 
 import com.sun.source.util.TreePath;
-import com.sun.tools.javac.code.Kinds;
-import com.sun.tools.javac.code.Scope;
-import com.sun.tools.javac.code.Symbol.*;
+import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.util.List;
 
 /**
@@ -91,9 +91,9 @@ public class AnnotationTypeDocImpl
      */
     public AnnotationTypeElementDoc[] elements() {
         List<AnnotationTypeElementDoc> elements = List.nil();
-        for (Scope.Entry e = tsym.members().elems; e != null; e = e.sibling) {
-            if (e.sym != null && e.sym.kind == Kinds.MTH) {
-                MethodSymbol s = (MethodSymbol)e.sym;
+        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
+            if (sym != null && SymbolKind.MTH.same(sym)) {
+                MethodSymbol s = (MethodSymbol)sym;
                 elements = elements.prepend(env.getAnnotationTypeElementDoc(s));
             }
         }

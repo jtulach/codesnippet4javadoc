@@ -128,8 +128,8 @@ public class MethodDocImpl
              t.hasTag(CLASS);
              t = env.types.supertype(t)) {
             ClassSymbol c = (ClassSymbol)t.tsym;
-            for (Scope.Entry e = c.members().lookup(sym.name); e.scope != null; e = e.next()) {
-                if (sym.overrides(e.sym, origin, env.types, true)) {
+            for (Symbol sym2 : SymbolKind.getSymbolsByName(c.members(), true, sym.name)) {
+                if (sym.overrides(sym2, origin, env.types, true)) {
                     return TypeMaker.getType(env, t);
                 }
             }
@@ -160,9 +160,9 @@ public class MethodDocImpl
              t.hasTag(CLASS);
              t = env.types.supertype(t)) {
             ClassSymbol c = (ClassSymbol)t.tsym;
-            for (Scope.Entry e = c.members().lookup(sym.name); e.scope != null; e = e.next()) {
-                if (sym.overrides(e.sym, origin, env.types, true)) {
-                    return env.getMethodDoc((MethodSymbol)e.sym);
+            for (Symbol sym2 : SymbolKind.getSymbolsByName(c.members(), false, sym.name)) {
+                if (sym.overrides(sym2, origin, env.types, true)) {
+                    return env.getMethodDoc((MethodSymbol)sym2);
                 }
             }
         }
