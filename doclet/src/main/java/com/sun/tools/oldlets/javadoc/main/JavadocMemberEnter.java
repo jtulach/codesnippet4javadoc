@@ -27,7 +27,6 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.comp.MemberEnter;
 import com.sun.tools.javac.tree.JCTree;
@@ -56,11 +55,7 @@ public class JavadocMemberEnter extends MemberEnter {
     }
 
     public static void preRegister(Context context) {
-        context.put(memberEnterKey, new Context.Factory<MemberEnter>() {
-               public MemberEnter make(Context c) {
-                   return new JavadocMemberEnter(c);
-               }
-        });
+        context.put(memberEnterKey, (Context.Factory<MemberEnter>)JavadocMemberEnter::new);
     }
 
     final DocEnv docenv;
@@ -74,7 +69,7 @@ public class JavadocMemberEnter extends MemberEnter {
     public void visitMethodDef(JCMethodDecl tree) {
         super.visitMethodDef(tree);
         MethodSymbol meth = tree.sym;
-        if (meth == null || SymbolKind.MTH.same(meth)) return;
+        if (meth == null || !SymbolKind.MTH.same(meth)) return;
         TreePath treePath = docenv.getTreePath(env.toplevel, env.enclClass, tree);
         if (meth.isConstructor())
             docenv.makeConstructorDoc(meth, treePath);
