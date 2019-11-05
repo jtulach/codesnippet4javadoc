@@ -19,11 +19,19 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.PackageSymbol;
+import com.sun.tools.javac.code.Symtab;
+import com.sun.tools.javac.jvm.ClassReader;
 import com.sun.tools.javac.util.Name;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 enum SymbolKind {
     NIL(0),
@@ -154,6 +162,109 @@ enum SymbolKind {
                 return arr;
             }
         } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    private static final Method ENTER_CLASS;
+    private static final Method SYMS_ENTER_CLASS;
+    private static final Field SYMS_JAVA_BASE;
+    static {
+        Method e;
+        Method se;
+        Field sjb;
+        try {
+            e = ClassReader.class.getMethod("enterClass", Name.class);
+            se = null;
+            sjb = null;
+        } catch (NoSuchMethodException ex) {
+            e = null;
+            try {
+                Class<?> ModuleSymbol = Class.forName("com.sun.tools.javac.code.Symbol$ModuleSymbol");
+                se = Symtab.class.getMethod("enterClass", ModuleSymbol, Name.class);
+                sjb = Symtab.class.getField("java_base");
+            } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException ex2) {
+                throw new IllegalStateException(ex2);
+            }
+        }
+        ENTER_CLASS = e;
+        SYMS_ENTER_CLASS = se;
+        SYMS_JAVA_BASE = sjb;
+    }
+    static Symbol enterClass(ClassReader reader, Symtab syms, Name n) {
+        try {
+            if (ENTER_CLASS != null) {
+                return (Symbol) ENTER_CLASS.invoke(reader, n);
+            } else {
+                Object base = SYMS_JAVA_BASE.get(syms);
+                return (Symbol) SYMS_ENTER_CLASS.invoke(syms, base, n);
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+    private static final Method ENTER_PACKAGE;
+    static {
+        Method ep;
+        try {
+            ep = ClassReader.class.getMethod("enterPackage", Name.class);
+        } catch (NoSuchMethodException ex) {
+            ep = null;
+        }
+        ENTER_PACKAGE = ep;
+    }
+    static PackageSymbol enterPackage(ClassReader reader, DocEnv env, Name n) {
+        try {
+            return (PackageSymbol) ENTER_PACKAGE.invoke(env.reader, n);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+
+    static Symbol.ClassSymbol loadClass(ClassReader reader, Symtab syms, Name n) {
+        return (Symbol.ClassSymbol) enterClass(reader, syms, n);
+    }
+
+    private static final Field PACKAGES;
+    private static final Field CLASSES;
+    static {
+        Field f;
+        try {
+            f = Symtab.class.getField("packages");
+        } catch (NoSuchFieldException ex) {
+            f = null;
+        }
+        PACKAGES = f;
+    }
+    static {
+        Field f;
+        try {
+            f = Symtab.class.getField("classes");
+        } catch (NoSuchFieldException ex) {
+            f = null;
+        }
+        CLASSES = f;
+    }
+    static Symbol.PackageSymbol lookupPackage(Symtab syms, Name nameImpl) {
+        try {
+            //        ModuleSymbol mod = syms.inferModule(nameImpl);
+            //        PackageSymbol p = mod != null ? syms.getPackage(mod, nameImpl) : null;
+            Map<?,?> packages = (Map<?,?>) PACKAGES.get(syms);
+            PackageSymbol p = (PackageSymbol) packages.get(nameImpl);
+            return p;
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    static Symbol.ClassSymbol getClass(Symtab syms, Name n) {
+        try {
+            //        ModuleSymbol mod = syms.inferModule(nameImpl);
+            //        PackageSymbol p = mod != null ? syms.getPackage(mod, nameImpl) : null;
+            Map<?,?> packages = (Map<?,?>) CLASSES.get(syms);
+            return (ClassSymbol) packages.get(n);
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new IllegalStateException(ex);
         }
     }

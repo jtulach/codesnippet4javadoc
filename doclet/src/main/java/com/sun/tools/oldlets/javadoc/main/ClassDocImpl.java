@@ -1149,7 +1149,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
 
         //### Add the implicit "import java.lang.*" to the result
         Names names = tsym.name.table.names;
-        importedPackages.append(env.getPackageDoc(env.reader.enterPackage(names.java_lang)));
+        importedPackages.append(env.getPackageDoc(SymbolKind.enterPackage(env.reader, env, names.java_lang)));
 
         Env<AttrContext> compenv = env.enter.getEnv(tsym);
         if (compenv == null) return new PackageDocImpl[0];

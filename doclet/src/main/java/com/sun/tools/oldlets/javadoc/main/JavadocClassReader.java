@@ -66,9 +66,9 @@ public class JavadocClassReader extends ClassReader {
                                                                JavaFileObject.Kind.HTML);
 
     public JavadocClassReader(Context context) {
-        super(context, true);
+        super(context);
         docenv = DocEnv.instance(context);
-        preferSource = true;
+//        preferSource = true;
     }
 
     /**

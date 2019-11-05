@@ -146,7 +146,7 @@ public class DocEnv {
         reader = JavadocClassReader.instance0(context);
         enter = JavadocEnter.instance0(context);
         names = Names.instance(context);
-        externalizableSym = reader.enterClass(names.fromString("java.io.Externalizable"));
+        externalizableSym = SymbolKind.enterClass(reader, syms, names.fromString("java.io.Externalizable"));
         chk = Check.instance(context);
         types = Types.instance(context);
         fileManager = context.get(JavaFileManager.class);
@@ -180,7 +180,7 @@ public class DocEnv {
      */
     public ClassDocImpl loadClass(String name) {
         try {
-            ClassSymbol c = reader.loadClass(names.fromString(name));
+            ClassSymbol c = SymbolKind.loadClass(reader, syms, names.fromString(name));
             return getClassDoc(c);
         } catch (CompletionFailure ex) {
             chk.completionError(null, ex);
@@ -196,7 +196,7 @@ public class DocEnv {
         //### to avoid a compiler bug.  Most likely
         //### instead a dummy created for error recovery.
         //### Should investigate this.
-        PackageSymbol p = syms.packages.get(names.fromString(name));
+        PackageSymbol p = SymbolKind.lookupPackage(syms, names.fromString(name));
         ClassSymbol c = getClassSymbol(name);
         if (p != null && c == null) {
             return getPackageDoc(p);
@@ -215,7 +215,8 @@ public class DocEnv {
             char[] nameChars = name.toCharArray();
             int idx = name.length();
             for (;;) {
-                ClassSymbol s = syms.classes.get(names.fromChars(nameChars, 0, nameLen));
+                final Name n = names.fromChars(nameChars, 0, nameLen);
+                ClassSymbol s = SymbolKind.getClass(syms, n);
                 if (s != null)
                     return s; // found it!
                 idx = name.substring(0, idx).lastIndexOf('.');

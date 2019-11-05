@@ -134,7 +134,7 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
         docenv.setEncoding(encoding);
         docenv.docClasses = docClasses;
         docenv.legacyDoclet = legacyDoclet;
-        javadocReader.sourceCompleter = docClasses ? null : thisCompleter;
+//        javadocReader.sourceCompleter = docClasses ? null : thisCompleter;
 
         ListBuffer<String> names = new ListBuffer<String>();
         ListBuffer<JCCompilationUnit> classTrees = new ListBuffer<JCCompilationUnit>();
