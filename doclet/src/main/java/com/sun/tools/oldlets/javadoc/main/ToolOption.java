@@ -25,16 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.main.Option;
-import com.sun.tools.javac.main.Option.InvalidValueException;
-import com.sun.tools.javac.main.OptionHelper;
 import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Options;
+import java.util.StringTokenizer;
 
 
 /**
@@ -45,113 +39,48 @@ import com.sun.tools.javac.util.Options;
  *  This code and its internal interfaces are subject to change or
  *  deletion without notice.</b>
  */
-@Deprecated
-@SuppressWarnings("removal")
 public enum ToolOption {
     // ----- options for underlying compiler -----
 
     BOOTCLASSPATH("-bootclasspath", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.BOOT_CLASS_PATH, arg);
+            helper.setCompilerOpt(opt, arg);
         }
     },
 
     CLASSPATH("-classpath", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.CLASS_PATH, arg);
+            helper.setCompilerOpt(opt, arg);
         }
     },
 
     CP("-cp", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.CLASS_PATH, arg);
-        }
-    },
-
-    CLASS_PATH("--class-path", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.CLASS_PATH, arg);
+            helper.setCompilerOpt(opt, arg);
         }
     },
 
     EXTDIRS("-extdirs", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.EXTDIRS, arg);
+            helper.setCompilerOpt(opt, arg);
         }
     },
 
     SOURCEPATH("-sourcepath", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.SOURCE_PATH, arg);
-        }
-    },
-
-    SOURCE_PATH("--source-path", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.SOURCE_PATH, arg);
+            helper.setCompilerOpt(opt, arg);
         }
     },
 
     SYSCLASSPATH("-sysclasspath", true) {
         @Override
         public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.BOOT_CLASS_PATH, arg);
-        }
-    },
-
-    MODULE_SOURCE_PATH("--module-source-path", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.MODULE_SOURCE_PATH, arg);
-        }
-    },
-
-    UPGRADE_MODULE_PATH("--upgrade-module-path", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.UPGRADE_MODULE_PATH, arg);
-        }
-    },
-
-    SYSTEM_("--system", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.SYSTEM, arg);
-        }
-    },
-
-    MODULE_PATH("--module-path", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.MODULE_PATH, arg);
-        }
-    },
-
-    P("-p", true) {
-        @Override
-        public void process(Helper helper, String arg) {
-            helper.setFileManagerOpt(Option.MODULE_PATH, arg);
-        }
-    },
-
-    ADD_MODULES("--add-modules", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.ADD_MODULES.process(helper.getOptionHelper(), opt, arg);
-        }
-    },
-
-    LIMIT_MODULES("--limit-modules", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.LIMIT_MODULES.process(helper.getOptionHelper(), opt, arg);
+            helper.setCompilerOpt("-bootclasspath", arg);
         }
     },
 
@@ -159,14 +88,6 @@ public enum ToolOption {
         @Override
         public void process(Helper helper, String arg) {
             helper.encoding = arg;
-            helper.setCompilerOpt(opt, arg);
-            helper.setFileManagerOpt(Option.ENCODING, arg);
-        }
-    },
-
-    RELEASE("--release", true) {
-        @Override
-        public void process(Helper helper, String arg) {
             helper.setCompilerOpt(opt, arg);
         }
     },
@@ -189,34 +110,6 @@ public enum ToolOption {
         @Override
         public void process(Helper helper, String arg) {
             helper.setCompilerOpt(opt, arg);
-        }
-    },
-
-    ADD_READS("--add-reads", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.ADD_READS.process(helper.getOptionHelper(), opt, arg);
-        }
-    },
-
-    ADD_EXPORTS("--add-exports", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.ADD_EXPORTS.process(helper.getOptionHelper(), opt, arg);
-        }
-    },
-
-    PATCH_MODULE("--patch-module", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.PATCH_MODULE.process(helper.getOptionHelper(), opt, arg);
-        }
-    },
-
-    ADD_OPENS("--add-opens", true) {
-        @Override
-        public void process(Helper helper, String arg) throws InvalidValueException {
-            Option.ADD_OPENS.process(helper.getOptionHelper(), opt, arg);
         }
     },
 
@@ -359,7 +252,7 @@ public enum ToolOption {
         this.hasArg = hasArg;
     }
 
-    void process(Helper helper, String arg) throws Option.InvalidValueException { }
+    void process(Helper helper, String arg) { }
 
     void process(Helper helper) { }
 
@@ -373,16 +266,13 @@ public enum ToolOption {
 
     static abstract class Helper {
         /** List of decoded options. */
-        final ListBuffer<String[]> options = new ListBuffer<>();
+        final ListBuffer<String[]> options = new ListBuffer<String[]>();
 
         /** Selected packages, from -subpackages. */
-        final ListBuffer<String> subPackages = new ListBuffer<>();
+        final ListBuffer<String> subPackages = new ListBuffer<String>();
 
         /** Excluded packages, from -exclude. */
-        final ListBuffer<String> excludedPackages = new ListBuffer<>();
-
-        // File manager options
-        final Map<Option, String> fileManagerOpts = new LinkedHashMap<>();
+        final ListBuffer<String> excludedPackages = new ListBuffer<String>();
 
         /** javac options, set by various options. */
         Options compOpts; // = Options.instance(context)
@@ -415,9 +305,8 @@ public enum ToolOption {
         abstract void Xusage();
 
         abstract void usageError(String msg, Object... args);
-        abstract OptionHelper getOptionHelper();
 
-        void addToList(ListBuffer<String> list, String str){
+        protected void addToList(ListBuffer<String> list, String str){
             StringTokenizer st = new StringTokenizer(str, ":");
             String current;
             while(st.hasMoreTokens()){
@@ -426,22 +315,18 @@ public enum ToolOption {
             }
         }
 
-        void setFilter(long filterBits) {
+        protected void setFilter(long filterBits) {
             if (showAccess != null) {
                 usageError("main.incompatible.access.flags");
             }
             showAccess = new ModifierFilter(filterBits);
         }
 
-        void setCompilerOpt(String opt, String arg) {
+        private void setCompilerOpt(String opt, String arg) {
             if (compOpts.get(opt) != null) {
                 usageError("main.option.already.seen", opt);
             }
             compOpts.put(opt, arg);
-        }
-
-        void setFileManagerOpt(Option opt, String arg) {
-            fileManagerOpts.put(opt, arg);
         }
     }
 }

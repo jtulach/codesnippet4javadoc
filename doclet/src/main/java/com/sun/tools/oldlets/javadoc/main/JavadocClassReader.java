@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,11 +29,10 @@ import java.util.EnumSet;
 import javax.tools.JavaFileObject;
 
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
-import com.sun.tools.javac.code.ClassFinder;
+import com.sun.tools.javac.jvm.ClassReader;
 import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Context.Factory;
 
-/** Javadoc uses an extended class finder that records package.html entries
+/** Javadoc uses an extended class reader that records package.html entries
  *
  *  <p><b>This is NOT part of any supported API.
  *  If you write code that depends on this, you do so at your own risk.
@@ -42,19 +41,21 @@ import com.sun.tools.javac.util.Context.Factory;
  *
  *  @author Neal Gafter
  */
-@Deprecated
-@SuppressWarnings("removal")
-public class JavadocClassFinder extends ClassFinder {
+public class JavadocClassReader extends ClassReader {
 
-    public static JavadocClassFinder instance(Context context) {
-        ClassFinder instance = context.get(classFinderKey);
+    public static JavadocClassReader instance0(Context context) {
+        ClassReader instance = context.get(classReaderKey);
         if (instance == null)
-            instance = new JavadocClassFinder(context);
-        return (JavadocClassFinder)instance;
+            instance = new JavadocClassReader(context);
+        return (JavadocClassReader)instance;
     }
 
     public static void preRegister(Context context) {
-        context.put(classFinderKey, (Factory<ClassFinder>)JavadocClassFinder::new);
+        context.put(classReaderKey, new Context.Factory<ClassReader>() {
+            public ClassReader make(Context c) {
+                return new JavadocClassReader(c);
+            }
+        });
     }
 
     private DocEnv docenv;
@@ -64,8 +65,8 @@ public class JavadocClassFinder extends ClassFinder {
     private EnumSet<JavaFileObject.Kind> noSource = EnumSet.of(JavaFileObject.Kind.CLASS,
                                                                JavaFileObject.Kind.HTML);
 
-    public JavadocClassFinder(Context context) {
-        super(context);
+    public JavadocClassReader(Context context) {
+        super(context, true);
         docenv = DocEnv.instance(context);
         preferSource = true;
     }

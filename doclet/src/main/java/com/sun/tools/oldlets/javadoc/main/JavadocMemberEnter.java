@@ -27,6 +27,7 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.comp.MemberEnter;
 import com.sun.tools.javac.tree.JCTree;
@@ -34,7 +35,6 @@ import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.Context;
 
 import static com.sun.tools.javac.code.Flags.*;
-import static com.sun.tools.javac.code.Kinds.Kind.*;
 
 /**
  *  Javadoc's own memberEnter phase does a few things above and beyond that
@@ -47,8 +47,6 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  *
  *  @author Neal Gafter
  */
-@Deprecated
-@SuppressWarnings("removal")
 public class JavadocMemberEnter extends MemberEnter {
     public static JavadocMemberEnter instance0(Context context) {
         MemberEnter instance = context.get(memberEnterKey);
@@ -58,7 +56,11 @@ public class JavadocMemberEnter extends MemberEnter {
     }
 
     public static void preRegister(Context context) {
-        context.put(memberEnterKey, (Context.Factory<MemberEnter>)JavadocMemberEnter::new);
+        context.put(memberEnterKey, new Context.Factory<MemberEnter>() {
+               public MemberEnter make(Context c) {
+                   return new JavadocMemberEnter(c);
+               }
+        });
     }
 
     final DocEnv docenv;
@@ -72,7 +74,7 @@ public class JavadocMemberEnter extends MemberEnter {
     public void visitMethodDef(JCMethodDecl tree) {
         super.visitMethodDef(tree);
         MethodSymbol meth = tree.sym;
-        if (meth == null || meth.kind != MTH) return;
+        if (meth == null || meth.kind != Kinds.MTH) return;
         TreePath treePath = docenv.getTreePath(env.toplevel, env.enclClass, tree);
         if (meth.isConstructor())
             docenv.makeConstructorDoc(meth, treePath);
@@ -100,7 +102,7 @@ public class JavadocMemberEnter extends MemberEnter {
         }
         super.visitVarDef(tree);
         if (tree.sym != null &&
-                tree.sym.kind == VAR &&
+                tree.sym.kind == Kinds.VAR &&
                 !isParameter(tree.sym)) {
             docenv.makeFieldDoc(tree.sym, docenv.getTreePath(env.toplevel, env.enclClass, tree));
         }

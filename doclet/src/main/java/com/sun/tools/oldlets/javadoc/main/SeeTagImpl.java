@@ -29,12 +29,11 @@ import java.io.File;
 import java.util.Locale;
 
 import com.sun.tools.oldlets.javadoc.*;
+import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Printer;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type.CapturedType;
 import com.sun.tools.javac.util.*;
-
-import static com.sun.tools.javac.code.Kinds.Kind.*;
 
 /**
  * Represents a see also documentation tag.
@@ -50,8 +49,6 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  * @author Atul M Dambalkar
  *
  */
-@Deprecated
-@SuppressWarnings("removal")
 class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 
     //### TODO: Searching for classes, fields, and methods
@@ -135,7 +132,7 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
         sb.append("+++ ").append(file).append(": ")
                 .append(name()).append(" ").append(seetext).append(": ");
         sb.append(sym.getKind()).append(" ");
-        if (sym.kind == MTH || sym.kind == VAR)
+        if (sym.kind == Kinds.MTH || sym.kind == Kinds.VAR)
             sb.append(printer.visit(sym.owner, locale)).append(".");
         sb.append(printer.visit(sym, locale));
 
@@ -388,9 +385,10 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
     private MemberDoc findReferencedMethod(String memName, String[] paramarr,
                                            ClassDoc referencedClass) {
         MemberDoc meth = findExecutableMember(memName, paramarr, referencedClass);
+        ClassDoc[] nestedclasses = referencedClass.innerClasses();
         if (meth == null) {
-            for (ClassDoc nestedClass : referencedClass.innerClasses()) {
-                meth = findReferencedMethod(memName, paramarr, nestedClass);
+            for (int i = 0; i < nestedclasses.length; i++) {
+                meth = findReferencedMethod(memName, paramarr, nestedclasses[i]);
                 if (meth != null) {
                     return meth;
                 }
@@ -401,8 +399,7 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 
     private MemberDoc findExecutableMember(String memName, String[] paramarr,
                                            ClassDoc referencedClass) {
-        String className = referencedClass.name();
-        if (memName.equals(className.substring(className.lastIndexOf(".") + 1))) {
+        if (memName.equals(referencedClass.name())) {
             return ((ClassDocImpl)referencedClass).findConstructor(memName,
                                                                    paramarr);
         } else {   // it's a method.
@@ -430,7 +427,7 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 
         ParameterParseMachine(String parameters) {
             this.parameters = parameters;
-            this.paramList = new ListBuffer<>();
+            this.paramList = new ListBuffer<String>();
             typeId = new StringBuilder();
         }
 

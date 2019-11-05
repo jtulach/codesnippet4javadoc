@@ -28,13 +28,10 @@ package com.sun.tools.oldlets.javadoc.main;
 import com.sun.tools.oldlets.javadoc.*;
 
 import com.sun.source.util.TreePath;
-import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Kinds;
+import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.util.List;
-
-import static com.sun.tools.javac.code.Scope.LookupKind.NON_RECURSIVE;
-
-import static com.sun.tools.javac.code.Kinds.Kind.*;
 
 /**
  * Represents an annotation type.
@@ -48,8 +45,6 @@ import static com.sun.tools.javac.code.Kinds.Kind.*;
  * @since 1.5
  */
 
-@Deprecated
-@SuppressWarnings("removal")
 public class AnnotationTypeDocImpl
         extends ClassDocImpl implements AnnotationTypeDoc {
 
@@ -96,9 +91,9 @@ public class AnnotationTypeDocImpl
      */
     public AnnotationTypeElementDoc[] elements() {
         List<AnnotationTypeElementDoc> elements = List.nil();
-        for (Symbol sym : tsym.members().getSymbols(NON_RECURSIVE)) {
-            if (sym != null && sym.kind == MTH) {
-                MethodSymbol s = (MethodSymbol)sym;
+        for (Scope.Entry e = tsym.members().elems; e != null; e = e.sibling) {
+            if (e.sym != null && e.sym.kind == Kinds.MTH) {
+                MethodSymbol s = (MethodSymbol)e.sym;
                 elements = elements.prepend(env.getAnnotationTypeElementDoc(s));
             }
         }

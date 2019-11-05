@@ -47,8 +47,6 @@ import static com.sun.tools.javac.code.TypeTag.CLASS;
  * @author Neal Gafter (rewrite)
  */
 
-@Deprecated
-@SuppressWarnings("removal")
 public class MethodDocImpl
         extends ExecutableMemberDocImpl implements MethodDoc {
 
@@ -130,8 +128,8 @@ public class MethodDocImpl
              t.hasTag(CLASS);
              t = env.types.supertype(t)) {
             ClassSymbol c = (ClassSymbol)t.tsym;
-            for (Symbol sym2 : membersOf(c).getSymbolsByName(sym.name)) {
-                if (sym.overrides(sym2, origin, env.types, true)) {
+            for (Scope.Entry e = c.members().lookup(sym.name); e.scope != null; e = e.next()) {
+                if (sym.overrides(e.sym, origin, env.types, true)) {
                     return TypeMaker.getType(env, t);
                 }
             }
@@ -162,26 +160,13 @@ public class MethodDocImpl
              t.hasTag(CLASS);
              t = env.types.supertype(t)) {
             ClassSymbol c = (ClassSymbol)t.tsym;
-            for (Symbol sym2 : membersOf(c).getSymbolsByName(sym.name)) {
-                if (sym.overrides(sym2, origin, env.types, true)) {
-                    return env.getMethodDoc((MethodSymbol)sym2);
+            for (Scope.Entry e = c.members().lookup(sym.name); e.scope != null; e = e.next()) {
+                if (sym.overrides(e.sym, origin, env.types, true)) {
+                    return env.getMethodDoc((MethodSymbol)e.sym);
                 }
             }
         }
         return null;
-    }
-
-    /**Retrieve members of c, ignoring any CompletionFailures that occur. */
-    private Scope membersOf(ClassSymbol c) {
-        try {
-            return c.members();
-        } catch (CompletionFailure cf) {
-            /* Quietly ignore completion failures and try again - the type
-             * for which the CompletionFailure was thrown shouldn't be completed
-             * again by the completer that threw the CompletionFailure.
-             */
-            return membersOf(c);
-        }
     }
 
     /**

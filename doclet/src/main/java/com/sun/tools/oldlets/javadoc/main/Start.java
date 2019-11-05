@@ -29,33 +29,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
 import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.javac.file.JavacFileManager;
-import com.sun.tools.javac.file.BaseFileManager;
-import com.sun.tools.javac.main.Arguments;
 import com.sun.tools.javac.main.CommandLine;
-import com.sun.tools.javac.main.DelegatingJavaFileManager;
-import com.sun.tools.javac.main.Option;
-import com.sun.tools.javac.main.OptionHelper;
-import com.sun.tools.javac.main.OptionHelper.GrumpyHelper;
-import com.sun.tools.javac.platform.PlatformDescription;
-import com.sun.tools.javac.platform.PlatformUtils;
 import com.sun.tools.javac.util.ClientCodeException;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Log;
 import com.sun.tools.javac.util.Options;
-
 import static com.sun.tools.javac.code.Flags.*;
 
 /**
@@ -71,8 +59,6 @@ import static com.sun.tools.javac.code.Flags.*;
  * @author Robert Field
  * @author Neal Gafter (rewrite)
  */
-@Deprecated
-@SuppressWarnings("removal")
 public class Start extends ToolOption.Helper {
     /** Context for this invocation. */
     private final Context context;
@@ -85,7 +71,7 @@ public class Start extends ToolOption.Helper {
     private static final String standardDocletClassName =
         "com.sun.tools.doclets.standard.Standard";
 
-    private final long defaultFilter = PUBLIC | PROTECTED;
+    private long defaultFilter = PUBLIC | PROTECTED;
 
     private final Messager messager;
 
@@ -97,9 +83,7 @@ public class Start extends ToolOption.Helper {
      */
     private boolean apiMode;
 
-    private JavaFileManager fileManager;
-
-    public Start(String programName,
+    Start(String programName,
           PrintWriter errWriter,
           PrintWriter warnWriter,
           PrintWriter noticeWriter,
@@ -107,11 +91,7 @@ public class Start extends ToolOption.Helper {
         this(programName, errWriter, warnWriter, noticeWriter, defaultDocletClassName, null);
     }
 
-    public Start(PrintWriter pw) {
-        this(javadocName, pw, pw, pw, standardDocletClassName);
-    }
-
-    public Start(String programName,
+    Start(String programName,
           PrintWriter errWriter,
           PrintWriter warnWriter,
           PrintWriter noticeWriter,
@@ -123,11 +103,11 @@ public class Start extends ToolOption.Helper {
         this.docletParentClassLoader = docletParentClassLoader;
     }
 
-    public Start(String programName, String defaultDocletClassName) {
+    Start(String programName, String defaultDocletClassName) {
         this(programName, defaultDocletClassName, null);
     }
 
-    public Start(String programName, String defaultDocletClassName,
+    Start(String programName, String defaultDocletClassName,
           ClassLoader docletParentClassLoader) {
         context = new Context();
         messager = new Messager(context, programName);
@@ -135,7 +115,7 @@ public class Start extends ToolOption.Helper {
         this.docletParentClassLoader = docletParentClassLoader;
     }
 
-    public Start(String programName, ClassLoader docletParentClassLoader) {
+    Start(String programName, ClassLoader docletParentClassLoader) {
         this(programName, standardDocletClassName, docletParentClassLoader);
     }
 
@@ -143,16 +123,17 @@ public class Start extends ToolOption.Helper {
         this(programName, standardDocletClassName);
     }
 
-    public Start(ClassLoader docletParentClassLoader) {
+    Start(ClassLoader docletParentClassLoader) {
         this(javadocName, docletParentClassLoader);
     }
 
-    public Start() {
+    Start() {
         this(javadocName);
     }
 
     public Start(Context context) {
-        this.context = Objects.requireNonNull(context);
+        context.getClass(); // null check
+        this.context = context;
         apiMode = true;
         defaultDocletClassName = standardDocletClassName;
         docletParentClassLoader = null;
@@ -161,7 +142,7 @@ public class Start extends ToolOption.Helper {
         if (log instanceof Messager)
             messager = (Messager) log;
         else {
-            PrintWriter out = context.get(Log.errKey);
+            PrintWriter out = context.get(Log.outKey);
             messager = (out == null) ? new Messager(context, javadocName)
                     : new Messager(context, javadocName, out, out, out);
         }
@@ -176,7 +157,7 @@ public class Start extends ToolOption.Helper {
     }
 
     void usage(boolean exit) {
-        usage("main.usage", "-help", "main.usage.foot", exit);
+        usage("main.usage", "-help", null, exit);
     }
 
     @Override
@@ -220,13 +201,13 @@ public class Start extends ToolOption.Helper {
     /**
      * Main program - external wrapper
      */
-    public int begin(String... argv) {
-        boolean ok = begin(null, argv, Collections.emptySet());
+    int begin(String... argv) {
+        boolean ok = begin(null, argv, Collections.<JavaFileObject> emptySet());
         return ok ? 0 : 1;
     }
 
     public boolean begin(Class<?> docletClass, Iterable<String> options, Iterable<? extends JavaFileObject> fileObjects) {
-        Collection<String> opts = new ArrayList<>();
+        Collection<String> opts = new ArrayList<String>();
         for (String opt: options) opts.add(opt);
         return begin(docletClass, opts.toArray(new String[opts.size()]), fileObjects);
     }
@@ -253,14 +234,6 @@ public class Start extends ToolOption.Helper {
             messager.error(Messager.NOPOS, "main.fatal.exception");
             failed = true;
         } finally {
-            if (fileManager != null
-                    && fileManager instanceof BaseFileManager
-                    && ((BaseFileManager) fileManager).autoClose) {
-                try {
-                    fileManager.close();
-                } catch (IOException ignore) {
-                }
-            }
             messager.exitNotice();
             messager.flush();
         }
@@ -278,7 +251,7 @@ public class Start extends ToolOption.Helper {
             Iterable<? extends JavaFileObject> fileObjects) throws IOException {
         long tm = System.currentTimeMillis();
 
-        ListBuffer<String> javaNames = new ListBuffer<>();
+        ListBuffer<String> javaNames = new ListBuffer<String>();
 
         // Preprocess @file arguments
         try {
@@ -292,8 +265,7 @@ public class Start extends ToolOption.Helper {
         }
 
 
-        fileManager = context.get(JavaFileManager.class);
-
+        JavaFileManager fileManager = context.get(JavaFileManager.class);
         setDocletInvoker(docletClass, fileManager, argv);
 
         compOpts = Options.instance(context);
@@ -310,22 +282,14 @@ public class Start extends ToolOption.Helper {
                 if (o == ToolOption.LOCALE && i > 0)
                     usageError("main.locale_first");
 
-                try {
-                    if (o.hasArg) {
-                        oneArg(argv, i++);
-                        o.process(this, argv[i]);
-                    } else {
-                        setOption(arg);
-                        o.process(this);
-                    }
-                } catch (Option.InvalidValueException e) {
-                    usageError("main.option.invalid.value", e.getMessage());
-                }
-            } else if (arg.equals("-XDaccessInternalAPI")) {
-                // pass this hidden option down to the doclet, if it wants it
-                if (docletInvoker.optionLength("-XDaccessInternalAPI") == 1) {
+                if (o.hasArg) {
+                    oneArg(argv, i++);
+                    o.process(this, argv[i]);
+                } else {
                     setOption(arg);
+                    o.process(this);
                 }
+
             } else if (arg.startsWith("-XD")) {
                 // hidden javac options
                 String s = arg.substring("-XD".length());
@@ -350,7 +314,7 @@ public class Start extends ToolOption.Helper {
                     if ((i + optionLength) > argv.length) {
                         usageError("main.requires_argument", arg);
                     }
-                    ListBuffer<String> args = new ListBuffer<>();
+                    ListBuffer<String> args = new ListBuffer<String>();
                     for (int j = 0; j < optionLength-1; ++j) {
                         args.append(argv[++i]);
                     }
@@ -360,50 +324,6 @@ public class Start extends ToolOption.Helper {
                 javaNames.append(arg);
             }
         }
-
-        if (fileManager == null) {
-            JavacFileManager.preRegister(context);
-            fileManager = context.get(JavaFileManager.class);
-            if (fileManager instanceof BaseFileManager) {
-                ((BaseFileManager) fileManager).autoClose = true;
-            }
-        }
-        if (fileManager instanceof BaseFileManager) {
-            ((BaseFileManager) fileManager).handleOptions(fileManagerOpts);
-        }
-
-        Arguments arguments = Arguments.instance(context);
-        arguments.init(messager.programName);
-        arguments.allowEmpty();
-        arguments.validate();
-
-        String platformString = compOpts.get("--release");
-
-        if (platformString != null) {
-            if (compOpts.isSet("-source")) {
-                usageError("main.release.bootclasspath.conflict", "-source");
-            }
-            if (fileManagerOpts.containsKey(Option.BOOT_CLASS_PATH)) {
-                usageError("main.release.bootclasspath.conflict", Option.BOOT_CLASS_PATH.getPrimaryName());
-            }
-
-            PlatformDescription platformDescription =
-                    PlatformUtils.lookupPlatformDescription(platformString);
-
-            if (platformDescription == null) {
-                usageError("main.unsupported.release.version", platformString);
-            }
-
-            compOpts.put(Option.SOURCE, platformDescription.getSourceVersion());
-
-            context.put(PlatformDescription.class, platformDescription);
-
-            JavaFileManager platformFM = platformDescription.getFileManager();
-            DelegatingJavaFileManager.installReleaseFileManager(context,
-                                                                platformFM,
-                                                                fileManager);
-        }
-
         compOpts.notifyListeners();
 
         if (javaNames.isEmpty() && subPackages.isEmpty() && isEmpty(fileObjects)) {
@@ -471,7 +391,12 @@ public class Start extends ToolOption.Helper {
      * @param argv Args containing -doclet and -docletpath, in case they are required.
      */
     private void setDocletInvoker(Class<?> docletClass, JavaFileManager fileManager, String[] argv) {
-        boolean exportInternalAPI = false;
+        if (docletClass != null) {
+            docletInvoker = new DocletInvoker(messager, docletClass, apiMode, false);
+            // TODO, check no -doclet, -docletpath
+            return;
+        }
+
         String docletClassName = null;
         String docletPath = null;
 
@@ -492,26 +417,19 @@ public class Start extends ToolOption.Helper {
                 } else {
                     docletPath += File.pathSeparator + argv[i];
                 }
-            } else if (arg.equals("-XDaccessInternalAPI")) {
-                exportInternalAPI = true;
             }
         }
 
-        if (docletClass != null) {
-            // TODO, check no -doclet, -docletpath
-            docletInvoker = new DocletInvoker(messager, docletClass, apiMode, exportInternalAPI);
-        } else {
-            if (docletClassName == null) {
-                docletClassName = defaultDocletClassName;
-            }
-
-            // attempt to find doclet
-            docletInvoker = new DocletInvoker(messager, fileManager,
-                    docletClassName, docletPath,
-                    docletParentClassLoader,
-                    apiMode,
-                    exportInternalAPI);
+        if (docletClassName == null) {
+            docletClassName = defaultDocletClassName;
         }
+
+        // attempt to find doclet
+        docletInvoker = new DocletInvoker(messager, fileManager,
+                docletClassName, docletPath,
+                docletParentClassLoader,
+                apiMode,
+                false);
     }
 
     /**
@@ -559,20 +477,5 @@ public class Start extends ToolOption.Helper {
             args[k++] = i.head;
         }
         options.append(args);
-    }
-
-    @Override
-    OptionHelper getOptionHelper() {
-        return new GrumpyHelper(messager) {
-            @Override
-            public String get(com.sun.tools.javac.main.Option option) {
-                return compOpts.get(option);
-            }
-
-            @Override
-            public void put(String name, String value) {
-                compOpts.put(name, value);
-            }
-        };
     }
 }

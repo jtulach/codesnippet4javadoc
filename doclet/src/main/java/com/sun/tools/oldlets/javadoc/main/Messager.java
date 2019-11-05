@@ -27,11 +27,9 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import java.io.PrintWriter;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Context.Factory;
 import com.sun.tools.javac.util.JCDiagnostic;
 import com.sun.tools.javac.util.JCDiagnostic.DiagnosticType;
 import com.sun.tools.javac.util.JavacMessages;
@@ -53,8 +51,6 @@ import com.sun.tools.javac.util.Log;
  * @see java.text.MessageFormat
  * @author Neal Gafter (rewrite)
  */
-@Deprecated
-@SuppressWarnings("removal")
 public class Messager extends Log implements DocErrorReporter {
     public static final SourcePosition NOPOS = null;
 
@@ -68,18 +64,27 @@ public class Messager extends Log implements DocErrorReporter {
 
     public static void preRegister(Context context,
                                    final String programName) {
-        context.put(logKey, (Factory<Log>)c -> new Messager(c, programName));
+        context.put(logKey, new Context.Factory<Log>() {
+            public Log make(Context c) {
+                return new Messager(c,
+                                    programName);
+            }
+        });
     }
     public static void preRegister(Context context,
                                    final String programName,
                                    final PrintWriter errWriter,
                                    final PrintWriter warnWriter,
                                    final PrintWriter noticeWriter) {
-        context.put(logKey, (Factory<Log>)c -> new Messager(c,
-                            programName,
-                            errWriter,
-                            warnWriter,
-                            noticeWriter));
+        context.put(logKey, new Context.Factory<Log>() {
+            public Log make(Context c) {
+                return new Messager(c,
+                                    programName,
+                                    errWriter,
+                                    warnWriter,
+                                    noticeWriter);
+            }
+        });
     }
 
     public class ExitJavadoc extends Error {
@@ -121,11 +126,9 @@ public class Messager extends Log implements DocErrorReporter {
                        PrintWriter noticeWriter) {
         super(context, errWriter, warnWriter, noticeWriter);
         messages = JavacMessages.instance(context);
-        messages.add(locale -> ResourceBundle.getBundle("com.sun.tools.oldlets.javadoc.main.javadoc",
-                                                         locale));
+        messages.add("com.sun.tools.oldlets.javadoc.main.javadoc");
         javadocDiags = new JCDiagnostic.Factory(messages, "javadoc");
         this.programName = programName;
-
     }
 
     public void setLocale(Locale locale) {
@@ -167,7 +170,6 @@ public class Messager extends Log implements DocErrorReporter {
 
         if (nerrors < MaxErrors) {
             String prefix = (pos == null) ? programName : pos.toString();
-            PrintWriter errWriter = getWriter(WriterKind.ERROR);
             errWriter.println(prefix + ": " + getText("javadoc.error") + " - " + msg);
             errWriter.flush();
             prompt();
@@ -200,7 +202,6 @@ public class Messager extends Log implements DocErrorReporter {
 
         if (nwarnings < MaxWarnings) {
             String prefix = (pos == null) ? programName : pos.toString();
-            PrintWriter warnWriter = getWriter(WriterKind.WARNING);
             warnWriter.println(prefix +  ": " + getText("javadoc.warning") +" - " + msg);
             warnWriter.flush();
             nwarnings++;
@@ -230,7 +231,6 @@ public class Messager extends Log implements DocErrorReporter {
             return;
         }
 
-        PrintWriter noticeWriter = getWriter(WriterKind.NOTICE);
         if (pos == null)
             noticeWriter.println(msg);
         else

@@ -34,7 +34,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
 import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.javac.code.Source.Feature;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
@@ -55,8 +54,6 @@ import com.sun.tools.javac.util.Position;
  * @author Atul M Dambalkar
  * @author Neal Gafter (rewrite)
  */
-@Deprecated
-@SuppressWarnings("removal")
 public class RootDocImpl extends DocImpl implements RootDoc {
 
     /**
@@ -100,7 +97,7 @@ public class RootDocImpl extends DocImpl implements RootDoc {
         super(env, null);
         this.options = options;
         cmdLinePackages = List.nil();
-        ListBuffer<ClassDocImpl> classList = new ListBuffer<>();
+        ListBuffer<ClassDocImpl> classList = new ListBuffer<ClassDocImpl>();
         for (String className : classes) {
             ClassDocImpl c = env.loadClass(className);
             if (c == null)
@@ -119,7 +116,7 @@ public class RootDocImpl extends DocImpl implements RootDoc {
      * @param classes a list of ClassDeclaration
      */
     private void setClasses(DocEnv env, List<JCClassDecl> classes) {
-        ListBuffer<ClassDocImpl> result = new ListBuffer<>();
+        ListBuffer<ClassDocImpl> result = new ListBuffer<ClassDocImpl>();
         for (JCClassDecl def : classes) {
             //### Do we want modifier check here?
             if (env.shouldDocument(def.sym)) {
@@ -140,7 +137,7 @@ public class RootDocImpl extends DocImpl implements RootDoc {
      * @param packages a list of package names (String)
      */
     private void setPackages(DocEnv env, List<String> packages) {
-        ListBuffer<PackageDocImpl> packlist = new ListBuffer<>();
+        ListBuffer<PackageDocImpl> packlist = new ListBuffer<PackageDocImpl>();
         for (String name : packages) {
             PackageDocImpl pkg = env.lookupPackage(name);
             if (pkg != null) {
@@ -186,7 +183,7 @@ public class RootDocImpl extends DocImpl implements RootDoc {
      * Classes and interfaces specified on the command line.
      */
     public ClassDoc[] specifiedClasses() {
-        ListBuffer<ClassDocImpl> classesToDocument = new ListBuffer<>();
+        ListBuffer<ClassDocImpl> classesToDocument = new ListBuffer<ClassDocImpl>();
         for (ClassDocImpl cd : cmdLineClasses) {
             cd.addAllClasses(classesToDocument, true);
         }
@@ -198,7 +195,7 @@ public class RootDocImpl extends DocImpl implements RootDoc {
      * packages) to be documented.
      */
     public ClassDoc[] classes() {
-        ListBuffer<ClassDocImpl> classesToDocument = new ListBuffer<>();
+        ListBuffer<ClassDocImpl> classesToDocument = new ListBuffer<ClassDocImpl>();
         for (ClassDocImpl cd : cmdLineClasses) {
             cd.addAllClasses(classesToDocument, true);
         }
@@ -380,19 +377,8 @@ public class RootDocImpl extends DocImpl implements RootDoc {
         return env.fileManager;
     }
 
-    public void initDocLint(Collection<String> opts, Collection<String> customTagNames,
-            String htmlVersion) {
-        env.initDoclint(opts, customTagNames, htmlVersion);
-    }
-
-    public JavaScriptScanner initJavaScriptScanner(boolean allowScriptInComments) {
-        return env.initJavaScriptScanner(allowScriptInComments);
-    }
-
-    public boolean isFunctionalInterface(AnnotationDesc annotationDesc) {
-        return Feature.LAMBDA.allowedInSource(env.source)
-            && annotationDesc.annotationType().qualifiedName().equals(
-                env.syms.functionalInterfaceType.toString());
+    public void initDocLint(Collection<String> opts, Collection<String> customTagNames) {
+        env.initDoclint(opts, customTagNames);
     }
 
     public boolean showTagMessages() {

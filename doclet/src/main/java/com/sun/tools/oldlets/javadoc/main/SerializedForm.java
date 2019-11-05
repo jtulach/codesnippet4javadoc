@@ -26,14 +26,15 @@
 package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Kinds;
+import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.util.*;
-
-import static com.sun.tools.javac.code.Kinds.Kind.*;
-import static com.sun.tools.javac.code.Scope.LookupKind.NON_RECURSIVE;
+import com.sun.tools.javac.util.ListBuffer;
+import com.sun.tools.javac.util.Name;
+import com.sun.tools.javac.util.Names;
 
 /**
  * The serialized form is the specification of a class' serialization
@@ -66,17 +67,15 @@ import static com.sun.tools.javac.code.Scope.LookupKind.NON_RECURSIVE;
  * @author Joe Fialli
  * @author Neal Gafter (rewrite but not too proud)
  */
-@Deprecated
-@SuppressWarnings("removal")
 class SerializedForm {
-    ListBuffer<MethodDoc> methods = new ListBuffer<>();
+    ListBuffer<MethodDoc> methods = new ListBuffer<MethodDoc>();
 
     /* List of FieldDocImpl - Serializable fields.
      * Singleton list if class defines Serializable fields explicitly.
      * Otherwise, list of default serializable fields.
      * 0 length list for Externalizable.
      */
-    private final ListBuffer<FieldDocImpl> fields = new ListBuffer<>();
+    private final ListBuffer<FieldDocImpl> fields = new ListBuffer<FieldDocImpl>();
 
     /* True if class specifies serializable fields explicitly.
      * using special static member, serialPersistentFields.
@@ -160,9 +159,9 @@ class SerializedForm {
         /* SERIALIZABLE_FIELDS can be private,
          * so must lookup by ClassSymbol, not by ClassDocImpl.
          */
-        for (Symbol sym : def.members().getSymbolsByName(names.fromString(SERIALIZABLE_FIELDS))) {
-            if (sym.kind == VAR) {
-                VarSymbol f = (VarSymbol)sym;
+        for (Scope.Entry e = def.members().lookup(names.fromString(SERIALIZABLE_FIELDS)); e.scope != null; e = e.next()) {
+            if (e.sym.kind == Kinds.VAR) {
+                VarSymbol f = (VarSymbol)e.sym;
                 if ((f.flags() & Flags.STATIC) != 0 &&
                     (f.flags() & Flags.PRIVATE) != 0) {
                     return f;
@@ -181,9 +180,9 @@ class SerializedForm {
     private void computeDefaultSerializableFields(DocEnv env,
                                                   ClassSymbol def,
                                                   ClassDocImpl cd) {
-        for (Symbol sym : def.members().getSymbols(NON_RECURSIVE)) {
-            if (sym != null && sym.kind == VAR) {
-                VarSymbol f = (VarSymbol)sym;
+        for (Scope.Entry e = def.members().elems; e != null; e = e.sibling) {
+            if (e.sym != null && e.sym.kind == Kinds.VAR) {
+                VarSymbol f = (VarSymbol)e.sym;
                 if ((f.flags() & Flags.STATIC) == 0 &&
                     (f.flags() & Flags.TRANSIENT) == 0) {
                     //### No modifier filtering applied here.
@@ -210,9 +209,9 @@ class SerializedForm {
     private void addMethodIfExist(DocEnv env, ClassSymbol def, String methodName) {
         Names names = def.name.table.names;
 
-        for (Symbol sym : def.members().getSymbolsByName(names.fromString(methodName))) {
-            if (sym.kind == MTH) {
-                MethodSymbol md = (MethodSymbol)sym;
+        for (Scope.Entry e = def.members().lookup(names.fromString(methodName)); e.scope != null; e = e.next()) {
+            if (e.sym.kind == Kinds.MTH) {
+                MethodSymbol md = (MethodSymbol)e.sym;
                 if ((md.flags() & Flags.STATIC) == 0) {
                     /*
                      * WARNING: not robust if unqualifiedMethodName is overloaded
@@ -235,18 +234,20 @@ class SerializedForm {
                                                        DocEnv env,
                                                        ClassSymbol def) {
         Names names = def.name.table.names;
-        for (SerialFieldTag tag : spfDoc.serialFieldTags()) {
-            if (tag.fieldName() == null || tag.fieldType() == null) // ignore malformed @serialField tags
+
+        SerialFieldTag[] sfTag = spfDoc.serialFieldTags();
+        for (int i = 0; i < sfTag.length; i++) {
+            if (sfTag[i].fieldName() == null || sfTag[i].fieldType() == null) // ignore malformed @serialField tags
                 continue;
 
-            Name fieldName = names.fromString(tag.fieldName());
+            Name fieldName = names.fromString(sfTag[i].fieldName());
 
             // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
-            for (Symbol sym : def.members().getSymbolsByName(fieldName)) {
-                if (sym.kind == VAR) {
-                    VarSymbol f = (VarSymbol) sym;
+            for (Scope.Entry e = def.members().lookup(fieldName); e.scope != null; e = e.next()) {
+                if (e.sym.kind == Kinds.VAR) {
+                    VarSymbol f = (VarSymbol)e.sym;
                     FieldDocImpl fdi = env.getFieldDoc(f);
-                    ((SerialFieldTagImpl) (tag)).mapToFieldDocImpl(fdi);
+                    ((SerialFieldTagImpl)(sfTag[i])).mapToFieldDocImpl(fdi);
                     break;
                 }
             }

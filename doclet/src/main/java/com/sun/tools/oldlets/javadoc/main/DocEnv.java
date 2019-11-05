@@ -38,22 +38,12 @@ import com.sun.tools.doclint.DocLint;
 import com.sun.tools.javac.api.BasicJavacTask;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Symbol.*;
-import com.sun.tools.javac.code.Symbol.ClassSymbol;
-import com.sun.tools.javac.code.Symbol.CompletionFailure;
-import com.sun.tools.javac.code.Symbol.MethodSymbol;
-import com.sun.tools.javac.code.Symbol.PackageSymbol;
-import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.code.Type.ClassType;
 import com.sun.tools.javac.comp.Check;
-import com.sun.tools.javac.comp.Enter;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCClassDecl;
-import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
-import com.sun.tools.javac.tree.JCTree.JCPackageDecl;
+import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Convert;
-import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 
 /**
@@ -72,10 +62,9 @@ import com.sun.tools.javac.util.Names;
  * @author Neal Gafter (rewrite)
  * @author Scott Seligman (generics)
  */
-@Deprecated
-@SuppressWarnings("removal")
 public class DocEnv {
-    protected static final Context.Key<DocEnv> docEnvKey = new Context.Key<>();
+    protected static final Context.Key<DocEnv> docEnvKey =
+        new Context.Key<DocEnv>();
 
     public static DocEnv instance(Context context) {
         DocEnv instance = context.get(docEnvKey);
@@ -84,21 +73,21 @@ public class DocEnv {
         return instance;
     }
 
+    private Messager messager;
+
     DocLocale doclocale;
 
-    private final Messager messager;
-
     /** Predefined symbols known to the compiler. */
-    final Symtab syms;
+    Symtab syms;
 
     /** Referenced directly in RootDocImpl. */
-    private final ClassFinder finder;
+    JavadocClassReader reader;
 
     /** Javadoc's own version of the compiler's enter phase. */
-    final Enter enter;
+    JavadocEnter enter;
 
     /** The name table. */
-    private final Names names;
+    Names names;
 
     /** The encoding name. */
     private String encoding;
@@ -121,9 +110,8 @@ public class DocEnv {
     JavaFileManager fileManager;
     Context context;
     DocLint doclint;
-    JavaScriptScanner javaScriptScanner;
 
-    WeakHashMap<JCTree, TreePath> treePaths = new WeakHashMap<>();
+    WeakHashMap<JCTree, TreePath> treePaths = new WeakHashMap<JCTree, TreePath>();
 
     /** Allow documenting from class files? */
     boolean docClasses = false;
@@ -153,10 +141,10 @@ public class DocEnv {
 
         messager = Messager.instance0(context);
         syms = Symtab.instance(context);
-        finder = JavadocClassFinder.instance(context);
-        enter = JavadocEnter.instance(context);
+        reader = JavadocClassReader.instance0(context);
+        enter = JavadocEnter.instance0(context);
         names = Names.instance(context);
-        externalizableSym = syms.enterClass(syms.java_base, names.fromString("java.io.Externalizable"));
+        externalizableSym = reader.enterClass(names.fromString("java.io.Externalizable"));
         chk = Check.instance(context);
         types = Types.instance(context);
         fileManager = context.get(JavaFileManager.class);
@@ -190,9 +178,7 @@ public class DocEnv {
      */
     public ClassDocImpl loadClass(String name) {
         try {
-            Name nameImpl = names.fromString(name);
-            ModuleSymbol mod = syms.inferModule(Convert.packagePart(nameImpl));
-            ClassSymbol c = finder.loadClass(mod != null ? mod : syms.errModule, nameImpl);
+            ClassSymbol c = reader.loadClass(names.fromString(name));
             return getClassDoc(c);
         } catch (CompletionFailure ex) {
             chk.completionError(null, ex);
@@ -208,9 +194,7 @@ public class DocEnv {
         //### to avoid a compiler bug.  Most likely
         //### instead a dummy created for error recovery.
         //### Should investigate this.
-        Name nameImpl = names.fromString(name);
-        ModuleSymbol mod = syms.inferModule(nameImpl);
-        PackageSymbol p = mod != null ? syms.getPackage(mod, nameImpl) : null;
+        PackageSymbol p = syms.packages.get(names.fromString(name));
         ClassSymbol c = getClassSymbol(name);
         if (p != null && c == null) {
             return getPackageDoc(p);
@@ -229,9 +213,7 @@ public class DocEnv {
             char[] nameChars = name.toCharArray();
             int idx = name.length();
             for (;;) {
-                Name nameImpl = names.fromChars(nameChars, 0, nameLen);
-                ModuleSymbol mod = syms.inferModule(Convert.packagePart(nameImpl));
-                ClassSymbol s = mod != null ? syms.getClass(mod, nameImpl) : null;
+                ClassSymbol s = syms.classes.get(names.fromChars(nameChars, 0, nameLen));
                 if (s != null)
                     return s; // found it!
                 idx = name.substring(0, idx).lastIndexOf('.');
@@ -563,7 +545,8 @@ public class DocEnv {
         messager.exit();
     }
 
-    protected Map<PackageSymbol, PackageDocImpl> packageMap = new HashMap<>();
+    protected Map<PackageSymbol, PackageDocImpl> packageMap =
+            new HashMap<PackageSymbol, PackageDocImpl>();
     /**
      * Return the PackageDoc of this package symbol.
      */
@@ -589,7 +572,8 @@ public class DocEnv {
     }
 
 
-    protected Map<ClassSymbol, ClassDocImpl> classMap = new HashMap<>();
+    protected Map<ClassSymbol, ClassDocImpl> classMap =
+            new HashMap<ClassSymbol, ClassDocImpl>();
     /**
      * Return the ClassDoc (or a subtype) of this class symbol.
      */
@@ -630,7 +614,8 @@ public class DocEnv {
         return (tree.mods.flags & Flags.ANNOTATION) != 0;
     }
 
-    protected Map<VarSymbol, FieldDocImpl> fieldMap = new HashMap<>();
+    protected Map<VarSymbol, FieldDocImpl> fieldMap =
+            new HashMap<VarSymbol, FieldDocImpl>();
     /**
      * Return the FieldDoc of this var symbol.
      */
@@ -654,7 +639,8 @@ public class DocEnv {
         }
     }
 
-    protected Map<MethodSymbol, ExecutableMemberDocImpl> methodMap = new HashMap<>();
+    protected Map<MethodSymbol, ExecutableMemberDocImpl> methodMap =
+            new HashMap<MethodSymbol, ExecutableMemberDocImpl>();
     /**
      * Create a MethodDoc for this MethodSymbol.
      * Should be called only on symbols representing methods.
@@ -763,13 +749,6 @@ public class DocEnv {
         return p;
     }
 
-    TreePath getTreePath(JCCompilationUnit toplevel, JCPackageDecl tree) {
-        TreePath p = treePaths.get(tree);
-        if (p == null)
-            treePaths.put(tree, p = new TreePath(getTreePath(toplevel), tree));
-        return p;
-    }
-
     TreePath getTreePath(JCCompilationUnit toplevel, JCClassDecl tree) {
         TreePath p = treePaths.get(tree);
         if (p == null)
@@ -826,21 +805,18 @@ public class DocEnv {
         return result;
     }
 
-    void initDoclint(Collection<String> opts, Collection<String> customTagNames, String htmlVersion) {
-        ArrayList<String> doclintOpts = new ArrayList<>();
-        boolean msgOptionSeen = false;
+    void initDoclint(Collection<String> opts, Collection<String> customTagNames) {
+        ArrayList<String> doclintOpts = new ArrayList<String>();
 
-        for (String opt : opts) {
-            if (opt.startsWith(DocLint.XMSGS_OPTION)) {
-                if (opt.equals(DocLint.XMSGS_CUSTOM_PREFIX + "none"))
-                    return;
-                msgOptionSeen = true;
-            }
-            doclintOpts.add(opt);
+        for (String opt: opts) {
+            doclintOpts.add(opt == null ? DocLint.XMSGS_OPTION : DocLint.XMSGS_CUSTOM_PREFIX + opt);
         }
 
-        if (!msgOptionSeen) {
+        if (doclintOpts.isEmpty()) {
             doclintOpts.add(DocLint.XMSGS_OPTION);
+        } else if (doclintOpts.size() == 1
+                && doclintOpts.get(0).equals(DocLint.XMSGS_CUSTOM_PREFIX + "none")) {
+            return;
         }
 
         String sep = "";
@@ -848,34 +824,18 @@ public class DocEnv {
         for (String customTag : customTagNames) {
             customTags.append(sep);
             customTags.append(customTag);
-            sep = DocLint.SEPARATOR;
+            sep = DocLint.TAGS_SEPARATOR;
         }
         doclintOpts.add(DocLint.XCUSTOM_TAGS_PREFIX + customTags.toString());
-        doclintOpts.add(DocLint.XHTML_VERSION_PREFIX + htmlVersion);
 
         JavacTask t = BasicJavacTask.instance(context);
         doclint = new DocLint();
         // standard doclet normally generates H1, H2
-        doclintOpts.add("-XimplicitHeaders:2");
+        doclintOpts.add(DocLint.XIMPLICIT_HEADERS + "2");
         doclint.init(t, doclintOpts.toArray(new String[doclintOpts.size()]), false);
-    }
-
-    JavaScriptScanner initJavaScriptScanner(boolean allowScriptInComments) {
-        if (allowScriptInComments) {
-            javaScriptScanner = null;
-        } else {
-            javaScriptScanner = new JavaScriptScanner();
-        }
-        return javaScriptScanner;
     }
 
     boolean showTagMessages() {
         return (doclint == null);
-    }
-
-    Map<CompilationUnitTree, Boolean> shouldCheck = new HashMap<>();
-
-    boolean shouldCheck(CompilationUnitTree unit) {
-        return shouldCheck.computeIfAbsent(unit, doclint :: shouldCheck);
     }
 }
