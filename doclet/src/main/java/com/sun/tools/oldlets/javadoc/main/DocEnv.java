@@ -44,6 +44,8 @@ import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.Convert;
+import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 
 /**
@@ -824,14 +826,14 @@ public class DocEnv {
         for (String customTag : customTagNames) {
             customTags.append(sep);
             customTags.append(customTag);
-            sep = DocLint.TAGS_SEPARATOR;
+            sep = ",";
         }
         doclintOpts.add(DocLint.XCUSTOM_TAGS_PREFIX + customTags.toString());
 
         JavacTask t = BasicJavacTask.instance(context);
         doclint = new DocLint();
         // standard doclet normally generates H1, H2
-        doclintOpts.add(DocLint.XIMPLICIT_HEADERS + "2");
+        doclintOpts.add("-XimplicitHeaders:" + "2");
         doclint.init(t, doclintOpts.toArray(new String[doclintOpts.size()]), false);
     }
 

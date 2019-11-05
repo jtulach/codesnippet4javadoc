@@ -132,7 +132,7 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
         sb.append("+++ ").append(file).append(": ")
                 .append(name()).append(" ").append(seetext).append(": ");
         sb.append(sym.getKind()).append(" ");
-        if (sym.kind == Kinds.MTH || sym.kind == Kinds.VAR)
+        if (SymbolKind.MTH.same(sym) || SymbolKind.VAR.same(sym))
             sb.append(printer.visit(sym.owner, locale)).append(".");
         sb.append(printer.visit(sym, locale));
 

@@ -170,8 +170,8 @@ public class Messager extends Log implements DocErrorReporter {
 
         if (nerrors < MaxErrors) {
             String prefix = (pos == null) ? programName : pos.toString();
-            errWriter.println(prefix + ": " + getText("javadoc.error") + " - " + msg);
-            errWriter.flush();
+            getWriter(WriterKind.ERROR).println(prefix + ": " + getText("javadoc.error") + " - " + msg);
+            getWriter(WriterKind.ERROR).flush();
             prompt();
             nerrors++;
         }
@@ -202,8 +202,8 @@ public class Messager extends Log implements DocErrorReporter {
 
         if (nwarnings < MaxWarnings) {
             String prefix = (pos == null) ? programName : pos.toString();
-            warnWriter.println(prefix +  ": " + getText("javadoc.warning") +" - " + msg);
-            warnWriter.flush();
+            getWriter(WriterKind.WARNING).println(prefix +  ": " + getText("javadoc.warning") +" - " + msg);
+            getWriter(WriterKind.WARNING).flush();
             nwarnings++;
         }
     }
@@ -232,10 +232,10 @@ public class Messager extends Log implements DocErrorReporter {
         }
 
         if (pos == null)
-            noticeWriter.println(msg);
+            getWriter(WriterKind.NOTICE).println(msg);
         else
-            noticeWriter.println(pos + ": " + msg);
-        noticeWriter.flush();
+            getWriter(WriterKind.NOTICE).println(pos + ": " + msg);
+        getWriter(WriterKind.NOTICE).flush();
     }
 
     /**

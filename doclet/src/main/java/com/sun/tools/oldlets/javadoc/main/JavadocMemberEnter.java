@@ -74,7 +74,7 @@ public class JavadocMemberEnter extends MemberEnter {
     public void visitMethodDef(JCMethodDecl tree) {
         super.visitMethodDef(tree);
         MethodSymbol meth = tree.sym;
-        if (meth == null || meth.kind != Kinds.MTH) return;
+        if (meth == null || SymbolKind.MTH.same(meth)) return;
         TreePath treePath = docenv.getTreePath(env.toplevel, env.enclClass, tree);
         if (meth.isConstructor())
             docenv.makeConstructorDoc(meth, treePath);
@@ -102,7 +102,7 @@ public class JavadocMemberEnter extends MemberEnter {
         }
         super.visitVarDef(tree);
         if (tree.sym != null &&
-                tree.sym.kind == Kinds.VAR &&
+                SymbolKind.VAR.same(tree.sym) &&
                 !isParameter(tree.sym)) {
             docenv.makeFieldDoc(tree.sym, docenv.getTreePath(env.toplevel, env.enclClass, tree));
         }

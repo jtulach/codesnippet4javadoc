@@ -70,7 +70,7 @@ public class TypeVariableImpl extends AbstractTypeImpl implements TypeVariable {
      */
     public ProgramElementDoc owner() {
         Symbol osym = type.tsym.owner;
-        if ((osym.kind & Kinds.TYP) != 0) {
+        if (SymbolKind.TYP.is(osym)) {
             return env.getClassDoc((ClassSymbol)osym);
         }
         Names names = osym.name.table.names;

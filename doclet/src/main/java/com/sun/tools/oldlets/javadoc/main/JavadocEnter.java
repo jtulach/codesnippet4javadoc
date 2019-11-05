@@ -92,7 +92,7 @@ public class JavadocEnter extends Enter {
     public void visitClassDef(JCClassDecl tree) {
         super.visitClassDef(tree);
         if (tree.sym == null) return;
-        if (tree.sym.kind == Kinds.TYP || tree.sym.kind == Kinds.ERR) {
+        if (SymbolKind.TYP.same(tree.sym) || SymbolKind.ERR.same(tree.sym)) {
             ClassSymbol c = tree.sym;
             docenv.makeClassDoc(c, docenv.getTreePath(env.toplevel, tree));
         }

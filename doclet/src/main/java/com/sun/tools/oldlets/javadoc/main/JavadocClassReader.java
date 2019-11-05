@@ -74,7 +74,6 @@ public class JavadocClassReader extends ClassReader {
     /**
      * Override getPackageFileKinds to include search for package.html
      */
-    @Override
     protected EnumSet<JavaFileObject.Kind> getPackageFileKinds() {
         return docenv.docClasses ? noSource : all;
     }
@@ -82,7 +81,6 @@ public class JavadocClassReader extends ClassReader {
     /**
      * Override extraFileActions to check for package documentation
      */
-    @Override
     protected void extraFileActions(PackageSymbol pack, JavaFileObject fo) {
         if (fo.isNameCompatible("package", JavaFileObject.Kind.HTML))
             docenv.getPackageDoc(pack).setDocPath(fo);
