@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Codesnippet Javadoc Doclet
+    Copyright (C) 2015-2018 Jaroslav Tulach - jaroslav.tulach@apidesign.org
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.0 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. Look for COPYING file in the top folder.
+    If not, see http://opensource.org/licenses/GPL-3.0.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apidesign.javadoc</groupId>
+        <artifactId>pom</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <name>ClassFinder patch for JDK8</name>
+    <artifactId>classfinderpatch</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.oracle.java</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.7</version>
+            <scope>system</scope>
+            <systemPath>${tools.jar}</systemPath>
+        </dependency>
+    </dependencies>
+</project>

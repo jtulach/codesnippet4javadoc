@@ -127,8 +127,18 @@ public abstract class DocImpl implements Doc, Comparable<Object> {
     Comment comment() {
         if (comment == null) {
             String d = documentation();
+            if (env.javaScriptScanner != null) {
+                env.javaScriptScanner.parse(d, new JavaScriptScanner.Reporter() {
+                    @Override
+                    public void report() {
+                        env.error(DocImpl.this, "javadoc.JavaScript_in_comment");
+                        throw new Error();
+                    }
+                });
+            }
             if (env.doclint != null
                     && treePath != null
+                    && env.shouldCheck(treePath.getCompilationUnit())
                     && d.equals(getCommentText(treePath))) {
                 env.doclint.scan(treePath);
             }

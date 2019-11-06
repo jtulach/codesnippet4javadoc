@@ -29,7 +29,6 @@ import java.io.File;
 import java.util.Locale;
 
 import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Printer;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type.CapturedType;
@@ -385,10 +384,9 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
     private MemberDoc findReferencedMethod(String memName, String[] paramarr,
                                            ClassDoc referencedClass) {
         MemberDoc meth = findExecutableMember(memName, paramarr, referencedClass);
-        ClassDoc[] nestedclasses = referencedClass.innerClasses();
         if (meth == null) {
-            for (int i = 0; i < nestedclasses.length; i++) {
-                meth = findReferencedMethod(memName, paramarr, nestedclasses[i]);
+            for (ClassDoc nestedClass : referencedClass.innerClasses()) {
+                meth = findReferencedMethod(memName, paramarr, nestedClass);
                 if (meth != null) {
                     return meth;
                 }
@@ -399,7 +397,8 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 
     private MemberDoc findExecutableMember(String memName, String[] paramarr,
                                            ClassDoc referencedClass) {
-        if (memName.equals(referencedClass.name())) {
+        String className = referencedClass.name();
+        if (memName.equals(className.substring(className.lastIndexOf(".") + 1))) {
             return ((ClassDocImpl)referencedClass).findConstructor(memName,
                                                                    paramarr);
         } else {   // it's a method.
@@ -427,7 +426,7 @@ class SeeTagImpl extends TagImpl implements SeeTag, LayoutCharacters {
 
         ParameterParseMachine(String parameters) {
             this.parameters = parameters;
-            this.paramList = new ListBuffer<String>();
+            this.paramList = new ListBuffer<>();
             typeId = new StringBuilder();
         }
 

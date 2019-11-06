@@ -27,10 +27,13 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import javax.tools.JavaFileObject;
 
-import com.sun.tools.javac.code.Kinds;
+import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.comp.Enter;
-import com.sun.tools.javac.tree.JCTree.*;
+import com.sun.tools.javac.main.JavaCompiler;
+import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
 import com.sun.tools.javac.util.List;
@@ -47,7 +50,7 @@ import com.sun.tools.javac.util.List;
  *  @author Neal Gafter
  */
 public class JavadocEnter extends Enter {
-    public static JavadocEnter instance0(Context context) {
+    public static JavadocEnter instance(Context context) {
         Enter instance = context.get(enterKey);
         if (instance == null)
             instance = new JavadocEnter(context);
@@ -55,27 +58,26 @@ public class JavadocEnter extends Enter {
     }
 
     public static void preRegister(Context context) {
-        context.put(enterKey, new Context.Factory<Enter>() {
-               public Enter make(Context c) {
-                   return new JavadocEnter(c);
-               }
-        });
+        context.put(enterKey, (Context.Factory<Enter>)JavadocEnter::new);
     }
 
     protected JavadocEnter(Context context) {
         super(context);
         messager = Messager.instance0(context);
         docenv = DocEnv.instance(context);
+        compiler = JavaCompiler.instance(context);
     }
 
     final Messager messager;
     final DocEnv docenv;
+    final JavaCompiler compiler;
 
     @Override
     public void main(List<JCCompilationUnit> trees) {
         // count all Enter errors as warnings.
         int nerrors = messager.nerrors;
         super.main(trees);
+        SymbolKind.invokeOrNull(compiler, "enterDone");
         messager.nwarnings += (messager.nerrors - nerrors);
         messager.nerrors = nerrors;
     }
@@ -84,7 +86,9 @@ public class JavadocEnter extends Enter {
     public void visitTopLevel(JCCompilationUnit tree) {
         super.visitTopLevel(tree);
         if (tree.sourcefile.isNameCompatible("package-info", JavaFileObject.Kind.SOURCE)) {
-            docenv.makePackageDoc(tree.packge, docenv.getTreePath(tree));
+            JCTree pd = SymbolKind.invokeOrNull(tree, "getPackage");
+            TreePath tp = pd == null ? docenv.getTreePath(tree) : docenv.getTreePathForPkg(tree, pd);
+            docenv.makePackageDoc(tree.packge, tp);
         }
     }
 

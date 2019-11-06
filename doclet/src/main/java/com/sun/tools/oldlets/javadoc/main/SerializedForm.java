@@ -26,16 +26,11 @@
 package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Kinds;
-import com.sun.tools.javac.code.Scope;
-import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Name;
-import com.sun.tools.javac.util.Names;
+import com.sun.tools.javac.util.*;
 
 /**
  * The serialized form is the specification of a class' serialization
@@ -69,14 +64,14 @@ import com.sun.tools.javac.util.Names;
  * @author Neal Gafter (rewrite but not too proud)
  */
 class SerializedForm {
-    ListBuffer<MethodDoc> methods = new ListBuffer<MethodDoc>();
+    ListBuffer<MethodDoc> methods = new ListBuffer<>();
 
     /* List of FieldDocImpl - Serializable fields.
      * Singleton list if class defines Serializable fields explicitly.
      * Otherwise, list of default serializable fields.
      * 0 length list for Externalizable.
      */
-    private final ListBuffer<FieldDocImpl> fields = new ListBuffer<FieldDocImpl>();
+    private final ListBuffer<FieldDocImpl> fields = new ListBuffer<>();
 
     /* True if class specifies serializable fields explicitly.
      * using special static member, serialPersistentFields.
@@ -235,29 +230,19 @@ class SerializedForm {
                                                        DocEnv env,
                                                        ClassSymbol def) {
         Names names = def.name.table.names;
-
-        SerialFieldTag[] sfTag = spfDoc.serialFieldTags();
-        for (int i = 0; i < sfTag.length; i++) {
-            if (sfTag[i].fieldName() == null || sfTag[i].fieldType() == null) // ignore malformed @serialField tags
+        for (SerialFieldTag tag : spfDoc.serialFieldTags()) {
+            if (tag.fieldName() == null || tag.fieldType() == null) // ignore malformed @serialField tags
                 continue;
 
+            Name fieldName = names.fromString(tag.fieldName());
+
             // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
-            for (SerialFieldTag tag : spfDoc.serialFieldTags()) {
-                if (tag.fieldName() == null || tag.fieldType() == null) // ignore malformed @serialField tags
-                {
-                    continue;
-                }
-
-                Name fieldName = names.fromString(tag.fieldName());
-
-                // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
-                for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, fieldName)) {
-                    if (SymbolKind.VAR.same(sym)) {
-                        VarSymbol f = (VarSymbol) sym;
-                        FieldDocImpl fdi = env.getFieldDoc(f);
-                        ((SerialFieldTagImpl) (tag)).mapToFieldDocImpl(fdi);
-                        break;
-                    }
+            for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, fieldName)) {
+                if (SymbolKind.VAR.same(sym)) {
+                    VarSymbol f = (VarSymbol) sym;
+                    FieldDocImpl fdi = env.getFieldDoc(f);
+                    ((SerialFieldTagImpl) (tag)).mapToFieldDocImpl(fdi);
+                    break;
                 }
             }
         }

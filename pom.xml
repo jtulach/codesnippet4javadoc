@@ -131,4 +131,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <profiles>
+        <profile>
+            <id>java-8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <modules>
+                <module>classfinderpatch</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

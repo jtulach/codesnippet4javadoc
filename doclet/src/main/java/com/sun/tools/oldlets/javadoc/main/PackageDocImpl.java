@@ -33,7 +33,6 @@ import javax.tools.FileObject;
 import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Attribute;
-import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
@@ -63,7 +62,7 @@ import com.sun.tools.javac.util.Position;
 
 public class PackageDocImpl extends DocImpl implements PackageDoc {
 
-    protected PackageSymbol sym;
+    public final PackageSymbol sym;
     private JCCompilationUnit tree = null;    // for source position
 
     public FileObject docPath = null;
@@ -199,7 +198,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included ordinary classes in this package.
      */
     public ClassDoc[] ordinaryClasses() {
-        ListBuffer<ClassDocImpl> ret = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isOrdinaryClass()) {
                 ret.append(c);
@@ -214,7 +213,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included Exceptions in this package.
      */
     public ClassDoc[] exceptions() {
-        ListBuffer<ClassDocImpl> ret = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isException()) {
                 ret.append(c);
@@ -229,7 +228,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included Errors in this package.
      */
     public ClassDoc[] errors() {
-        ListBuffer<ClassDocImpl> ret = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isError()) {
                 ret.append(c);
@@ -244,7 +243,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included enum types in this package.
      */
     public ClassDoc[] enums() {
-        ListBuffer<ClassDocImpl> ret = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isEnum()) {
                 ret.append(c);
@@ -259,7 +258,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included interfaces in this package.
      */
     public ClassDoc[] interfaces() {
-        ListBuffer<ClassDocImpl> ret = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isInterface()) {
                 ret.append(c);
@@ -274,8 +273,7 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
      * @return included annotation types in this package.
      */
     public AnnotationTypeDoc[] annotationTypes() {
-        ListBuffer<AnnotationTypeDocImpl> ret =
-            new ListBuffer<AnnotationTypeDocImpl>();
+        ListBuffer<AnnotationTypeDocImpl> ret = new ListBuffer<>();
         for (ClassDocImpl c : getClasses(true)) {
             if (c.isAnnotationType()) {
                 ret.append((AnnotationTypeDocImpl)c);

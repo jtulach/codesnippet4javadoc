@@ -40,7 +40,6 @@ import javax.tools.StandardLocation;
 import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.*;
@@ -58,8 +57,6 @@ import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 import com.sun.tools.javac.util.Position;
-import static com.sun.tools.javac.code.Kinds.*;
-import com.sun.tools.javac.code.Source;
 import static com.sun.tools.javac.code.TypeTag.CLASS;
 import static com.sun.tools.javac.tree.JCTree.Tag.*;
 
@@ -88,7 +85,7 @@ import static com.sun.tools.javac.tree.JCTree.Tag.*;
 public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
 
     public final ClassType type;        // protected->public for debugging
-    protected final ClassSymbol tsym;
+    public final ClassSymbol tsym;
 
     boolean isIncluded = false;         // Set in RootDocImpl
 
@@ -125,19 +122,14 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * Returns the flags of a ClassSymbol in terms of javac's flags
      */
     static long getFlags(ClassSymbol clazz) {
-        while (true) {
-            try {
-                return clazz.flags();
-            } catch (CompletionFailure ex) {
-                /* Quietly ignore completion failures.
-                 * Note that a CompletionFailure can only
-                 * occur as a result of calling complete(),
-                 * which will always remove the current
-                 * completer, leaving it to be null or
-                 * follow-up completer. Thus the loop
-                 * is guaranteed to eventually terminate.
-                 */
-            }
+        try {
+            return clazz.flags();
+        } catch (CompletionFailure ex) {
+            /* Quietly ignore completion failures and try again - the type
+             * for which the CompletionFailure was thrown shouldn't be completed
+             * again by the completer that threw the CompletionFailure.
+             */
+            return getFlags(clazz);
         }
     }
 
@@ -287,11 +279,6 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
             }
         }
         return false;
-    }
-
-    private static final Source JDK1_8 = Source.lookup("1.8");
-    public boolean isFunctionalInterface() {
-        return env.types.isFunctionalInterface(tsym) && env.source.compareTo(JDK1_8) >= 0;
     }
 
     /**
@@ -547,7 +534,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * Return an empty array if there are no interfaces.
      */
     public ClassDoc[] interfaces() {
-        ListBuffer<ClassDocImpl> ta = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> ta = new ListBuffer<>();
         for (Type t : env.types.interfaces(type)) {
             ta.append(env.getClassDoc((ClassSymbol)t.tsym));
         }
@@ -630,7 +617,8 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
                     methods = methods.prepend(env.getMethodDoc(s));
                 }
             }
-        }        //### Cache methods here?
+        }
+        //### Cache methods here?
         return methods.toArray(new MethodDocImpl[methods.length()]);
     }
 
@@ -716,7 +704,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * are not included.
      */
     public ClassDoc[] innerClasses(boolean filter) {
-        ListBuffer<ClassDocImpl> innerClasses = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> innerClasses = new ListBuffer<>();
         for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
             if (sym != null && SymbolKind.TYP.same(sym)) {
                 ClassSymbol s = (ClassSymbol)sym;
@@ -799,9 +787,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         }
 
         // make sure that this symbol has been completed
-        if (tsym.completer != null) {
-            tsym.complete();
-        }
+        tsym.complete();
 
         // search imports
 
@@ -970,9 +956,8 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         }
 
         // search interfaces
-        ClassDoc intf[] = interfaces();
-        for (int i = 0; i < intf.length; i++) {
-            cdi = (ClassDocImpl)intf[i];
+        for (ClassDoc intf : interfaces()) {
+            cdi = (ClassDocImpl) intf;
             mdi = cdi.searchMethod(methodName, paramTypes, searched);
             if (mdi != null) {
                 return mdi;
@@ -1079,9 +1064,8 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         }
 
         // search interfaces
-        ClassDoc intf[] = interfaces();
-        for (int i = 0; i < intf.length; i++) {
-            cdi = (ClassDocImpl)intf[i];
+        for (ClassDoc intf : interfaces()) {
+            cdi = (ClassDocImpl) intf;
             FieldDocImpl fdi = cdi.searchField(fieldName, searched);
             if (fdi != null) {
                 return fdi;
@@ -1107,7 +1091,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new ClassDoc[0];
 
-        ListBuffer<ClassDocImpl> importedClasses = new ListBuffer<ClassDocImpl>();
+        ListBuffer<ClassDocImpl> importedClasses = new ListBuffer<>();
 
         Env<AttrContext> compenv = env.enter.getEnv(tsym);
         if (compenv == null) return new ClassDocImpl[0];
@@ -1145,11 +1129,11 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new PackageDoc[0];
 
-        ListBuffer<PackageDocImpl> importedPackages = new ListBuffer<PackageDocImpl>();
+        ListBuffer<PackageDocImpl> importedPackages = new ListBuffer<>();
 
         //### Add the implicit "import java.lang.*" to the result
         Names names = tsym.name.table.names;
-        importedPackages.append(env.getPackageDoc(SymbolKind.enterPackage(env.reader, env, names.java_lang)));
+        importedPackages.append(env.getPackageDoc(SymbolKind.enterPackage(env, names.java_lang)));
 
         Env<AttrContext> compenv = env.enter.getEnv(tsym);
         if (compenv == null) return new PackageDocImpl[0];
@@ -1285,8 +1269,8 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * each Serializable field defined by an <code>ObjectStreamField</code>
      * array component of <code>serialPersistentField</code>.
      *
-     * @returns an array of <code>FieldDoc</code> for the Serializable fields
-     * of this class.
+     * @return an array of {@code FieldDoc} for the Serializable fields
+     *         of this class.
      *
      * @see #definesSerializableFields()
      * @see SerialFieldTagImpl

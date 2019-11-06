@@ -23,15 +23,19 @@ import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.jvm.ClassReader;
+import com.sun.tools.javac.util.Convert;
+import com.sun.tools.javac.util.JavacMessages;
 import com.sun.tools.javac.util.Name;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ResourceBundle;
 
 enum SymbolKind {
     NIL(0),
@@ -191,9 +195,10 @@ enum SymbolKind {
         SYMS_ENTER_CLASS = se;
         SYMS_JAVA_BASE = sjb;
     }
-    static Symbol enterClass(ClassReader reader, Symtab syms, Name n) {
+    static Symbol enterClass(DocEnv env, Symtab syms, Name n) {
         try {
             if (ENTER_CLASS != null) {
+                Object reader = READER.get(env);
                 return (Symbol) ENTER_CLASS.invoke(reader, n);
             } else {
                 Object base = SYMS_JAVA_BASE.get(syms);
@@ -203,39 +208,62 @@ enum SymbolKind {
             throw new IllegalStateException(ex);
         }
     }
+    private static final Field READER;
     private static final Method ENTER_PACKAGE;
     static {
         Method ep;
+        Field rf;
         try {
             ep = ClassReader.class.getMethod("enterPackage", Name.class);
-        } catch (NoSuchMethodException ex) {
+            rf = DocEnv.class.getField("reader");
+        } catch (ReflectiveOperationException ex) {
             ep = null;
+            rf = null;
         }
         ENTER_PACKAGE = ep;
+        READER = rf;
     }
-    static PackageSymbol enterPackage(ClassReader reader, DocEnv env, Name n) {
+    static PackageSymbol enterPackage(DocEnv env, Name n) {
         try {
-            return (PackageSymbol) ENTER_PACKAGE.invoke(env.reader, n);
+            Object reader = READER.get(env);
+            return (PackageSymbol) ENTER_PACKAGE.invoke(reader, n);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
 
-    static Symbol.ClassSymbol loadClass(ClassReader reader, Symtab syms, Name n) {
-        return (Symbol.ClassSymbol) enterClass(reader, syms, n);
+    static Symbol.ClassSymbol loadClass(DocEnv env, Symtab syms, Name n) {
+        return (Symbol.ClassSymbol) enterClass(env, syms, n);
     }
 
     private static final Field PACKAGES;
+    private static final Method INFER_MODULE;
+    private static final Method GET_PACKAGE;
+    private static final Method GET_CLASS;
     private static final Field CLASSES;
     static {
         Field f;
+        Method i, p, c;
         try {
             f = Symtab.class.getField("packages");
+            i = null;
+            p = null;
+            c = null;
         } catch (NoSuchFieldException ex) {
-            f = null;
+            try {
+                i = Symtab.class.getMethod("inferModule", Name.class);
+                p = Symtab.class.getMethod("getPackage", i.getReturnType(), Name.class);
+                c = Symtab.class.getMethod("getClass", i.getReturnType(), Name.class);
+                f = null;
+            } catch (NoSuchMethodException ex1) {
+                throw new IllegalStateException(ex1);
+            }
         }
         PACKAGES = f;
+        INFER_MODULE = i;
+        GET_PACKAGE = p;
+        GET_CLASS = c;
     }
     static {
         Field f;
@@ -248,25 +276,106 @@ enum SymbolKind {
     }
     static Symbol.PackageSymbol lookupPackage(Symtab syms, Name nameImpl) {
         try {
-            //        ModuleSymbol mod = syms.inferModule(nameImpl);
-            //        PackageSymbol p = mod != null ? syms.getPackage(mod, nameImpl) : null;
-            Map<?,?> packages = (Map<?,?>) PACKAGES.get(syms);
-            PackageSymbol p = (PackageSymbol) packages.get(nameImpl);
+            PackageSymbol p;
+            if (PACKAGES != null) {
+                Map<?,?> packages = (Map<?,?>) PACKAGES.get(syms);
+                p = (PackageSymbol) packages.get(nameImpl);
+            } else {
+                Object mod = INFER_MODULE.invoke(syms, nameImpl);
+                p = mod != null ? (PackageSymbol) GET_PACKAGE.invoke(syms, mod, nameImpl) : null;
+            }
             return p;
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
+        } catch (ReflectiveOperationException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    static Symbol.ClassSymbol getClass(Symtab syms, Name n) {
+    static Symbol.ClassSymbol getClass(Symtab syms, Name nameImpl) {
         try {
-            //        ModuleSymbol mod = syms.inferModule(nameImpl);
-            //        PackageSymbol p = mod != null ? syms.getPackage(mod, nameImpl) : null;
-            Map<?,?> packages = (Map<?,?>) CLASSES.get(syms);
-            return (ClassSymbol) packages.get(n);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
+            if (CLASSES != null) {
+                Map<?,?> packages = (Map<?,?>) CLASSES.get(syms);
+                return (ClassSymbol) packages.get(nameImpl);
+            } else {
+                Name packageImpl = Convert.packagePart(nameImpl);
+                Object mod = INFER_MODULE.invoke(syms, packageImpl);
+                return mod != null ? (Symbol.ClassSymbol) GET_CLASS.invoke(syms, mod, nameImpl) : null;
+            }
+        } catch (ReflectiveOperationException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
+    static void addResourceBundle(JavacMessages messages, String bundle) {
+        for (Method m : JavacMessages.class.getMethods()) {
+            if (m.getName().equals("add") && m.getParameterCount() == 1 && m.getParameterTypes()[0] != String.class) {
+                try {
+                    InvocationHandler handler = (___, __, args) -> {
+                        Locale locale = (Locale) args[0];
+                        return ResourceBundle.getBundle("com.sun.tools.oldlets.javadoc.main.javadoc", locale);
+                    };
+                    Object bundleProvider = Proxy.newProxyInstance(SymbolKind.class.getClassLoader(), m.getParameterTypes(), handler);
+                    m.invoke(messages, bundleProvider);
+                    return;
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+        }
+        messages.add(bundle);
+    }
+
+    static <T> T invokeOrNull(Object thiz, String name, Object... args) {
+        for (Method m : thiz.getClass().getMethods()) {
+            if (name.equals(m.getName())) {
+                try {
+                    return (T) m.invoke(thiz, args);
+                } catch (ReflectiveOperationException ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+        }
+        return null;
+    }
+
+    static <T> T invokeStaticOrNull(Class<?> type, String name, Object... args) {
+        for (Method m : type.getMethods()) {
+            if (name.equals(m.getName())) {
+                try {
+                    return (T) m.invoke(null, args);
+                } catch (ReflectiveOperationException ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+        }
+        return null;
+    }
+
+    static <T> T getStaticOrElse(Class<?> type, String fieldName, T defaultValue) {
+        try {
+            return (T) type.getField(fieldName).get(null);
+        } catch (ReflectiveOperationException ex) {
+            return defaultValue;
+        }
+    }
+
+    static <T> T getOrElse(Class<?> type, Object thiz, String fieldName, T defaultValue) {
+        if (type == null) {
+            type = thiz.getClass();
+        }
+        try {
+            final Field f = type.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            return (T) f.get(thiz);
+        } catch (ReflectiveOperationException ex) {
+            return defaultValue;
+        }
+    }
+
+    static void setOrNothing(Object thiz, String fieldName, Object value) {
+        try {
+            thiz.getClass().getField(fieldName).set(thiz, value);
+        } catch (ReflectiveOperationException ex) {
+            // nothing
+        }
+    }
 }
