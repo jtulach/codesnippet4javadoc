@@ -25,7 +25,7 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.AnnotationValue;
 
 import com.sun.tools.javac.code.Attribute;
 

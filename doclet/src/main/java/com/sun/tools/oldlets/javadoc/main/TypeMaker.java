@@ -25,7 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.AnnotatedType;
+import com.sun.javadoc.WildcardType;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.CompletionFailure;
@@ -46,7 +51,7 @@ import static com.sun.tools.javac.code.TypeTag.ARRAY;
 @SuppressWarnings("removal")
 public class TypeMaker {
 
-    public static com.sun.tools.oldlets.javadoc.Type getType(DocEnv env, Type t) {
+    public static com.sun.javadoc.Type getType(DocEnv env, Type t) {
         return getType(env, t, true);
     }
 
@@ -54,12 +59,12 @@ public class TypeMaker {
      * @param errToClassDoc  if true, ERROR type results in a ClassDoc;
      *          false preserves legacy behavior
      */
-    public static com.sun.tools.oldlets.javadoc.Type getType(DocEnv env, Type t,
+    public static com.sun.javadoc.Type getType(DocEnv env, Type t,
             boolean errorToClassDoc) {
         return getType(env, t, errorToClassDoc, true);
     }
 
-    public static com.sun.tools.oldlets.javadoc.Type getType(DocEnv env, Type t,
+    public static com.sun.javadoc.Type getType(DocEnv env, Type t,
             boolean errToClassDoc, boolean considerAnnotations) {
         try {
             return getTypeImpl(env, t, errToClassDoc, considerAnnotations);
@@ -73,7 +78,7 @@ public class TypeMaker {
     }
 
     @SuppressWarnings("fallthrough")
-    private static com.sun.tools.oldlets.javadoc.Type getTypeImpl(DocEnv env, Type t,
+    private static com.sun.javadoc.Type getTypeImpl(DocEnv env, Type t,
             boolean errToClassDoc, boolean considerAnnotations) {
         if (env.legacyDoclet) {
             t = env.types.erasure(t);
@@ -116,15 +121,15 @@ public class TypeMaker {
     /**
      * Convert a list of javac types into an array of javadoc types.
      */
-    public static com.sun.tools.oldlets.javadoc.Type[] getTypes(DocEnv env, List<Type> ts) {
-        return getTypes(env, ts, new com.sun.tools.oldlets.javadoc.Type[ts.length()]);
+    public static com.sun.javadoc.Type[] getTypes(DocEnv env, List<Type> ts) {
+        return getTypes(env, ts, new com.sun.javadoc.Type[ts.length()]);
     }
 
     /**
      * Like the above version, but use and return the array given.
      */
-    public static com.sun.tools.oldlets.javadoc.Type[] getTypes(DocEnv env, List<Type> ts,
-                                                  com.sun.tools.oldlets.javadoc.Type res[]) {
+    public static com.sun.javadoc.Type[] getTypes(DocEnv env, List<Type> ts,
+                                                  com.sun.javadoc.Type res[]) {
         int i = 0;
         for (Type t : ts) {
             res[i++] = getType(env, t);
@@ -214,7 +219,7 @@ public class TypeMaker {
     }
 
 
-    private static class ArrayTypeImpl implements com.sun.tools.oldlets.javadoc.Type {
+    private static class ArrayTypeImpl implements com.sun.javadoc.Type {
 
         Type arrayType;
 
@@ -225,13 +230,13 @@ public class TypeMaker {
             this.arrayType = arrayType;
         }
 
-        private com.sun.tools.oldlets.javadoc.Type skipArraysCache = null;
+        private com.sun.javadoc.Type skipArraysCache = null;
 
-        public com.sun.tools.oldlets.javadoc.Type getElementType() {
+        public com.sun.javadoc.Type getElementType() {
             return TypeMaker.getType(env, env.types.elemtype(arrayType));
         }
 
-        private com.sun.tools.oldlets.javadoc.Type skipArrays() {
+        private com.sun.javadoc.Type skipArrays() {
             if (skipArraysCache == null) {
                 Type t;
                 for (t = arrayType; t.hasTag(ARRAY); t = env.types.elemtype(t)) { }

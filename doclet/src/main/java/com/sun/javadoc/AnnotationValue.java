@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,13 +23,14 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
+
 
 /**
- * This interface provides error, warning and notice printing.
+ * Represents a value of an annotation type element.
  *
- * @since 1.2
- * @author Robert Field
+ * @author Scott Seligman
+ * @since 1.5
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -38,53 +39,28 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface DocErrorReporter {
+public interface AnnotationValue {
 
     /**
-     * Print error message and increment error count.
+     * Returns the value.
+     * The type of the returned object is one of the following:
+     * <ul><li> a wrapper class for a primitive type
+     *     <li> {@code String}
+     *     <li> {@code Type} (representing a class literal)
+     *     <li> {@code FieldDoc} (representing an enum constant)
+     *     <li> {@code AnnotationDesc}
+     *     <li> {@code AnnotationValue[]}
+     * </ul>
      *
-     * @param msg message to print
+     * @return the value.
      */
-    void printError(String msg);
+    Object value();
 
     /**
-     * Print an error message and increment error count.
+     * Returns a string representation of the value.
      *
-     * @param pos the position item where the error occurs
-     * @param msg message to print
-     * @since 1.4
+     * @return the text of a Java language annotation value expression
+     *          whose value is the value of this element.
      */
-    void printError(SourcePosition pos, String msg);
-
-    /**
-     * Print warning message and increment warning count.
-     *
-     * @param msg message to print
-     */
-    void printWarning(String msg);
-
-    /**
-     * Print warning message and increment warning count.
-     *
-     * @param pos the position item where the warning occurs
-     * @param msg message to print
-     * @since 1.4
-     */
-    void printWarning(SourcePosition pos, String msg);
-
-    /**
-     * Print a message.
-     *
-     * @param msg message to print
-     */
-    void printNotice(String msg);
-
-    /**
-     * Print a message.
-     *
-     * @param pos the position item where the message occurs
-     * @param msg message to print
-     * @since 1.4
-     */
-    void printNotice(SourcePosition pos, String msg);
+    String toString();
 }

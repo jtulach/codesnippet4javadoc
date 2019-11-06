@@ -25,10 +25,16 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.ThrowsTag;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.TypeVariable;
 import java.lang.reflect.Modifier;
 import java.text.CollationKey;
 
-import com.sun.tools.oldlets.javadoc.*;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
@@ -173,7 +179,7 @@ public abstract class ExecutableMemberDocImpl
      * Each array element is either a <code>ClassDoc</code> or a
      * <code>TypeVariable</code>.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] thrownExceptionTypes() {
+    public com.sun.javadoc.Type[] thrownExceptionTypes() {
         return TypeMaker.getTypes(env, sym.type.getThrownTypes());
     }
 
@@ -203,7 +209,7 @@ public abstract class ExecutableMemberDocImpl
      * @return the receiver type of this executable element.
      * @since 1.8
      */
-    public com.sun.tools.oldlets.javadoc.Type receiverType() {
+    public com.sun.javadoc.Type receiverType() {
         Type recvtype = sym.type.asMethodType().recvtype;
         return (recvtype != null) ? TypeMaker.getType(env, recvtype, false, true) : null;
     }

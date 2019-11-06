@@ -28,7 +28,7 @@ package com.sun.tools.oldlets.javadoc.main;
 import java.io.File;
 import javax.tools.FileObject;
 
-import com.sun.tools.oldlets.javadoc.SourcePosition;
+import com.sun.javadoc.SourcePosition;
 import com.sun.tools.javac.util.Position;
 
 

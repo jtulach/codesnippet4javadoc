@@ -63,6 +63,7 @@
                         <exclude>*</exclude>
                         <exclude>.*/**</exclude>
                         <exclude>**/com/sun/tools/**</exclude>
+                        <exclude>**/com/sun/javadoc/**</exclude>
                         <exclude>**/jdk/javadoc/doclet/**</exclude>
                     </excludes>
                 </configuration>

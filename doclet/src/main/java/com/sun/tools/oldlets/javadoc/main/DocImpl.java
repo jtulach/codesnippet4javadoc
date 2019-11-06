@@ -25,6 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.SeeTag;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +38,6 @@ import java.util.regex.Pattern;
 
 import javax.tools.FileObject;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;

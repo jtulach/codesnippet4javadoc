@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
  * Represents a type.  A type can be a class or interface, an

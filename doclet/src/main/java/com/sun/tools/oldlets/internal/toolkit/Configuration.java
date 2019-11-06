@@ -25,13 +25,18 @@
 
 package com.sun.tools.oldlets.internal.toolkit;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.RootDoc;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.tools.JavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import org.apidesign.javadoc.codesnippet.impl.Profiles;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.oldlets.internal.toolkit.builders.BuilderFactory;

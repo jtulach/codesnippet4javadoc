@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
  * This is an example of a starting class for a doclet,

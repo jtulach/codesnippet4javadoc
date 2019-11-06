@@ -25,6 +25,7 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.LanguageVersion;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,7 +38,6 @@ import java.util.Objects;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.main.CommandLine;
 import com.sun.tools.javac.main.Option;

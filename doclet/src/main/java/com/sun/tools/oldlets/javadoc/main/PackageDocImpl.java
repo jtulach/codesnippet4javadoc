@@ -25,12 +25,16 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.tools.FileObject;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Symbol;

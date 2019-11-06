@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,14 +23,15 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
-
+package com.sun.javadoc;
 
 /**
- * Represents an annotation type.
+ * Represents an @param documentation tag.
+ * Stores the name and comment parts of the parameter tag.
+ * An @param tag may represent either a method or constructor parameter,
+ * or a type parameter.
  *
- * @author Scott Seligman
- * @since 1.5
+ * @author Robert Field
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -39,13 +40,34 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface AnnotationTypeDoc extends ClassDoc {
+public interface ParamTag extends Tag {
 
     /**
-     * Returns the elements of this annotation type.
-     * Returns an empty array if there are none.
+     * Return the name of the parameter or type parameter
+     * associated with this {@code ParamTag}.
+     * The angle brackets delimiting a type parameter are not part of
+     * its name.
      *
-     * @return the elements of this annotation type.
+     * @return the parameter name.
      */
-    AnnotationTypeElementDoc[] elements();
+    String parameterName();
+
+    /**
+     * Return the parameter comment
+     * associated with this {@code ParamTag}.
+     *
+     * @return the parameter comment.
+     */
+    String parameterComment();
+
+    /**
+     * Return true if this {@code ParamTag} corresponds to a type
+     * parameter.  Return false if it corresponds to an ordinary parameter
+     * of a method or constructor.
+     *
+     * @return true if this {@code ParamTag} corresponds to a type
+     * parameter.
+     * @since 1.5
+     */
+    boolean isTypeParameter();
 }

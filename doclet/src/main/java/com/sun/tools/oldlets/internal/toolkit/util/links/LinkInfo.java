@@ -25,7 +25,9 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util.links;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 

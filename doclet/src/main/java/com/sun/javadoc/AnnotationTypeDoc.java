@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,20 +23,14 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
+
 
 /**
- * Represents a member of a java class: field, constructor, or method.
- * This is an abstract class dealing with information common to
- * method, constructor and field members. Class members of a class
- * (innerclasses) are represented instead by ClassDoc.
+ * Represents an annotation type.
  *
- * @see MethodDoc
- * @see FieldDoc
- * @see ClassDoc
- *
- * @author Kaiyang Liu (original)
- * @author Robert Field (rewrite)
+ * @author Scott Seligman
+ * @since 1.5
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -45,12 +39,13 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface MemberDoc extends ProgramElementDoc {
+public interface AnnotationTypeDoc extends ClassDoc {
 
     /**
-     * Returns true if this member was synthesized by the compiler.
+     * Returns the elements of this annotation type.
+     * Returns an empty array if there are none.
      *
-     * @return true if this member was synthesized by the compiler.
+     * @return the elements of this annotation type.
      */
-    boolean isSynthetic();
+    AnnotationTypeElementDoc[] elements();
 }

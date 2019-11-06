@@ -25,7 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotatedType;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.WildcardType;
 
 /**
  *  <p><b>This is NOT part of any supported API.
@@ -35,7 +40,7 @@ import com.sun.tools.oldlets.javadoc.*;
  */
 @Deprecated
 @SuppressWarnings("removal")
-class PrimitiveType implements com.sun.tools.oldlets.javadoc.Type {
+class PrimitiveType implements com.sun.javadoc.Type {
 
     private final String name;
 
@@ -65,7 +70,7 @@ class PrimitiveType implements com.sun.tools.oldlets.javadoc.Type {
         return name;
     }
 
-    public com.sun.tools.oldlets.javadoc.Type getElementType() {
+    public com.sun.javadoc.Type getElementType() {
         return null;
     }
 

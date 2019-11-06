@@ -25,7 +25,11 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ThrowsTag;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.ExecutableMemberDoc;
 
 /**
  * Represents a @throws or @exception documentation tag.

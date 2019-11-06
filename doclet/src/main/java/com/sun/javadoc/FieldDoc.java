@@ -23,16 +23,15 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
- * Represents a @throws or @exception documentation tag.
- * Parses and holds the exception name and exception comment.
- * Note: @exception is a backwards compatible synonymy for @throws.
+ * Represents a field in a java class.
  *
+ * @see MemberDoc
+ *
+ * @since 1.2
  * @author Robert Field
- * @author Atul M Dambalkar
- * @see ExecutableMemberDoc#throwsTags()
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -41,45 +40,53 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface ThrowsTag extends Tag {
+public interface FieldDoc extends MemberDoc {
 
     /**
-     * Return the name of the exception
-     * associated with this {@code ThrowsTag}.
+     * Get type of this field.
      *
-     * @return name of the exception.
+     * @return the type of this field.
      */
-    String exceptionName();
+    Type type();
 
     /**
-     * Return the exception comment
-     * associated with this {@code ThrowsTag}.
+     * Return true if this field is transient
      *
-     * @return exception comment.
+     * @return true if this field is transient
      */
-    String exceptionComment();
+    boolean isTransient();
 
     /**
-     * Return a {@code ClassDoc} that represents the exception.
-     * If the type of the exception is a type variable, return the
-     * {@code ClassDoc} of its erasure.
+     * Return true if this field is volatile
      *
-     * <p> <i>This method cannot accommodate certain generic type
-     * constructs.  The {@code exceptionType} method
-     * should be used instead.</i>
-     *
-     * @return {@code ClassDoc} that represents the exception.
-     * @see #exceptionType
+     * @return true if this field is volatile
      */
-    ClassDoc exception();
+    boolean isVolatile();
 
     /**
-     * Return the type of the exception
-     * associated with this {@code ThrowsTag}.
-     * This may be a {@code ClassDoc} or a {@code TypeVariable}.
+     * Return the serialField tags in this FieldDoc item.
      *
-     * @return the type of the exception.
-     * @since 1.5
+     * @return an array of {@code SerialFieldTag} objects containing
+     *         all {@code @serialField} tags.
      */
-    Type exceptionType();
+    SerialFieldTag[] serialFieldTags();
+
+    /**
+     * Get the value of a constant field.
+     *
+     * @return the value of a constant field. The value is
+     * automatically wrapped in an object if it has a primitive type.
+     * If the field is not constant, returns null.
+     */
+    Object constantValue();
+
+    /**
+     * Get the value of a constant field.
+     *
+     * @return the text of a Java language expression whose value
+     * is the value of the constant. The expression uses no identifiers
+     * other than primitive literals. If the field is
+     * not constant, returns null.
+     */
+    String constantValueExpression();
 }

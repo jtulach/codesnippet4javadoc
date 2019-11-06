@@ -25,10 +25,13 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ProgramElementDoc;
 import java.lang.reflect.Modifier;
 import java.text.CollationKey;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Symbol;

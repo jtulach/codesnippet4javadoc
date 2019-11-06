@@ -25,6 +25,14 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.RootDoc;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
@@ -33,7 +41,6 @@ import java.util.*;
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 import com.sun.tools.javac.util.StringUtils;
 

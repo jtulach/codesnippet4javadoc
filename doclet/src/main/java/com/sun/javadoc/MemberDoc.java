@@ -23,13 +23,20 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
- * Parameter information.
- * This includes a parameter type and parameter name.
+ * Represents a member of a java class: field, constructor, or method.
+ * This is an abstract class dealing with information common to
+ * method, constructor and field members. Class members of a class
+ * (innerclasses) are represented instead by ClassDoc.
  *
- * @author Robert Field
+ * @see MethodDoc
+ * @see FieldDoc
+ * @see ClassDoc
+ *
+ * @author Kaiyang Liu (original)
+ * @author Robert Field (rewrite)
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -38,50 +45,12 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface Parameter {
+public interface MemberDoc extends ProgramElementDoc {
 
     /**
-     * Get the type of this parameter.
+     * Returns true if this member was synthesized by the compiler.
      *
-     * @return the type of this parameter.
+     * @return true if this member was synthesized by the compiler.
      */
-    Type type();
-
-    /**
-     * Get local name of this parameter.
-     * For example if parameter is the short 'index', returns "index".
-     *
-     * @return the name of this parameter as a string.
-     */
-    String name();
-
-    /**
-     * Get type name of this parameter.
-     * For example if parameter is the short 'index', returns "short".
-     * <p>
-     * This method returns a complete string
-     * representation of the type, including the dimensions of arrays and
-     * the type arguments of parameterized types.  Names are qualified.
-     *
-     * @return a complete string representation of the type.
-     */
-    String typeName();
-
-    /**
-     * Returns a string representation of the parameter.
-     * <p>
-     * For example if parameter is the short 'index', returns "short index".
-     *
-     * @return type and parameter name of this parameter.
-     */
-    String toString();
-
-    /**
-     * Get the annotations of this parameter.
-     * Return an empty array if there are none.
-     *
-     * @return the annotations of this parameter.
-     * @since 1.5
-     */
-    AnnotationDesc[] annotations();
+    boolean isSynthetic();
 }

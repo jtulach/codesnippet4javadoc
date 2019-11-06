@@ -25,9 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.Tag;
 import java.util.regex.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * Represents an @param documentation tag.

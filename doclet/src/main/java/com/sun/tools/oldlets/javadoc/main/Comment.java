@@ -25,9 +25,13 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.ThrowsTag;
+import com.sun.javadoc.SerialFieldTag;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.SeeTag;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.util.ListBuffer;
 
 /**

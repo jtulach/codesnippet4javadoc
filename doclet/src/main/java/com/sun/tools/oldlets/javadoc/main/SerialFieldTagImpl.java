@@ -25,7 +25,9 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.SerialFieldTag;
+import com.sun.javadoc.MemberDoc;
 
 /**
  * Documents a Serializable field defined by an ObjectStreamField.

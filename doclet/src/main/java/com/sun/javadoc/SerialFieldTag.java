@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
  * Documents a Serializable field defined by an ObjectStreamField.

@@ -25,10 +25,10 @@
 
 package com.sun.tools.oldlets.formats.html.markup;
 
+import com.sun.javadoc.ClassDoc;
 import java.io.*;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.ConfigurationImpl;
 import com.sun.tools.oldlets.formats.html.SectionName;
 import com.sun.tools.oldlets.internal.toolkit.*;

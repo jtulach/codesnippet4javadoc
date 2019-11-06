@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,19 +23,16 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
+import java.io.File;
 
 /**
- * Java Programming Language version.  The constants of this enum
- * identify the JDK and J2SE releases containing language changes
- * relevant to doclets.
- * <p>
- * All doclets support at least the 1.1 language version.
- * The first release subsequent to this with language changes
- * affecting doclets is 1.5.
+ * This interface describes a source position: filename, line number,
+ * and column number.
  *
- * @since 1.5
+ * @since 1.4
+ * @author Neal M Gafter
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -44,11 +41,30 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public enum LanguageVersion {
+public interface SourcePosition {
+    /** The source file. Returns null if no file information is
+     *  available.
+     *
+     *  @return the source file as a File.
+     */
+    File file();
 
-    /** 1.1 added nested classes and interfaces. */
-    JAVA_1_1,
+    /** The line in the source file. The first line is numbered 1;
+     *  0 means no line number information is available.
+     *
+     *  @return the line number in the source file as an integer.
+     */
+    int line();
 
-    /** 1.5 added generic types, annotations, enums, and varArgs. */
-    JAVA_1_5
+    /** The column in the source file. The first column is
+     *  numbered 1; 0 means no column information is available.
+     *  Columns count characters in the input stream; a tab
+     *  advances the column number to the next 8-column tab stop.
+     *
+     *  @return the column on the source line as an integer.
+     */
+    int column();
+
+    /** Convert the source position to the form "Filename:line". */
+    String toString();
 }

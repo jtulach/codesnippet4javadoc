@@ -25,9 +25,15 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.TypeVariable;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 

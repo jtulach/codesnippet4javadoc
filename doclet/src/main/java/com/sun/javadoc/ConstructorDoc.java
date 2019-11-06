@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,14 +23,13 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
-
+package com.sun.javadoc;
 
 /**
- * Represents an element of an annotation type.
+ * Represents a constructor of a java class.
  *
- * @author Scott Seligman
- * @since 1.5
+ * @since 1.2
+ * @author Robert Field
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -39,13 +38,5 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface AnnotationTypeElementDoc extends MethodDoc {
-
-    /**
-     * Returns the default value of this element.
-     * Returns null if this element has no default.
-     *
-     * @return the default value of this element.
-     */
-    AnnotationValue defaultValue();
+public interface ConstructorDoc extends ExecutableMemberDoc {
 }

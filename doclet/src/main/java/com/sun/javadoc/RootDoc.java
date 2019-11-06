@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
  * Represents the root of the program structure information

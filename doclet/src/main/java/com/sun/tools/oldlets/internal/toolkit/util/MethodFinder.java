@@ -25,7 +25,8 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.MethodDoc;
 
 /**
  * This class is useful for searching a method which has documentation

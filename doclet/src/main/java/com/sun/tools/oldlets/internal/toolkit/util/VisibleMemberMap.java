@@ -25,10 +25,17 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.AnnotationTypeElementDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 
 /**

@@ -25,7 +25,7 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.Doc;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 
 /**

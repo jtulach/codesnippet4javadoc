@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,18 +23,13 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
-
+package com.sun.javadoc;
 
 /**
- * Represents a type variable.
- * For example, the generic interface {@code List<E>} has a single
- * type variable {@code E}.
- * A type variable may have explicit bounds, as in
- * {@code C<R extends Remote>}.
+ * This interface provides error, warning and notice printing.
  *
- * @author Scott Seligman
- * @since 1.5
+ * @since 1.2
+ * @author Robert Field
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -43,33 +38,53 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface TypeVariable extends Type {
+public interface DocErrorReporter {
 
     /**
-     * Return the bounds of this type variable.
-     * These are the types given by the <i>extends</i> clause.
-     * Return an empty array if there are no explicit bounds.
+     * Print error message and increment error count.
      *
-     * @return the bounds of this type variable.
+     * @param msg message to print
      */
-    Type[] bounds();
+    void printError(String msg);
 
     /**
-     * Return the class, interface, method, or constructor within
-     * which this type variable is declared.
+     * Print an error message and increment error count.
      *
-     * @return the class, interface, method, or constructor within
-     *         which this type variable is declared.
+     * @param pos the position item where the error occurs
+     * @param msg message to print
+     * @since 1.4
      */
-    ProgramElementDoc owner();
+    void printError(SourcePosition pos, String msg);
 
     /**
-     * Get the annotations of this program element.
-     * Return an empty array if there are none.
+     * Print warning message and increment warning count.
      *
-     * @return the annotations of this program element or
-     *         an empty array if there are none.
+     * @param msg message to print
      */
-    public AnnotationDesc[] annotations();
+    void printWarning(String msg);
 
+    /**
+     * Print warning message and increment warning count.
+     *
+     * @param pos the position item where the warning occurs
+     * @param msg message to print
+     * @since 1.4
+     */
+    void printWarning(SourcePosition pos, String msg);
+
+    /**
+     * Print a message.
+     *
+     * @param msg message to print
+     */
+    void printNotice(String msg);
+
+    /**
+     * Print a message.
+     *
+     * @param pos the position item where the message occurs
+     * @param msg message to print
+     * @since 1.4
+     */
+    void printNotice(SourcePosition pos, String msg);
 }

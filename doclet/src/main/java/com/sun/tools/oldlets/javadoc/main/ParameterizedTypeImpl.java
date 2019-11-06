@@ -25,7 +25,8 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ParameterizedType;
 
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Type;
@@ -66,7 +67,7 @@ public class ParameterizedTypeImpl
     /**
      * Return the actual type arguments of this type.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] typeArguments() {
+    public com.sun.javadoc.Type[] typeArguments() {
         return TypeMaker.getTypes(env, type.getTypeArguments());
     }
 
@@ -74,7 +75,7 @@ public class ParameterizedTypeImpl
      * Return the class type that is a direct supertype of this one.
      * Return null if this is an interface type.
      */
-    public com.sun.tools.oldlets.javadoc.Type superclassType() {
+    public com.sun.javadoc.Type superclassType() {
         if (asClassDoc().isInterface()) {
             return null;
         }
@@ -88,7 +89,7 @@ public class ParameterizedTypeImpl
      * parameterized type.
      * Return an empty array if there are no interfaces.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] interfaceTypes() {
+    public com.sun.javadoc.Type[] interfaceTypes() {
         return TypeMaker.getTypes(env, env.types.interfaces(type));
     }
 
@@ -96,7 +97,7 @@ public class ParameterizedTypeImpl
      * Return the type that contains this type as a member.
      * Return null is this is a top-level type.
      */
-    public com.sun.tools.oldlets.javadoc.Type containingType() {
+    public com.sun.javadoc.Type containingType() {
         if (type.getEnclosingType().hasTag(CLASS)) {
             // This is the type of an inner class.
             return TypeMaker.getType(env, type.getEnclosingType());

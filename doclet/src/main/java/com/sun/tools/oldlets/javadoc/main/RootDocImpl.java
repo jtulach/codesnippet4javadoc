@@ -25,6 +25,11 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.RootDoc;
 import com.sun.tools.javac.code.Source;
 import java.io.IOException;
 import java.util.Collection;
@@ -34,7 +39,6 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;

@@ -25,10 +25,16 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.ExecutableMemberDoc;
 import java.io.*;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

@@ -25,9 +25,13 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 
 /**

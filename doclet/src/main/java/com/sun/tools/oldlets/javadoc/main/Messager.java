@@ -25,11 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Context.Factory;
 import com.sun.tools.javac.util.JCDiagnostic;

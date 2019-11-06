@@ -25,6 +25,9 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.LanguageVersion;
+import com.sun.javadoc.RootDoc;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +44,6 @@ import java.util.regex.Pattern;
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.util.ClientCodeException;
 import com.sun.tools.javac.util.List;
 

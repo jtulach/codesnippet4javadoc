@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,13 +23,21 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
+
 
 /**
- * Represents a constructor of a java class.
+ * Represents a wildcard type argument.
+ * Examples include:    <pre>
+ * {@code <?>}
+ * {@code <? extends E>}
+ * {@code <? super T>}
+ * </pre>
+ * A wildcard type can have explicit <i>extends</i> bounds
+ * or explicit <i>super</i> bounds or neither, but not both.
  *
- * @since 1.2
- * @author Robert Field
+ * @author Scott Seligman
+ * @since 1.5
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -38,5 +46,23 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface ConstructorDoc extends ExecutableMemberDoc {
+public interface WildcardType extends Type {
+
+    /**
+     * Return the upper bounds of this wildcard type argument
+     * as given by the <i>extends</i> clause.
+     * Return an empty array if no such bounds are explicitly given.
+     *
+     * @return the extends bounds of this wildcard type argument
+     */
+    Type[] extendsBounds();
+
+    /**
+     * Return the lower bounds of this wildcard type argument
+     * as given by the <i>super</i> clause.
+     * Return an empty array if no such bounds are explicitly given.
+     *
+     * @return the super bounds of this wildcard type argument
+     */
+    Type[] superBounds();
 }

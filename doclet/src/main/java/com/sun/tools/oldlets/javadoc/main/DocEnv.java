@@ -25,12 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
 import javax.tools.JavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.TreePath;

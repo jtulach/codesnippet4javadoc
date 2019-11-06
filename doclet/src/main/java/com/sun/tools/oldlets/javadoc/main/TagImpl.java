@@ -25,7 +25,9 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
 
 /**
  * Represents a documentation tag, e.g. @since, @author, @version.

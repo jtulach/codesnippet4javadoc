@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 /**
  * Represents a user-defined cross-reference to related documentation.

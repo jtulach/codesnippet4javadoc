@@ -25,7 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.TypeVariable;
 
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Attribute.TypeCompound;
@@ -59,7 +62,7 @@ public class TypeVariableImpl extends AbstractTypeImpl implements TypeVariable {
     /**
      * Return the bounds of this type variable.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] bounds() {
+    public com.sun.javadoc.Type[] bounds() {
         return TypeMaker.getTypes(env, getBounds((TypeVar)type, env));
     }
 

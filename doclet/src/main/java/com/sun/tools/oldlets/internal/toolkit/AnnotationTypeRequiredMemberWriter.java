@@ -25,8 +25,9 @@
 
 package com.sun.tools.oldlets.internal.toolkit;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.MemberDoc;
 import java.io.*;
-import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * The interface for writing annotation type required member output.

@@ -25,7 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotatedType;
+import com.sun.javadoc.WildcardType;
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Attribute.TypeCompound;
 import com.sun.tools.javac.util.List;
@@ -66,7 +71,7 @@ public class AnnotatedTypeImpl
     }
 
     @Override
-    public com.sun.tools.oldlets.javadoc.Type underlyingType() {
+    public com.sun.javadoc.Type underlyingType() {
         return TypeMaker.getType(env, type, true, false);
     }
 

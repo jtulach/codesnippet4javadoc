@@ -25,7 +25,8 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.WildcardType;
 
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Type;
@@ -57,7 +58,7 @@ public class WildcardTypeImpl extends AbstractTypeImpl implements WildcardType {
      * as given by the <i>extends</i> clause.
      * Return an empty array if no such bounds are explicitly given.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] extendsBounds() {
+    public com.sun.javadoc.Type[] extendsBounds() {
         return TypeMaker.getTypes(env, getExtendsBounds((Type.WildcardType)type));
     }
 
@@ -66,7 +67,7 @@ public class WildcardTypeImpl extends AbstractTypeImpl implements WildcardType {
      * as given by the <i>super</i> clause.
      * Return an empty array if no such bounds are explicitly given.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] superBounds() {
+    public com.sun.javadoc.Type[] superBounds() {
         return TypeMaker.getTypes(env, getSuperBounds((Type.WildcardType)type));
     }
 

@@ -25,8 +25,8 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
-import com.sun.tools.oldlets.javadoc.ClassDoc;
-import com.sun.tools.oldlets.javadoc.PackageDoc;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
 
 /**
  * Abstraction for immutable relative paths.

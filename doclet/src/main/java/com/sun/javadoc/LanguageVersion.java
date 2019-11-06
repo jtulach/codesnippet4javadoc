@@ -23,19 +23,20 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
 
 
 /**
- * Represents an annotated type.
- * For example:
- * <pre>
- *      {@code @NonNull String}
- *      {@code @Positive int}
- * </pre>
+ * Java Programming Language version.  The constants of this enum
+ * identify the JDK and J2SE releases containing language changes
+ * relevant to doclets.
+ * <p>
+ * All doclets support at least the 1.1 language version.
+ * The first release subsequent to this with language changes
+ * affecting doclets is 1.5.
  *
- * @author Mahmood Ali
- * @since 1.8
+ * @since 1.5
+ *
  * @deprecated
  *   The declarations in this package have been superseded by those
  *   in the package {@code jdk.javadoc.doclet}.
@@ -43,17 +44,11 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface AnnotatedType extends Type {
+public enum LanguageVersion {
 
-    /**
-     * Returns the annotations associated with this type.
-     * @return the annotations associated with this type
-     */
-    AnnotationDesc[] annotations();
+    /** 1.1 added nested classes and interfaces. */
+    JAVA_1_1,
 
-    /**
-     * Returns the underlying type.
-     * @return the underlying type
-     */
-    Type underlyingType();
+    /** 1.5 added generic types, annotations, enums, and varArgs. */
+    JAVA_1_5
 }

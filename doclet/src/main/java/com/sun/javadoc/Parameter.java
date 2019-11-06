@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,14 +23,13 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
-
+package com.sun.javadoc;
 
 /**
- * Represents a value of an annotation type element.
+ * Parameter information.
+ * This includes a parameter type and parameter name.
  *
- * @author Scott Seligman
- * @since 1.5
+ * @author Robert Field
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -39,28 +38,50 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface AnnotationValue {
+public interface Parameter {
 
     /**
-     * Returns the value.
-     * The type of the returned object is one of the following:
-     * <ul><li> a wrapper class for a primitive type
-     *     <li> {@code String}
-     *     <li> {@code Type} (representing a class literal)
-     *     <li> {@code FieldDoc} (representing an enum constant)
-     *     <li> {@code AnnotationDesc}
-     *     <li> {@code AnnotationValue[]}
-     * </ul>
+     * Get the type of this parameter.
      *
-     * @return the value.
+     * @return the type of this parameter.
      */
-    Object value();
+    Type type();
 
     /**
-     * Returns a string representation of the value.
+     * Get local name of this parameter.
+     * For example if parameter is the short 'index', returns "index".
      *
-     * @return the text of a Java language annotation value expression
-     *          whose value is the value of this element.
+     * @return the name of this parameter as a string.
+     */
+    String name();
+
+    /**
+     * Get type name of this parameter.
+     * For example if parameter is the short 'index', returns "short".
+     * <p>
+     * This method returns a complete string
+     * representation of the type, including the dimensions of arrays and
+     * the type arguments of parameterized types.  Names are qualified.
+     *
+     * @return a complete string representation of the type.
+     */
+    String typeName();
+
+    /**
+     * Returns a string representation of the parameter.
+     * <p>
+     * For example if parameter is the short 'index', returns "short index".
+     *
+     * @return type and parameter name of this parameter.
      */
     String toString();
+
+    /**
+     * Get the annotations of this parameter.
+     * Return an empty array if there are none.
+     *
+     * @return the annotations of this parameter.
+     * @since 1.5
+     */
+    AnnotationDesc[] annotations();
 }

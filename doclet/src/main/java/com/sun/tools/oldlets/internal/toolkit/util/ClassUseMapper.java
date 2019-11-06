@@ -25,9 +25,24 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.WildcardType;
+import com.sun.javadoc.RootDoc;
+import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.FieldDoc;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 
 /**
  * Map all class uses for a given class.

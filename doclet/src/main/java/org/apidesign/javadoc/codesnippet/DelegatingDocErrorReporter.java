@@ -17,8 +17,8 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
-import com.sun.tools.oldlets.javadoc.DocErrorReporter;
-import com.sun.tools.oldlets.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.SourcePosition;
 import javax.tools.Diagnostic;
 import jdk.javadoc.doclet.Reporter;
 

@@ -25,10 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.SerialFieldTag;
+import com.sun.javadoc.FieldDoc;
 import com.sun.source.util.TreePath;
 import java.lang.reflect.Modifier;
 
-import com.sun.tools.oldlets.javadoc.*;
 
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
@@ -89,7 +91,7 @@ public class FieldDocImpl extends MemberDocImpl implements FieldDoc {
     /**
      * Get type of this field.
      */
-    public com.sun.tools.oldlets.javadoc.Type type() {
+    public com.sun.javadoc.Type type() {
         return TypeMaker.getType(env, sym.type, false);
     }
 

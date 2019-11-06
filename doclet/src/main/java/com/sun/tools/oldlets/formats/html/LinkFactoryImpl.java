@@ -25,9 +25,13 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotatedType;
 import java.util.List;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.formats.html.markup.RawHtml;
 import com.sun.tools.oldlets.formats.html.markup.StringContent;

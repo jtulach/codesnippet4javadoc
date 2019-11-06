@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,15 +23,18 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;
+
 
 /**
- * Represents a field in a java class.
+ * Represents a type variable.
+ * For example, the generic interface {@code List<E>} has a single
+ * type variable {@code E}.
+ * A type variable may have explicit bounds, as in
+ * {@code C<R extends Remote>}.
  *
- * @see MemberDoc
- *
- * @since 1.2
- * @author Robert Field
+ * @author Scott Seligman
+ * @since 1.5
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -40,53 +43,33 @@ package com.sun.tools.oldlets.javadoc;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface FieldDoc extends MemberDoc {
+public interface TypeVariable extends Type {
 
     /**
-     * Get type of this field.
+     * Return the bounds of this type variable.
+     * These are the types given by the <i>extends</i> clause.
+     * Return an empty array if there are no explicit bounds.
      *
-     * @return the type of this field.
+     * @return the bounds of this type variable.
      */
-    Type type();
+    Type[] bounds();
 
     /**
-     * Return true if this field is transient
+     * Return the class, interface, method, or constructor within
+     * which this type variable is declared.
      *
-     * @return true if this field is transient
+     * @return the class, interface, method, or constructor within
+     *         which this type variable is declared.
      */
-    boolean isTransient();
+    ProgramElementDoc owner();
 
     /**
-     * Return true if this field is volatile
+     * Get the annotations of this program element.
+     * Return an empty array if there are none.
      *
-     * @return true if this field is volatile
+     * @return the annotations of this program element or
+     *         an empty array if there are none.
      */
-    boolean isVolatile();
+    public AnnotationDesc[] annotations();
 
-    /**
-     * Return the serialField tags in this FieldDoc item.
-     *
-     * @return an array of {@code SerialFieldTag} objects containing
-     *         all {@code @serialField} tags.
-     */
-    SerialFieldTag[] serialFieldTags();
-
-    /**
-     * Get the value of a constant field.
-     *
-     * @return the value of a constant field. The value is
-     * automatically wrapped in an object if it has a primitive type.
-     * If the field is not constant, returns null.
-     */
-    Object constantValue();
-
-    /**
-     * Get the value of a constant field.
-     *
-     * @return the text of a Java language expression whose value
-     * is the value of the constant. The expression uses no identifiers
-     * other than primitive literals. If the field is
-     * not constant, returns null.
-     */
-    String constantValueExpression();
 }

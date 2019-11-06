@@ -25,7 +25,14 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.ThrowsTag;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.SeeTag;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 

@@ -25,9 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.MethodDoc;
 import java.lang.reflect.Modifier;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Symbol.*;
@@ -95,7 +96,7 @@ public class MethodDocImpl
      * @return the return type of this method, null if it
      * is a constructor.
      */
-    public com.sun.tools.oldlets.javadoc.Type returnType() {
+    public com.sun.javadoc.Type returnType() {
         return TypeMaker.getType(env, sym.type.getReturnType(), false);
     }
 
@@ -109,7 +110,7 @@ public class MethodDocImpl
      * not override a definition in a superclass.
      */
     public ClassDoc overriddenClass() {
-        com.sun.tools.oldlets.javadoc.Type t = overriddenType();
+        com.sun.javadoc.Type t = overriddenType();
         return (t != null) ? t.asClassDoc() : null;
     }
 
@@ -117,7 +118,7 @@ public class MethodDocImpl
      * Return the type containing the method that this method overrides.
      * It may be a <code>ClassDoc</code> or a <code>ParameterizedType</code>.
      */
-    public com.sun.tools.oldlets.javadoc.Type overriddenType() {
+    public com.sun.javadoc.Type overriddenType() {
 
         if ((sym.flags() & Flags.STATIC) != 0) {
             return null;

@@ -25,9 +25,12 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.io.IOException;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

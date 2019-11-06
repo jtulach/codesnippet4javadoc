@@ -25,7 +25,12 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotatedType;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.WildcardType;
 
 import com.sun.tools.javac.code.Type;
 
@@ -45,7 +50,7 @@ import com.sun.tools.javac.code.Type;
  */
 @Deprecated
 @SuppressWarnings("removal")
-abstract class AbstractTypeImpl implements com.sun.tools.oldlets.javadoc.Type {
+abstract class AbstractTypeImpl implements com.sun.javadoc.Type {
 
     protected final DocEnv env;
     protected final Type type;
@@ -63,7 +68,7 @@ abstract class AbstractTypeImpl implements com.sun.tools.oldlets.javadoc.Type {
         return type.tsym.getQualifiedName().toString();
     }
 
-    public com.sun.tools.oldlets.javadoc.Type getElementType() {
+    public com.sun.javadoc.Type getElementType() {
         return null;
     }
 

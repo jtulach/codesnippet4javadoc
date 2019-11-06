@@ -25,10 +25,11 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.RootDoc;
 import java.io.*;
 import java.util.*;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 
 /**

@@ -25,7 +25,9 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.AnnotationTypeElementDoc;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol;

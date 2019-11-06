@@ -25,7 +25,10 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
-import com.sun.tools.oldlets.javadoc.*;
+import com.sun.javadoc.SerialFieldTag;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.FieldDoc;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;

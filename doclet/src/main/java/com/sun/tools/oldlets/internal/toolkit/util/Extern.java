@@ -25,6 +25,8 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ProgramElementDoc;
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
@@ -32,7 +34,6 @@ import java.util.Map;
 
 import javax.tools.DocumentationTool;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 
 /**

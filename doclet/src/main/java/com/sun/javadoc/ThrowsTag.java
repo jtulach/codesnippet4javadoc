@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,16 +23,16 @@
  * questions.
  */
 
-package com.sun.tools.oldlets.javadoc;
-
-import java.io.File;
+package com.sun.javadoc;
 
 /**
- * This interface describes a source position: filename, line number,
- * and column number.
+ * Represents a @throws or @exception documentation tag.
+ * Parses and holds the exception name and exception comment.
+ * Note: @exception is a backwards compatible synonymy for @throws.
  *
- * @since 1.4
- * @author Neal M Gafter
+ * @author Robert Field
+ * @author Atul M Dambalkar
+ * @see ExecutableMemberDoc#throwsTags()
  *
  * @deprecated
  *   The declarations in this package have been superseded by those
@@ -41,30 +41,45 @@ import java.io.File;
  */
 @Deprecated
 @SuppressWarnings("removal")
-public interface SourcePosition {
-    /** The source file. Returns null if no file information is
-     *  available.
-     *
-     *  @return the source file as a File.
-     */
-    File file();
+public interface ThrowsTag extends Tag {
 
-    /** The line in the source file. The first line is numbered 1;
-     *  0 means no line number information is available.
+    /**
+     * Return the name of the exception
+     * associated with this {@code ThrowsTag}.
      *
-     *  @return the line number in the source file as an integer.
+     * @return name of the exception.
      */
-    int line();
+    String exceptionName();
 
-    /** The column in the source file. The first column is
-     *  numbered 1; 0 means no column information is available.
-     *  Columns count characters in the input stream; a tab
-     *  advances the column number to the next 8-column tab stop.
+    /**
+     * Return the exception comment
+     * associated with this {@code ThrowsTag}.
      *
-     *  @return the column on the source line as an integer.
+     * @return exception comment.
      */
-    int column();
+    String exceptionComment();
 
-    /** Convert the source position to the form "Filename:line". */
-    String toString();
+    /**
+     * Return a {@code ClassDoc} that represents the exception.
+     * If the type of the exception is a type variable, return the
+     * {@code ClassDoc} of its erasure.
+     *
+     * <p> <i>This method cannot accommodate certain generic type
+     * constructs.  The {@code exceptionType} method
+     * should be used instead.</i>
+     *
+     * @return {@code ClassDoc} that represents the exception.
+     * @see #exceptionType
+     */
+    ClassDoc exception();
+
+    /**
+     * Return the type of the exception
+     * associated with this {@code ThrowsTag}.
+     * This may be a {@code ClassDoc} or a {@code TypeVariable}.
+     *
+     * @return the type of the exception.
+     * @since 1.5
+     */
+    Type exceptionType();
 }

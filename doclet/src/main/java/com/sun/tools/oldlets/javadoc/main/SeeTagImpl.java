@@ -25,10 +25,15 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.SeeTag;
 import java.io.File;
 import java.util.Locale;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.javac.code.Printer;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type.CapturedType;

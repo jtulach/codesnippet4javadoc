@@ -25,12 +25,17 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.RootDoc;
 import java.net.*;
 import java.util.*;
 
 import javax.tools.JavaFileManager;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

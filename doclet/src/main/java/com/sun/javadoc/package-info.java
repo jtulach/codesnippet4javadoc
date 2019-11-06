@@ -150,4 +150,4 @@ producing output like:
 @see com.sun.javadoc.Doclet
 @see com.sun.javadoc.RootDoc
 */
-package com.sun.tools.oldlets.javadoc;
+package com.sun.javadoc;

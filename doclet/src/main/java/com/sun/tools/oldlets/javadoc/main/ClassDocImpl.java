@@ -25,6 +25,18 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.AnnotatedType;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.WildcardType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -37,7 +49,6 @@ import javax.tools.JavaFileManager.Location;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import com.sun.tools.oldlets.javadoc.*;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Scope;
@@ -107,7 +118,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         this.tsym = sym;
     }
 
-    public com.sun.tools.oldlets.javadoc.Type getElementType() {
+    public com.sun.javadoc.Type getElementType() {
         return null;
     }
 
@@ -507,7 +518,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * interface.  A superclass is represented by either a
      * <code>ClassDoc</code> or a <code>ParameterizedType</code>.
      */
-    public com.sun.tools.oldlets.javadoc.Type superclassType() {
+    public com.sun.javadoc.Type superclassType() {
         if (isInterface() || isAnnotationType() ||
                 (tsym == env.syms.objectType.tsym))
             return null;
@@ -548,7 +559,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * inherited interfaces.
      * Return an empty array if there are no interfaces.
      */
-    public com.sun.tools.oldlets.javadoc.Type[] interfaceTypes() {
+    public com.sun.javadoc.Type[] interfaceTypes() {
         //### Cache result here?
         return TypeMaker.getTypes(env, env.types.interfaces(type));
     }

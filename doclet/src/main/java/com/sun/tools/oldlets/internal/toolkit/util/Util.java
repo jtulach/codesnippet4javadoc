@@ -25,13 +25,29 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.AnnotationValue;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.ParameterizedType;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.TypeVariable;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.AnnotatedType;
 import java.io.*;
 import java.lang.annotation.ElementType;
 import java.util.*;
 import javax.tools.StandardLocation;
 
-import com.sun.tools.oldlets.javadoc.*;
-import com.sun.tools.oldlets.javadoc.AnnotationDesc.ElementValuePair;
+import com.sun.javadoc.AnnotationDesc.ElementValuePair;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.javac.util.StringUtils;
 
