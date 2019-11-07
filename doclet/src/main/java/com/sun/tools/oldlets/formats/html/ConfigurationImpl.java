@@ -342,7 +342,8 @@ public class ConfigurationImpl extends Configuration {
             option.equals("-nooverview") ||
             option.equals("-xdoclint") ||
             option.startsWith("-xdoclint:") ||
-            option.equals("--allow-script-in-comments")) {
+            option.equals("--allow-script-in-comments") ||
+            option.equals("-suppressmissinglinkwarnings")) {
             return 1;
         } else if (option.equals("-help")) {
             // Uugh: first, this should not be hidden inside optionLength,
