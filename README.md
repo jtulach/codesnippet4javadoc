@@ -195,6 +195,23 @@ overview (however their individual HTML pages still remain in Javadoc for those 
 can use the `-hiddingannotation` parameter with other annotations as well and even repeat the parameter multiple times
 to hide multiple annotations at once.
 
+## Linking types
+
+The doclet searches existing `import` statements in the code snippet and tries to link the Java files in the package. 
+When a matching type is found, the identifier is wrapped with `@link`. Note that the linking is best-effort only and when 
+the type is not found, a warning message is logged `Tag @link: reference not found: <classname>`. 
+
+You can suppress the warning by passing the parameter `-suppressMissingLinkWarnings` as shown below. This parameter will 
+convert the warning to an informational message, so, you can continue to see the types that are missing links and not 
+fail the build on warnings if `failOnWarnings` flag is set in your javadoc configuration.
+
+```bash
+$ javadoc \
+  -doclet org.apidesign.javadoc.codesnippet.Doclet \
+  -docletpath path/to/downloaded/codesnippet-doclet.jar \
+  -suppressMissingLinkWarnings
+```
+
 ## License
 
 Feel free to use the Codesnippet Doclet binary to generate any public or private Javadoc. If you include the Codesnippet Doclet in your product or make modifications to it, please obey its *GPL 3.0* license.
