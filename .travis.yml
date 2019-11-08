@@ -7,10 +7,10 @@ matrix:
 
   include:
     # JDK 8
-    - jdk: oraclejdk8
+    - jdk: openjdk8
 
     # JDK 9
-    - jdk: oraclejdk9
+    - jdk: openjdk9
 
     # JDK 10
     - jdk: openjdk10
