@@ -1400,9 +1400,15 @@ public class HtmlDocletWriter extends HtmlDocWriter {
                     //Class cross link found (possibly to a member in the class)
                     return classCrossLink;
                 } else {
-                    //No cross link found so print warning
-                    configuration.getDocletSpecificMsg().warning(see.position(), "doclet.see.class_or_package_not_found",
-                            tagName, seetext);
+                    if (configuration.suppressMissingLinkWarnings) {
+                        // suppress warning flag set; just print a notice
+                        configuration.getDocletSpecificMsg()
+                          .notice(see.position(), "doclet.see.class_or_package_not_found", tagName, seetext);
+                    } else {
+                        //No cross link found so print warning
+                        configuration.getDocletSpecificMsg()
+                            .warning(see.position(), "doclet.see.class_or_package_not_found", tagName, seetext);
+                    }
                     return (label.isEmpty() ? text: label);
                 }
             }

@@ -263,6 +263,12 @@ public abstract class Configuration {
     public final Extern extern = new Extern(this);
 
     /**
+     * The flag to suppress warning messages from being logged when links to resources/classes are not found.
+     * If this value is set to true, a notice (informational message) will be logged instead.
+     */
+    public boolean suppressMissingLinkWarnings = false;
+
+    /**
      * Return the build date for the doclet.
      */
     public abstract String getDocletSpecificBuildDate();
@@ -530,6 +536,8 @@ public abstract class Configuration {
                 String url = os[1];
                 String pkglisturl = os[2];
                 extern.link(url, pkglisturl, root, true);
+            } else if(opt.equals("-suppressmissinglinkwarnings")) {
+                suppressMissingLinkWarnings = true;
             }
         }
         if (sourcepath.length() == 0) {
