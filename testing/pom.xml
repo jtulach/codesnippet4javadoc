@@ -73,10 +73,11 @@
                     <additionalJOption>${debug}</additionalJOption>
                     <additionalOptions>
 -snippetpath src/test/java
--snippetclasses ".*Snippet.*" 
--maxLineLength 80 
--hiddingannotation java.lang.Deprecated 
+-snippetclasses ".*Snippet.*"
+-maxLineLength 80
+-hiddingannotation java.lang.Deprecated
 -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
+-header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc -Xdoclint:none
                     </additionalOptions>
                     <additionalJOptions>
                         <opt>-J${add.opens.1}</opt>

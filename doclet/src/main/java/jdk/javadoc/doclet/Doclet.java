@@ -24,9 +24,14 @@
  */
 package jdk.javadoc.doclet;
 
+import java.util.List;
+import java.util.Set;
+
 public interface Doclet {
+    Set<? extends Option> getSupportedOptions();
 
     public static interface Option {
+        List<String> getNames();
 
         public static enum Kind {
             STANDARD

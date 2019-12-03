@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -92,19 +93,6 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     enum SnippetOption implements jdk.javadoc.doclet.Doclet.Option {
-        AUTHOR(1, "-author"),
-        BOTTOM(2, "-bottom"),
-        CHARSET(2, "-charset"),
-        D(2, "-d"),
-        DOCENCODING(2, "-docencoding"),
-        DOCTITLE(2, "-doctitle"),
-        WINDOWTITLE(2, "-windowtitle"),
-        LINKOFFLINE(3, "-linkoffline"),
-        USE(1, "-use"),
-        VERSION(1, "-version"),
-        NOTIMESTAMP(1, "-notimestamp"),
-        XDOCLINT(1, "-Xdoclint"),
-
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
         SNIPPETCLASSES(2, "-snippetclasses"),
@@ -131,7 +119,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         }
 
         public String getDescription() {
-            return null;
+            return name;
         }
 
         public jdk.javadoc.doclet.Doclet.Option.Kind getKind() {
@@ -148,7 +136,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
         public boolean process(String option, List<String> arguments) {
             ArrayList<String> all = new ArrayList<>();
-            all.add(name);
+            all.add(option);
             all.addAll(arguments);
             if (allOptions == null) {
                 allOptions = all;
@@ -303,7 +291,17 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     public Set<? extends jdk.javadoc.doclet.Doclet.Option> getSupportedOptions() {
-        return EnumSet.allOf(SnippetOption.class);
+        jdk.javadoc.doclet.Doclet standardDoclet;
+        try {
+            standardDoclet = (jdk.javadoc.doclet.Doclet) Class.forName("jdk.javadoc.doclet.StandardDoclet").newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+
+        Set<jdk.javadoc.doclet.Doclet.Option> all = new HashSet<>();
+        all.addAll(EnumSet.allOf(SnippetOption.class));
+        all.addAll(standardDoclet.getSupportedOptions());
+        return all;
     }
 
     public SourceVersion getSupportedSourceVersion() {

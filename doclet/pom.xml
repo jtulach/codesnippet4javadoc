@@ -34,6 +34,15 @@
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </properties>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.10</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
