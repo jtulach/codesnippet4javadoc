@@ -9,12 +9,6 @@ matrix:
     # JDK 8
     - jdk: openjdk8
 
-    # JDK 9
-    - jdk: openjdk9
-
-    # JDK 10
-    - jdk: openjdk10
-
     # JDK 11
     - jdk: oraclejdk11
 
