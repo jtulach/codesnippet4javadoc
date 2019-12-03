@@ -30,14 +30,19 @@
     <packaging>jar</packaging>
     <properties>
         <debug />
-        <add.opens>--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED</add.opens>
+        <add.opens.1>--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</add.opens.1>
+        <add.opens.2>--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</add.opens.2>
+        <add.opens.3>--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</add.opens.3>
+        <add.opens.4>--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</add.opens.4>
+        <add.opens.5>--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</add.opens.5>
+        <add.opens.6>--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</add.opens.6>
     </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
+                <version>3.1.1</version>
                 <dependencies>
                     <dependency>
                         <groupId>commons-lang</groupId>
@@ -66,16 +71,22 @@
                         <version>${project.version}</version>
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
-                    <additionalparam>
+                    <additionalOptions>
 -snippetpath src/test/java
 -snippetclasses ".*Snippet.*" 
 -maxLineLength 80 
 -hiddingannotation java.lang.Deprecated 
 -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
-                    </additionalparam>
+                    </additionalOptions>
                     <additionalJOptions>
-                        <opt>-J${add.opens}</opt>
+                        <opt>-J${add.opens.1}</opt>
+                        <opt>-J${add.opens.2}</opt>
+                        <opt>-J${add.opens.3}</opt>
+                        <opt>-J${add.opens.4}</opt>
+                        <opt>-J${add.opens.5}</opt>
+                        <opt>-J${add.opens.6}</opt>
                     </additionalJOptions>
+                    <failOnWarnings>true</failOnWarnings>
                 </configuration>
             </plugin>
             <plugin>
@@ -105,7 +116,12 @@
                 <jdk>1.8</jdk>
             </activation>
             <properties>
-                <add.opens>-Dignore=</add.opens>
+                <add.opens.1>-Dignore=</add.opens.1>
+                <add.opens.2>-Dignore=</add.opens.2>
+                <add.opens.3>-Dignore=</add.opens.3>
+                <add.opens.4>-Dignore=</add.opens.4>
+                <add.opens.5>-Dignore=</add.opens.5>
+                <add.opens.6>-Dignore=</add.opens.6>
             </properties>
         </profile>
     </profiles>

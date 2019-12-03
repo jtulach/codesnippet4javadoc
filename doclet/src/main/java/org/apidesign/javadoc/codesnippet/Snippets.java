@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
-import java.nio.charset.UnmappableCharacterException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;

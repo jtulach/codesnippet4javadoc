@@ -17,8 +17,6 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
-import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Log;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.AnnotationTypeDoc;
 import com.sun.javadoc.AnnotationTypeElementDoc;
@@ -33,9 +31,6 @@ import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
-import com.sun.javadoc.SourcePosition;
-import com.sun.tools.oldlets.javadoc.main.JavadocTool;
-import com.sun.tools.oldlets.javadoc.main.Messager;
 import com.sun.tools.oldlets.javadoc.main.Start;
 import java.io.File;
 import java.lang.reflect.Array;
@@ -53,7 +48,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import javax.lang.model.SourceVersion;
-import javax.tools.Diagnostic;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 
@@ -108,6 +102,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         LINKOFFLINE(3, "-linkoffline"),
         USE(1, "-use"),
         VERSION(1, "-version"),
+        NOTIMESTAMP(1, "-notimestamp"),
+        XDOCLINT(1, "-Xdoclint"),
 
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
