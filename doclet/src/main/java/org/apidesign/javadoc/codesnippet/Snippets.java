@@ -284,9 +284,7 @@ final class Snippets {
                         }
                     }
                 } catch (MalformedInputException ex) {
-                    printWarning(null, "Skipping binary file " + file.toString());
-                } catch (CharacterCodingException ex) {
-                    printWarning(null, "Skipping binary file " + file.toString());
+                    printNotice(null, "Skipping binary file " + file.toString());
                 } catch (IOException ex) {
                     printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
                 }
@@ -360,6 +358,18 @@ final class Snippets {
                 return FileVisitResult.CONTINUE;
             }
         });
+    }
+
+    final void printNotice(Doc where, String msg) {
+        if (reporter != null) {
+            if (where == null) {
+                reporter.printNotice(msg);
+            } else {
+                reporter.printNotice(where.position(), msg);
+            }
+        } else {
+            throw new IllegalStateException(msg);
+        }
     }
 
     final void printWarning(Doc where, String msg) {
