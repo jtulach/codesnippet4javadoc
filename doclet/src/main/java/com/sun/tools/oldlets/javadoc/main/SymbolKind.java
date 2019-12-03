@@ -144,7 +144,7 @@ enum SymbolKind {
 
     static Iterable<Symbol> getSymbolsByName(Scope members, boolean recursive, Name name) {
         List<Symbol> arr = new ArrayList<>();
-        for (Symbol s : arr) {
+        for (Symbol s : members.getSymbols(recursive ? Scope.LookupKind.RECURSIVE : Scope.LookupKind.NON_RECURSIVE)) {;
             if (s.name.equals(name)) {
                 arr.add(s);
             }
