@@ -593,7 +593,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      */
     private FieldDoc[] fields(boolean filter, boolean enumConstants) {
         List<FieldDocImpl> fields = List.nil();
-        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
+        for (Symbol sym : SymbolKind.getSymbols(members(), false)) {
             if (sym != null && SymbolKind.VAR.same(sym)) {
                 VarSymbol s = (VarSymbol)sym;
                 boolean isEnum = ((s.flags() & Flags.ENUM) != 0) &&
@@ -618,7 +618,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
     public MethodDoc[] methods(boolean filter) {
         Names names = tsym.name.table.names;
         List<MethodDocImpl> methods = List.nil();
-        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), true)) {
+        for (Symbol sym : SymbolKind.getSymbols(members(), true)) {
             if (sym != null
                 && SymbolKind.MTH.same(sym)
                 && sym.name != names.init
@@ -653,7 +653,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
     public ConstructorDoc[] constructors(boolean filter) {
         Names names = tsym.name.table.names;
         List<ConstructorDocImpl> constructors = List.nil();
-        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), true)) {
+        for (Symbol sym : SymbolKind.getSymbols(members(), true)) {
             if (sym != null &&
                 SymbolKind.MTH.same(sym) && sym.name == names.init) {
                 MethodSymbol s = (MethodSymbol)sym;
@@ -689,7 +689,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
             if (l.contains(this)) return;
             l.append(this);
             List<ClassDocImpl> more = List.nil();
-            for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
+            for (Symbol sym : SymbolKind.getSymbols(members(), false)) {
                 if (sym != null && SymbolKind.TYP.same(sym)) {
                     ClassSymbol s = (ClassSymbol)sym;
                     ClassDocImpl c = env.getClassDoc(s);
@@ -706,6 +706,11 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         }
     }
 
+    private Scope members() {
+        Scope members = SymbolKind.invokeOrNull(tsym, "members");
+        return members;
+    }
+
     /**
      * Return inner classes within this class.
      *
@@ -716,7 +721,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      */
     public ClassDoc[] innerClasses(boolean filter) {
         ListBuffer<ClassDocImpl> innerClasses = new ListBuffer<>();
-        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
+        for (Symbol sym : SymbolKind.getSymbols(members(), false)) {
             if (sym != null && SymbolKind.TYP.same(sym)) {
                 ClassSymbol s = (ClassSymbol)sym;
                 if ((s.flags_field & Flags.SYNTHETIC) != 0) continue;
@@ -809,7 +814,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
             Env<AttrContext> compenv = env.enter.getEnv(tsym);
             if (compenv == null) return null;
 
-            Scope s = compenv.toplevel.namedImportScope;
+            Scope s = SymbolKind.getOrElse(null, compenv.toplevel, "namedImportScope", null);
             for (Symbol sym : SymbolKind.getSymbolsByName(s, true, names.fromString(className))) {
                 if (SymbolKind.TYP.same(sym)) {
                     ClassDoc c = env.getClassDoc((ClassSymbol)sym);
@@ -817,7 +822,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
                 }
             }
 
-            s = compenv.toplevel.starImportScope;
+            s = SymbolKind.getOrElse(null, compenv.toplevel, "starImportScope", null);
             for (Symbol sym : SymbolKind.getSymbolsByName(s, true, names.fromString(className))) {
                 if (SymbolKind.TYP.same(sym)) {
                     ClassDoc c = env.getClassDoc((ClassSymbol)sym);
@@ -931,7 +936,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
             // In order to provide textually identical results, we
             // attempt to emulate the old behavior.
             MethodSymbol lastFound = null;
-            for (Symbol sym : SymbolKind.getSymbolsByName(tsym.members(), true, names.fromString(methodName))) {
+            for (Symbol sym : SymbolKind.getSymbolsByName(members(), true, names.fromString(methodName))) {
                 if (SymbolKind.MTH.same(sym)) {
                     //### Should intern methodName as Name.
                     if (sym.name.toString().equals(methodName)) {
@@ -943,7 +948,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
                 return env.getMethodDoc(lastFound);
             }
         } else {
-            for (Symbol sym : SymbolKind.getSymbolsByName(tsym.members(), true, names.fromString(methodName))) {
+            for (Symbol sym : SymbolKind.getSymbolsByName(members(), true, names.fromString(methodName))) {
                 if (sym != null &&
                     SymbolKind.MTH.same(sym)) {
                     //### Should intern methodName as Name.
@@ -1005,7 +1010,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
     public ConstructorDoc findConstructor(String constrName,
                                           String[] paramTypes) {
         Names names = tsym.name.table.names;
-        for (Symbol sym : SymbolKind.getSymbolsByName(tsym.members(), true, names.fromString("<init>"))) {
+        for (Symbol sym : SymbolKind.getSymbolsByName(members(), true, names.fromString("<init>"))) {
             if (SymbolKind.MTH.same(sym)) {
                 if (hasParameterTypes((MethodSymbol)sym, paramTypes)) {
                     return env.getConstructorDoc((MethodSymbol)sym);
@@ -1047,7 +1052,7 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
         }
         searched.add(this);
 
-        for (Symbol sym : SymbolKind.getSymbolsByName(tsym.members(), true, names.fromString(fieldName))) {
+        for (Symbol sym : SymbolKind.getSymbolsByName(members(), true, names.fromString(fieldName))) {
             if (SymbolKind.VAR.same(sym)) {
                 //### Should intern fieldName as Name.
                 return env.getFieldDoc((VarSymbol)sym);

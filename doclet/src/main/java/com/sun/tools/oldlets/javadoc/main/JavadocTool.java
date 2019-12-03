@@ -25,6 +25,7 @@
 
 package com.sun.tools.oldlets.javadoc.main;
 
+import com.sun.tools.javac.code.Scope;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -410,7 +411,8 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
                 for (Object msym : all) {
                     PackageSymbol p = SymbolKind.invokeOrNull(syms, "getPackage", pack);
                     if (p != null) {
-                        boolean empty = SymbolKind.invokeOrNull(p.members(), "isEmpty");
+                        Scope members = SymbolKind.invokeOrNull(p, "members");
+                        boolean empty = SymbolKind.invokeOrNull(members, "isEmpty");
                         if (!empty) {
                             final String name = SymbolKind.getOrElse(null, msym, "name", null).toString();
                             return SymbolKind.invokeOrNull(fm, "getLocationForModule", location, name);

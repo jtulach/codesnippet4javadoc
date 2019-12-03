@@ -37,6 +37,7 @@ import javax.tools.FileObject;
 
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Attribute;
+import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
@@ -150,7 +151,8 @@ public class PackageDocImpl extends DocImpl implements PackageDoc {
             return allClassesFiltered;
         }
         ListBuffer<ClassDocImpl> classes = new ListBuffer<>();
-        for (Symbol enumerated : SymbolKind.getSymbols(sym.members(), false)) {
+        Scope members = SymbolKind.invokeOrNull(sym, "members");
+        for (Symbol enumerated : SymbolKind.getSymbols(members, false)) {
             if (enumerated != null) {
                 ClassSymbol s = (ClassSymbol)enumerated;
                 ClassDocImpl c = env.getClassDoc(s);

@@ -30,6 +30,7 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.AnnotationTypeDoc;
 
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -93,7 +94,7 @@ public class AnnotationTypeDocImpl
      */
     public AnnotationTypeElementDoc[] elements() {
         List<AnnotationTypeElementDoc> elements = List.nil();
-        for (Symbol sym : SymbolKind.getSymbols(tsym.members(), false)) {
+        for (Symbol sym : SymbolKind.getSymbols(members(), false)) {
             if (sym != null && SymbolKind.MTH.same(sym)) {
                 MethodSymbol s = (MethodSymbol)sym;
                 elements = elements.prepend(env.getAnnotationTypeElementDoc(s));
@@ -101,5 +102,10 @@ public class AnnotationTypeDocImpl
         }
         return
             elements.toArray(new AnnotationTypeElementDoc[elements.length()]);
+    }
+
+    private Scope members() {
+        Scope members = SymbolKind.invokeOrNull(tsym, "members");
+        return members;
     }
 }

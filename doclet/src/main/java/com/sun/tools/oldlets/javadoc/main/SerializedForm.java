@@ -158,7 +158,8 @@ class SerializedForm {
         /* SERIALIZABLE_FIELDS can be private,
          * so must lookup by ClassSymbol, not by ClassDocImpl.
          */
-        for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, names.fromString(SERIALIZABLE_FIELDS))) {
+        Scope members = SymbolKind.invokeOrNull(def, "members");
+        for (Symbol sym : SymbolKind.getSymbolsByName(members, true, names.fromString(SERIALIZABLE_FIELDS))) {
             if (SymbolKind.VAR.same(sym)) {
                 VarSymbol f = (VarSymbol)sym;
                 if ((f.flags() & Flags.STATIC) != 0 &&
@@ -179,7 +180,8 @@ class SerializedForm {
     private void computeDefaultSerializableFields(DocEnv env,
                                                   ClassSymbol def,
                                                   ClassDocImpl cd) {
-        for (Symbol sym : SymbolKind.getSymbols(def.members(), false)) {
+        Scope members = SymbolKind.invokeOrNull(def, "members");
+        for (Symbol sym : SymbolKind.getSymbols(members, false)) {
             if (sym != null && SymbolKind.VAR.same(sym)) {
                 VarSymbol f = (VarSymbol)sym;
                 if ((f.flags() & Flags.STATIC) == 0 &&
@@ -208,7 +210,8 @@ class SerializedForm {
     private void addMethodIfExist(DocEnv env, ClassSymbol def, String methodName) {
         Names names = def.name.table.names;
 
-        for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, names.fromString(methodName))) {
+        Scope members = SymbolKind.invokeOrNull(def, "members");
+        for (Symbol sym : SymbolKind.getSymbolsByName(members, true, names.fromString(methodName))) {
             if (SymbolKind.MTH.same(sym)) {
                 MethodSymbol md = (MethodSymbol)sym;
                 if ((md.flags() & Flags.STATIC) == 0) {
@@ -240,7 +243,8 @@ class SerializedForm {
             Name fieldName = names.fromString(tag.fieldName());
 
             // Look for a FieldDocImpl that is documented by serialFieldTagImpl.
-            for (Symbol sym : SymbolKind.getSymbolsByName(def.members(), true, fieldName)) {
+            Scope members = SymbolKind.invokeOrNull(def, "members");
+            for (Symbol sym : SymbolKind.getSymbolsByName(members, true, fieldName)) {
                 if (SymbolKind.VAR.same(sym)) {
                     VarSymbol f = (VarSymbol) sym;
                     FieldDocImpl fdi = env.getFieldDoc(f);

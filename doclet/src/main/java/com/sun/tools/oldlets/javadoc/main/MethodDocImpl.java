@@ -173,7 +173,8 @@ public class MethodDocImpl
     /**Retrieve members of c, ignoring any CompletionFailures that occur. */
     private Scope membersOf(ClassSymbol c) {
         try {
-            return c.members();
+            Scope members = SymbolKind.invokeOrNull(c, "members");
+            return members;
         } catch (CompletionFailure cf) {
             /* Quietly ignore completion failures and try again - the type
              * for which the CompletionFailure was thrown shouldn't be completed
