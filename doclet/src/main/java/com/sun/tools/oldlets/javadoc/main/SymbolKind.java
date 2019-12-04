@@ -57,7 +57,6 @@ enum SymbolKind {
     static {
         try {
             kind = Symbol.class.getField("kind");
-            kind.setAccessible(true);
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
@@ -364,7 +363,6 @@ enum SymbolKind {
         }
         try {
             final Field f = type.getDeclaredField(fieldName);
-            f.setAccessible(true);
             return (T) f.get(thiz);
         } catch (ReflectiveOperationException ex) {
             return defaultValue;

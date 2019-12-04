@@ -87,7 +87,7 @@ public class DocEnv {
     final Symtab syms;
 
     /** Referenced directly in RootDocImpl. */
-    private final JavadocClassFinder finder;
+    public final JavadocClassFinder finder;
 
     /** Javadoc's own version of the compiler's enter phase. */
     final Enter enter;

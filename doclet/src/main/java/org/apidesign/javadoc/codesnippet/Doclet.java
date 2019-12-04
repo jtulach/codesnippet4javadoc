@@ -30,13 +30,17 @@ import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
+import com.sun.source.util.JavacTask;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import com.sun.tools.oldlets.javadoc.main.Start;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +53,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import javax.lang.model.SourceVersion;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 
@@ -66,7 +76,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static DocErrorReporter docErrorReporter;
 
     public Doclet() {
+        enableJavacAccess();
     }
+
     public static boolean start(RootDoc root) {
         for (ClassDoc clazz : root.classes()) {
             snippets.fixCodesnippets(root, clazz);
@@ -401,6 +413,26 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
                 }
             }
             return names;
+        }
+    }
+
+    private static void enableJavacAccess() {
+        try (StandardJavaFileManager fm = ToolProvider.getSystemJavaCompiler().getStandardFileManager(null, null, null)) {
+            JavaFileManager fm2 = new ForwardingJavaFileManager(fm) {
+                @Override
+                public ClassLoader getClassLoader(JavaFileManager.Location location) {
+                    return Doclet.class.getClassLoader();
+                }
+            };
+            JavaFileObject jfo = new SimpleJavaFileObject(new URI("mem://Whatever.java"), JavaFileObject.Kind.SOURCE) {
+                @Override
+                public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+                    return "";
+                }
+
+            };
+            ((JavacTask) ToolProvider.getSystemJavaCompiler().getTask(null, fm2, null, Arrays.asList("-XDaccessInternalAPI"), null, Arrays.asList(jfo))).analyze();
+        } catch (IllegalStateException | IOException | URISyntaxException ex) {
         }
     }
 

@@ -143,7 +143,7 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
         if (docClasses) {
             sc = SymbolKind.getStaticOrElse(Completer.class, "NULL_COMPLETER", null);
         } else {
-            sc = SymbolKind.getOrElse(getClass().getSuperclass(), this, "sourceCompleter", null);
+            sc = SymbolKind.getOrElse(docenv.finder.getClass().getSuperclass(), docenv.finder, "sourceCompleter", null);
         }
         if (sc != null) {
             SymbolKind.setOrNothing(javadocFinder, "sourceCompleter", sc);
@@ -242,7 +242,12 @@ public class JavadocTool extends com.sun.tools.javac.main.JavaCompiler {
     }
 
     private Object modules() {
-        return SymbolKind.getOrElse(getClass().getSuperclass(), this, "modules", null);
+        try {
+            Class<?> Modules = Class.forName("com.sun.tools.javac.comp.Modules");
+            return SymbolKind.invokeStaticOrNull(Modules, "instance", context);
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
     }
 
     /** Is the given string a valid package name? */
