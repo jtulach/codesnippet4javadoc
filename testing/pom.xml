@@ -30,6 +30,7 @@
     <packaging>jar</packaging>
     <properties>
         <debug />
+        <testing.doclint>-Xdoclint:none</testing.doclint>
     </properties>
     <build>
         <plugins>
@@ -71,7 +72,7 @@
 -maxLineLength 80
 -hiddingannotation java.lang.Deprecated
 -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
--header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc -Xdoclint:none
+-header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc ${testing.doclint}
                     </additionalOptions>
                     <failOnWarnings>true</failOnWarnings>
                 </configuration>
