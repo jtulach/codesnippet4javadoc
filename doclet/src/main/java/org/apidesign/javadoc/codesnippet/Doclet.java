@@ -32,6 +32,7 @@ import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.source.util.JavacTask;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
+import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.javadoc.main.Start;
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +80,12 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         enableJavacAccess();
     }
 
-    public static boolean start(RootDoc root) {
+    public static boolean start(RootDoc root) throws Configuration.Fault {
+        HtmlDoclet.sharedInstanceForOptions.root = root;
+        HtmlDoclet.sharedInstanceForOptions.setOptions(root.options());
+        HtmlDoclet.sharedInstanceForOptions.processSpecificOptions(root.options());
+        HtmlDoclet.sharedInstanceForOptions.initDocLint(root);
+
         for (ClassDoc clazz : root.classes()) {
             snippets.fixCodesnippets(root, clazz);
             for (MethodDoc method : clazz.methods()) {
@@ -100,6 +106,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         for (PackageDoc pkg : root.specifiedPackages()) {
             snippets.fixCodesnippets(root, pkg);
         }
+
+
         RootDoc rootProxy = hideElements(RootDoc.class, root);
         return HtmlDoclet.start(rootProxy);
     }
@@ -154,6 +162,55 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
                 allOptions = all;
             }
             return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
+        }
+    }
+
+    private static class DelegatingOption implements jdk.javadoc.doclet.Doclet.Option {
+        private final jdk.javadoc.doclet.Doclet.Option delegate;
+
+        DelegatingOption(Option delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public List<String> getNames() {
+            return delegate.getNames();
+        }
+
+        @Override
+        public boolean matches(String option) {
+            return delegate.matches(option);
+        }
+
+        @Override
+        public int getArgumentCount() {
+            return delegate.getArgumentCount();
+        }
+
+        @Override
+        public String getDescription() {
+            return delegate.getDescription();
+        }
+
+        @Override
+        public Kind getKind() {
+            return delegate.getKind();
+        }
+
+        @Override
+        public String getParameters() {
+            return delegate.getParameters();
+        }
+
+        @Override
+        public boolean process(String option, List<String> arguments) {
+            ArrayList<String> all = new ArrayList<>();
+            all.add(option);
+            all.addAll(arguments);
+            if (allOptions == null) {
+                allOptions = all;
+            }
+            return validOptions(new String[][]{all.subList(0, getArgumentCount() + 1).toArray(new String[0])}, docErrorReporter);
         }
     }
 
@@ -312,7 +369,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
         Set<jdk.javadoc.doclet.Doclet.Option> all = new HashSet<>();
         all.addAll(EnumSet.allOf(SnippetOption.class));
-        all.addAll(standardDoclet.getSupportedOptions());
+        for (Option o : standardDoclet.getSupportedOptions()) {
+            all.add(new DelegatingOption(o));
+        }
         return all;
     }
 

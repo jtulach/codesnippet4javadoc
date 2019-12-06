@@ -310,7 +310,9 @@ public class HtmlDoclet extends AbstractDoclet {
      */
     public static boolean validOptions(String options[][],
             DocErrorReporter reporter) {
-        docletToStart = new HtmlDoclet();
+        if (docletToStart == null) {
+            docletToStart = new HtmlDoclet();
+        }
         return docletToStart.configuration.validOptions(options, reporter);
     }
 

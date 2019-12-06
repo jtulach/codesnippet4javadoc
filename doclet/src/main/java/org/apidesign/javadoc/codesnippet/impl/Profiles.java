@@ -94,9 +94,14 @@ public final class Profiles {
 
     public static JavaFileManager findFileManager(RootDoc root) {
         try {
-            InvocationHandler handler = Proxy.getInvocationHandler(root);
-            Callable<Object> callable = (Callable<Object>) handler;
-            Object obj = callable.call();
+            Object obj;
+            if (Proxy.isProxyClass(root.getClass())) {
+                InvocationHandler handler = Proxy.getInvocationHandler(root);
+                Callable<Object> callable = (Callable<Object>) handler;
+                obj = callable.call();
+            } else {
+                obj = root;
+            }
             Object fm = obj.getClass().getMethod("getFileManager").invoke(obj);
             return (JavaFileManager) fm;
         } catch (IllegalAccessException ex) {

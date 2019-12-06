@@ -32,6 +32,12 @@ public interface Doclet {
 
     public static interface Option {
         List<String> getNames();
+        boolean matches(String option);
+        int getArgumentCount();
+        String getDescription();
+        jdk.javadoc.doclet.Doclet.Option.Kind getKind();
+        String getParameters();
+        boolean process(String option, List<String> arguments);
 
         public static enum Kind {
             STANDARD
