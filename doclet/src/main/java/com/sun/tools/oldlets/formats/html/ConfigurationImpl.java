@@ -311,7 +311,11 @@ public class ConfigurationImpl extends Configuration {
             } else if (opt.equals("-xdoclint")) {
                 doclintOpts.add(DocLint.XMSGS_OPTION);
             } else if (opt.startsWith("-xdoclint:")) {
-                doclintOpts.add(DocLint.XMSGS_CUSTOM_PREFIX + opt.substring(opt.indexOf(":") + 1));
+                if ("1.8".equals(System.getProperty("java.specification.version"))) {
+                    doclintOpts.add(opt.substring(opt.indexOf(":") + 1));
+                } else {
+                    doclintOpts.add(DocLint.XMSGS_CUSTOM_PREFIX + opt.substring(opt.indexOf(":") + 1));
+                }
             } else if (opt.equals("--allow-script-in-comments")) {
                 allowScriptInComments = true;
             }
