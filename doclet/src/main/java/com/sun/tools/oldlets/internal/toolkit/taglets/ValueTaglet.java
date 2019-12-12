@@ -25,9 +25,13 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.FieldDoc;
 import java.util.*;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

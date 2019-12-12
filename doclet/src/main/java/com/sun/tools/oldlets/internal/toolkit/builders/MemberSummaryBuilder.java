@@ -25,10 +25,14 @@
 
 package com.sun.tools.oldlets.internal.toolkit.builders;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.util.*;
 import java.text.MessageFormat;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 

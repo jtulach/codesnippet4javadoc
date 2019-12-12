@@ -25,19 +25,25 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.RootDoc;
 import java.net.*;
 import java.util.*;
 
 import javax.tools.JavaFileManager;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 import com.sun.tools.doclint.DocLint;
-import com.sun.tools.javac.file.JavacFileManager;
-import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.StringUtils;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 import org.apidesign.javadoc.codesnippet.impl.Profiles;
 
 /**
@@ -241,6 +247,24 @@ public class ConfigurationImpl extends Configuration {
      */
     @Override
     public void setSpecificDocletOptions(String[][] options) {
+        processSpecificOptions(options);
+
+        if (root.specifiedClasses().length > 0) {
+            Map<String,PackageDoc> map = new HashMap<String,PackageDoc>();
+            PackageDoc pd;
+            ClassDoc[] classes = root.classes();
+            for (int i = 0; i < classes.length; i++) {
+                pd = classes[i].containingPackage();
+                if(! map.containsKey(pd.name())) {
+                    map.put(pd.name(), pd);
+                }
+            }
+        }
+        setCreateOverview();
+        setTopFile(root);
+    }
+
+    public void processSpecificOptions(String[][] options) {
         for (int oi = 0; oi < options.length; ++oi) {
             String[] os = options[oi];
             String opt = StringUtils.toLowerCase(os[0]);
@@ -285,27 +309,46 @@ public class ConfigurationImpl extends Configuration {
             } else if (opt.equals("-overview")) {
                 overview = true;
             } else if (opt.equals("-xdoclint")) {
-                doclintOpts.add(null);
+                doclintOpts.add(DocLint.XMSGS_OPTION);
             } else if (opt.startsWith("-xdoclint:")) {
-                doclintOpts.add(opt.substring(opt.indexOf(":") + 1));
+                if ("1.8".equals(System.getProperty("java.specification.version"))) {
+                    doclintOpts.add(opt.substring(opt.indexOf(":") + 1));
+                } else {
+                    doclintOpts.add(DocLint.XMSGS_CUSTOM_PREFIX + opt.substring(opt.indexOf(":") + 1));
+                }
             } else if (opt.equals("--allow-script-in-comments")) {
                 allowScriptInComments = true;
             }
         }
+    }
 
-        if (root.specifiedClasses().length > 0) {
-            Map<String,PackageDoc> map = new HashMap<String,PackageDoc>();
-            PackageDoc pd;
-            ClassDoc[] classes = root.classes();
-            for (int i = 0; i < classes.length; i++) {
-                pd = classes[i].containingPackage();
-                if(! map.containsKey(pd.name())) {
-                    map.put(pd.name(), pd);
+    public void initDocLint(RootDoc root) {
+        Object realRoot = null;
+        if (java.lang.reflect.Proxy.isProxyClass(root.getClass())) {
+            InvocationHandler handler = java.lang.reflect.Proxy.getInvocationHandler(root);
+            if (handler instanceof Callable<?>) {
+                try {
+                    realRoot = ((Callable<?>) handler).call();
+                } catch (Exception ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+        } else {
+            realRoot = root;
+        }
+        if (realRoot != null) {
+            try {
+                Method initDocLint2 = realRoot.getClass().getMethod("initDocLint", Collection.class, Collection.class);
+                initDocLint2.invoke(realRoot, doclintOpts, tagletManager.getCustomTagNames());
+            } catch (ReflectiveOperationException ex) {
+                try {
+                    Method initDocLint3 = realRoot.getClass().getMethod("initDocLint", Collection.class, Collection.class, String.class);
+                    initDocLint3.invoke(realRoot, doclintOpts, tagletManager.getCustomTagNames(), "html5");
+                } catch (ReflectiveOperationException ex2) {
+                    throw new IllegalStateException(ex2);
                 }
             }
         }
-        setCreateOverview();
-        setTopFile(root);
     }
 
     /**

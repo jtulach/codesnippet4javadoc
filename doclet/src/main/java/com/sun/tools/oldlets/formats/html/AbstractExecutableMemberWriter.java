@@ -25,7 +25,15 @@
 
 package com.sun.tools.oldlets.formats.html;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.AnnotatedType;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

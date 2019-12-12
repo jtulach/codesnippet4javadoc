@@ -30,30 +30,62 @@ import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
+import com.sun.source.util.JavacTask;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
+import com.sun.tools.oldlets.internal.toolkit.Configuration;
+import com.sun.tools.oldlets.javadoc.main.Start;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import javax.lang.model.SourceVersion;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
 
 /**
  * Enhance your own Javadoc with professionally looking
  * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc#readme">code snippets</a>.
- * Find out more at the 
+ * Find out more at the
  * <a target="_blank" href="https://github.com/jtulach/codesnippet4javadoc">project page</a>.
  */
-public final class Doclet {
+public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static Snippets snippets;
-    private Doclet() {
+    private Locale locale;
+    private Reporter reporter;
+    private static List<String> allOptions;
+    private static DocErrorReporter docErrorReporter;
+
+    public Doclet() {
+        enableJavacAccess();
     }
-    public static boolean start(RootDoc root) {
+
+    public static boolean start(RootDoc root) throws Configuration.Fault {
+        HtmlDoclet.sharedInstanceForOptions.root = root;
+        HtmlDoclet.sharedInstanceForOptions.setOptions(root.options());
+        HtmlDoclet.sharedInstanceForOptions.processSpecificOptions(root.options());
+        HtmlDoclet.sharedInstanceForOptions.initDocLint(root);
+
         for (ClassDoc clazz : root.classes()) {
             snippets.fixCodesnippets(root, clazz);
             for (MethodDoc method : clazz.methods()) {
@@ -74,40 +106,146 @@ public final class Doclet {
         for (PackageDoc pkg : root.specifiedPackages()) {
             snippets.fixCodesnippets(root, pkg);
         }
+
+
         RootDoc rootProxy = hideElements(RootDoc.class, root);
         return HtmlDoclet.start(rootProxy);
     }
 
+    enum SnippetOption implements jdk.javadoc.doclet.Doclet.Option {
+        SOURCEPATH(2, "-sourcepath"),
+        SNIPPETPATH(2, "-snippetpath"),
+        SNIPPETCLASSES(2, "-snippetclasses"),
+        MAXLINELENGTH(2, "-maxLineLength"),
+        HIDINGANNOTATION(2, "-hiddingannotation"),
+        VERIFYSINCE(1, "-verifysince"),
+        VERIFYSINCEPRESENT(1, "-verifysincepresent"),
+        ENCODING(2, "-encoding");
+
+        final int length;
+        final String name;
+
+        private SnippetOption(int length, String name) {
+            this.length = length;
+            this.name = name;
+        }
+
+        public boolean matches(String option) {
+            return option.equals(name);
+        }
+
+        public int getArgumentCount() {
+            return length - 1;
+        }
+
+        public String getDescription() {
+            return name;
+        }
+
+        public jdk.javadoc.doclet.Doclet.Option.Kind getKind() {
+            return jdk.javadoc.doclet.Doclet.Option.Kind.STANDARD;
+        }
+
+        public List<String> getNames() {
+            return Arrays.asList(name);
+        }
+
+        public String getParameters() {
+            return null;
+        }
+
+        public boolean process(String option, List<String> arguments) {
+            ArrayList<String> all = new ArrayList<>();
+            all.add(option);
+            all.addAll(arguments);
+            if (allOptions == null) {
+                allOptions = all;
+            }
+            return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
+        }
+    }
+
+    private static class DelegatingOption implements jdk.javadoc.doclet.Doclet.Option {
+        private final jdk.javadoc.doclet.Doclet.Option delegate;
+
+        DelegatingOption(Option delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public List<String> getNames() {
+            return delegate.getNames();
+        }
+
+        @Override
+        public boolean matches(String option) {
+            return delegate.matches(option);
+        }
+
+        @Override
+        public int getArgumentCount() {
+            return delegate.getArgumentCount();
+        }
+
+        @Override
+        public String getDescription() {
+            return delegate.getDescription();
+        }
+
+        @Override
+        public Kind getKind() {
+            return delegate.getKind();
+        }
+
+        @Override
+        public String getParameters() {
+            return delegate.getParameters();
+        }
+
+        @Override
+        public boolean process(String option, List<String> arguments) {
+            ArrayList<String> all = new ArrayList<>();
+            all.add(option);
+            all.addAll(arguments);
+            if (allOptions == null) {
+                allOptions = all;
+            }
+            return validOptions(new String[][]{all.subList(0, getArgumentCount() + 1).toArray(new String[0])}, docErrorReporter);
+        }
+    }
+
     public static int optionLength(String option) {
-        if (option.equals("-snippetpath")) {
+        if (SnippetOption.SNIPPETPATH.matches(option)) {
             return 2;
         }
-        if (option.equals("-snippetclasses")) {
+        if (SnippetOption.SNIPPETCLASSES.matches(option)) {
             return 2;
         }
-        if (option.equals("-maxLineLength")) {
+        if (SnippetOption.MAXLINELENGTH.matches(option)) {
             return 2;
         }
-        if (option.equals("-verifysincepresent")) {
+        if (SnippetOption.VERIFYSINCEPRESENT.matches(option)) {
             return 1;
         }
-        if (option.equals("-verifysince")) {
+        if (SnippetOption.VERIFYSINCE.matches(option)) {
             return 2;
         }
-        if (option.equals("-hiddingannotation")) {
+        if (SnippetOption.HIDINGANNOTATION.matches(option)) {
             return 2;
         }
         return HtmlDoclet.optionLength(option);
     }
 
     public static boolean validOptions(String[][] options, DocErrorReporter reporter) {
-        snippets = new Snippets(reporter);
+        if (snippets == null) {
+            snippets = new Snippets(reporter);
+        }
         for (String[] optionAndParams : options) {
             Boolean visible = null;
-            if (optionAndParams[0].equals("-sourcepath")) {
+            if (SnippetOption.SOURCEPATH.matches(optionAndParams[0])) {
                 visible = true;
             }
-            if (optionAndParams[0].equals("-snippetpath")) {
+            if (SnippetOption.SNIPPETPATH.matches(optionAndParams[0])) {
                 visible = false;
             }
             if (visible != null) {
@@ -117,19 +255,19 @@ public final class Doclet {
                     }
                 }
             }
-            if (optionAndParams[0].equals("-snippetclasses")) {
+            if (SnippetOption.SNIPPETCLASSES.matches(optionAndParams[0])) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     snippets.addClasses(optionAndParams[i]);
                 }
             }
-            if (optionAndParams[0].equals("-maxLineLength")) {
+            if (SnippetOption.MAXLINELENGTH.matches(optionAndParams[0])) {
                 if ( optionAndParams.length > 1 ) {
                     snippets.setMaxLineLength( optionAndParams[1] );
                 }
             }
             if (
-                optionAndParams[0].equals("-verifysincepresent") ||
-                optionAndParams[0].equals("-verifysince")
+                SnippetOption.VERIFYSINCEPRESENT.matches(optionAndParams[0]) ||
+                SnippetOption.VERIFYSINCE.matches(optionAndParams[0])
             ) {
                 if ( optionAndParams.length > 1 ) {
                     snippets.setVerifySince(optionAndParams[1]);
@@ -138,12 +276,12 @@ public final class Doclet {
                 }
             }
             if (
-                optionAndParams[0].equals("-hiddingannotation")
+                SnippetOption.HIDINGANNOTATION.matches(optionAndParams[0])
             ) {
                 snippets.addHiddenAnnotation(optionAndParams[1]);
             }
             if (
-                optionAndParams[0].equals("-encoding")
+                SnippetOption.ENCODING.matches(optionAndParams[0])
             ) {
                 snippets.setEncoding(optionAndParams[1]);
             }
@@ -209,6 +347,42 @@ public final class Doclet {
             return true;
         }
         return false;
+    }
+
+    public void init(Locale locale, Reporter reporter) {
+        this.locale = locale;
+        this.reporter = reporter;
+        docErrorReporter = new DelegatingDocErrorReporter(reporter);
+    }
+
+    public String getName() {
+        return "CodesnippetDoclet";
+    }
+
+    public Set<? extends jdk.javadoc.doclet.Doclet.Option> getSupportedOptions() {
+        jdk.javadoc.doclet.Doclet standardDoclet;
+        try {
+            standardDoclet = (jdk.javadoc.doclet.Doclet) Class.forName("jdk.javadoc.doclet.StandardDoclet").newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+
+        Set<jdk.javadoc.doclet.Doclet.Option> all = new HashSet<>();
+        all.addAll(EnumSet.allOf(SnippetOption.class));
+        for (Option o : standardDoclet.getSupportedOptions()) {
+            all.add(new DelegatingOption(o));
+        }
+        return all;
+    }
+
+    public SourceVersion getSupportedSourceVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean run(DocletEnvironment environment) {
+        Start start = new Start(getName());
+        boolean result = start.begin(Doclet.class, allOptions, Collections.emptyList());
+        return result;
     }
 
     private static class DocProxy<T> implements InvocationHandler, Callable<T> {
@@ -300,4 +474,25 @@ public final class Doclet {
             return names;
         }
     }
+
+    private static void enableJavacAccess() {
+        try (StandardJavaFileManager fm = ToolProvider.getSystemJavaCompiler().getStandardFileManager(null, null, null)) {
+            JavaFileManager fm2 = new ForwardingJavaFileManager(fm) {
+                @Override
+                public ClassLoader getClassLoader(JavaFileManager.Location location) {
+                    return Doclet.class.getClassLoader();
+                }
+            };
+            JavaFileObject jfo = new SimpleJavaFileObject(new URI("mem://Whatever.java"), JavaFileObject.Kind.SOURCE) {
+                @Override
+                public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+                    return "";
+                }
+
+            };
+            ((JavacTask) ToolProvider.getSystemJavaCompiler().getTask(null, fm2, null, Arrays.asList("-XDaccessInternalAPI"), null, Arrays.asList(jfo))).analyze();
+        } catch (IllegalStateException | IOException | URISyntaxException ex) {
+        }
+    }
+
 }

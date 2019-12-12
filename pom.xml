@@ -63,6 +63,8 @@
                         <exclude>*</exclude>
                         <exclude>.*/**</exclude>
                         <exclude>**/com/sun/tools/**</exclude>
+                        <exclude>**/com/sun/javadoc/**</exclude>
+                        <exclude>**/jdk/javadoc/doclet/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -130,4 +132,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <profiles>
+        <profile>
+            <id>java-8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <modules>
+                <module>classfinderpatch</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

@@ -25,7 +25,8 @@
 
 package com.sun.tools.oldlets.internal.toolkit.taglets;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 import com.sun.tools.oldlets.internal.toolkit.util.DocFinder;
 import com.sun.tools.javac.util.StringUtils;

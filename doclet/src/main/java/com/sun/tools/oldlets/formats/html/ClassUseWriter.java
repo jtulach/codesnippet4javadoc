@@ -25,6 +25,9 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.ProgramElementDoc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +39,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;

@@ -25,7 +25,16 @@
 
 package com.sun.tools.oldlets.formats.html;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.ParamTag;
+import com.sun.javadoc.ThrowsTag;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.SeeTag;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.formats.html.markup.HtmlStyle;
 import com.sun.tools.oldlets.formats.html.markup.HtmlTree;

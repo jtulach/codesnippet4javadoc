@@ -25,11 +25,13 @@
 
 package com.sun.tools.oldlets.internal.toolkit.builders;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.MethodDoc;
 import java.util.*;
 
 import com.sun.tools.oldlets.internal.toolkit.util.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
-import com.sun.javadoc.*;
 
 /**
  * Builds documentation for a property.

@@ -25,10 +25,20 @@
 
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.FieldDoc;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.formats.html.markup.*;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.taglets.*;

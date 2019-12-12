@@ -24,10 +24,10 @@
  */
 package com.sun.tools.oldlets.internal.toolkit.util;
 
+import com.sun.javadoc.SourcePosition;
 import java.text.MessageFormat;
 import java.util.*;
 
-import com.sun.javadoc.*;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 
 

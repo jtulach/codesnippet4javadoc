@@ -30,14 +30,14 @@
     <packaging>jar</packaging>
     <properties>
         <debug />
-        <add.opens>--add-opens=jdk.javadoc/com.sun.tools.javadoc.main=ALL-UNNAMED</add.opens>
+        <testing.doclint>-Xdoclint:none</testing.doclint>
     </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
+                <version>3.1.1</version>
                 <dependencies>
                     <dependency>
                         <groupId>commons-lang</groupId>
@@ -66,16 +66,15 @@
                         <version>${project.version}</version>
                     </docletArtifact>
                     <additionalJOption>${debug}</additionalJOption>
-                    <additionalparam>
+                    <additionalOptions>
 -snippetpath src/test/java
--snippetclasses ".*Snippet.*" 
--maxLineLength 80 
--hiddingannotation java.lang.Deprecated 
+-snippetclasses ".*Snippet.*"
+-maxLineLength 80
+-hiddingannotation java.lang.Deprecated
 -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
-                    </additionalparam>
-                    <additionalJOptions>
-                        <opt>-J${add.opens}</opt>
-                    </additionalJOptions>
+-header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc ${testing.doclint}
+                    </additionalOptions>
+                    <failOnWarnings>true</failOnWarnings>
                 </configuration>
             </plugin>
             <plugin>
@@ -98,15 +97,4 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>java-8</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <add.opens>-Dignore=</add.opens>
-            </properties>
-        </profile>
-    </profiles>
 </project>

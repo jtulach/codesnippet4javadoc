@@ -24,10 +24,15 @@
  */
 package com.sun.tools.oldlets.formats.html;
 
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.RootDoc;
 import java.io.*;
 import java.util.*;
 
-import com.sun.javadoc.*;
 import com.sun.tools.javac.jvm.Profile;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.builders.*;
@@ -305,7 +310,9 @@ public class HtmlDoclet extends AbstractDoclet {
      */
     public static boolean validOptions(String options[][],
             DocErrorReporter reporter) {
-        docletToStart = new HtmlDoclet();
+        if (docletToStart == null) {
+            docletToStart = new HtmlDoclet();
+        }
         return docletToStart.configuration.validOptions(options, reporter);
     }
 

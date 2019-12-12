@@ -23,7 +23,9 @@
  * questions.
  */
 package com.sun.tools.oldlets.internal.toolkit.util;
-import com.sun.javadoc.*;
+import com.sun.javadoc.SourcePosition;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.Tag;
 
 
 /**

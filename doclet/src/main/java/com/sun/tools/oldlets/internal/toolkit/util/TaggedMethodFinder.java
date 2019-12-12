@@ -25,7 +25,7 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.MethodDoc;
 
 /**
  * Find a tagged method.

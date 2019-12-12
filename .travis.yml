@@ -2,18 +2,30 @@ language: java
 os:
   - linux
 
+script:
+    - mvn install -rf testing/ -Dtesting.doclint=-Xdoclint:none && echo Specifying -Xdoclint:none shall always succeed
+    - |
+      if java -version 2>&1 | grep "version.*1.8.0"; then
+        echo Next Maven execution shall succeed
+        mvn install -rf testing/ -Dtesting.doclint= && echo By default the build succeeds on JDK8
+      else
+        echo Next Maven execution shall fail
+        mvn install -rf testing/ -Dtesting.doclint= && exit 5 || echo By default the build fails on JDK11+
+      fi
+    - mvn install -rf testing/ -Dtesting.doclint=-Xdoclint:all && exit 7 || echo echo Enabling doclint:all fails the build
+
 matrix:
   fast_finish: true
 
   include:
     # JDK 8
-    - jdk: openjdk8
-
-    # JDK 9
-    - jdk: openjdk9
-
-    # JDK 10
-    - jdk: openjdk10
+    - name: Open JDK8
+      jdk: openjdk8
 
     # JDK 11
-    - jdk: oraclejdk11
+    - name: JDK11
+      jdk: oraclejdk11
+
+    # JDK 13
+    - name: JDK13
+      jdk: oraclejdk13

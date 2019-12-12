@@ -26,8 +26,8 @@
 
 package com.sun.tools.oldlets.internal.toolkit;
 
+import com.sun.javadoc.AnnotationTypeDoc;
 import java.io.*;
-import com.sun.javadoc.*;
 
 /**
  * The interface for writing annotation type output.

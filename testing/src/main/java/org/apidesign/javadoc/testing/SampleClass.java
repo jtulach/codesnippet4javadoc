@@ -54,6 +54,19 @@ public class SampleClass {
     public static void showUseOfAnnotation() {
     }
 
+    /**
+     * This method Javadoc from distribution OpenJDK complains:
+     * <p>
+     * warning - Parameter "value" is documented more than once.
+     * <p>
+     * The OpenJDK from AdoptOpenJDK has a different warning:
+     * <p>
+     * warning: no description for <code>@param<code>
+     * @param value
+     */
+    public void distributionJavaComplains(String value) {
+    }
+
     @Deprecated
     public static void hiddenMethod() {
     }

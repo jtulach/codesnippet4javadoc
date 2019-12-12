@@ -25,7 +25,11 @@
 
 package com.sun.tools.oldlets.internal.toolkit.util.links;
 
-import com.sun.javadoc.*;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Type;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.WildcardType;
 import com.sun.tools.oldlets.internal.toolkit.Content;
 
 /**

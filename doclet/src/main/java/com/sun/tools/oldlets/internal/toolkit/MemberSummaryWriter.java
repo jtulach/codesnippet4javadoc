@@ -25,9 +25,11 @@
 
 package com.sun.tools.oldlets.internal.toolkit;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Tag;
 import java.io.*;
 import java.util.*;
-import com.sun.javadoc.*;
 
 /**
  * The interface for writing member summary output.
