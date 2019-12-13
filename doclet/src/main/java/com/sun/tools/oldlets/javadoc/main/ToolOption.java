@@ -452,9 +452,15 @@ public enum ToolOption {
 
     }
 
-    private static void processOption(String optName, OptionHelper helper, String opt, String arg) {
+    static void processOption(String optName, OptionHelper helper, String opt, String arg) {
+        Option o;
         try {
-            Option.valueOf(optName).process(helper, opt, arg);
+            o = Option.valueOf(optName);
+        } catch (IllegalArgumentException ex) {
+            return;
+        }
+        try {
+            o.process(helper, opt, arg);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {

@@ -13,6 +13,14 @@ script:
         mvn install -rf testing/ -Dtesting.doclint= && exit 5 || echo By default the build fails on JDK11+
       fi
     - mvn install -rf testing/ -Dtesting.doclint=-Xdoclint:all && exit 7 || echo echo Enabling doclint:all fails the build
+    - |
+      if [ -n "$SECOND" ]; then
+        curl $SECOND -o jdk.tgz
+        tar fxz jdk.tgz
+        ls -l
+        export JAVA_HOME=`pwd`/$DIR
+        mvn -f doclet -Dmaven.main.skip test
+      fi
 
 matrix:
   fast_finish: true
@@ -21,6 +29,9 @@ matrix:
     # JDK 8
     - name: Open JDK8
       jdk: openjdk8
+      env:
+          - SECOND=https://cdn.azul.com/zulu/bin/zulu11.35.15-ca-jdk11.0.5-linux_x64.tar.gz
+          - DIR=zulu11.35.15-ca-jdk11.0.5-linux_x64
 
     # JDK 11
     - name: JDK11
