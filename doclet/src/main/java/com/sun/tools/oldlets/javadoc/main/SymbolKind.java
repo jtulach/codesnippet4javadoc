@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -324,12 +325,16 @@ enum SymbolKind {
     }
 
     static <T> T invokeOrNull(Object thiz, String name, Object... args) {
-        for (Method m : thiz.getClass().getMethods()) {
+        return invokeOrNull(thiz, thiz.getClass(), name, args);
+    }
+
+    static <T> T invokeOrNull(Object thiz, Class<?> type, String name, Object... args) {
+        for (Method m : type.getMethods()) {
             if (name.equals(m.getName())) {
                 try {
                     return (T) m.invoke(thiz, args);
                 } catch (ReflectiveOperationException ex) {
-                    throw new IllegalStateException(ex);
+                    throw new IllegalStateException("Cannot call " + m + " with " + Arrays.toString(args), ex);
                 }
             }
         }

@@ -19,6 +19,7 @@ package com.sun.tools.oldlets.javadoc.main;
 
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.oldlets.javadoc.main.ToolOption.Helper;
+import java.lang.reflect.InvocationTargetException;
 import org.testng.annotations.Test;
 
 public class ToolOptionTest {
@@ -30,7 +31,17 @@ public class ToolOptionTest {
     public void processOptionTest() {
         Helper helper = new Start(new Context());
 
-        ToolOption.ADD_OPENS.process(helper, "xyz");
+        try {
+            ToolOption.ADD_OPENS.process(helper, "xyz");
+        } catch (IllegalStateException ex) {
+            if (ex.getCause() instanceof InvocationTargetException) {
+                if (ex.getCause().getCause() instanceof NullPointerException) {
+                    // this is OK
+                    return;
+                }
+            }
+            throw ex;
+        }
     }
 
 }

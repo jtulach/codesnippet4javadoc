@@ -460,7 +460,7 @@ public enum ToolOption {
             return;
         }
         try {
-            o.process(helper, opt, arg);
+            SymbolKind.invokeOrNull(o, Option.class, "process", helper, opt, arg);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
