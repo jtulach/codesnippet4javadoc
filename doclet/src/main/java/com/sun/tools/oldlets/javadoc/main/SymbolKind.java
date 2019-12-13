@@ -330,7 +330,7 @@ enum SymbolKind {
 
     static <T> T invokeOrNull(Object thiz, Class<?> type, String name, Object... args) {
         for (Method m : type.getMethods()) {
-            if (name.equals(m.getName())) {
+            if (name.equals(m.getName()) && m.getParameterCount() == args.length) {
                 try {
                     return (T) m.invoke(thiz, args);
                 } catch (ReflectiveOperationException ex) {
