@@ -120,7 +120,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         HIDINGANNOTATION(2, "-hiddingannotation"),
         VERIFYSINCE(1, "-verifysince"),
         VERIFYSINCEPRESENT(1, "-verifysincepresent"),
-        ENCODING(2, "-encoding");
+        ENCODING(2, "-encoding"),
+        SUPPRESSMISSINGLINKWARNINGS(1, "-suppressmissinglinkwarnings");
 
         final int length;
         final String name;
