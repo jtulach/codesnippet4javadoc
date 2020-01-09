@@ -113,6 +113,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     enum SnippetOption implements jdk.javadoc.doclet.Doclet.Option {
+        CLASSPATH(2, "-classpath"),
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
         SNIPPETCLASSES(2, "-snippetclasses"),
