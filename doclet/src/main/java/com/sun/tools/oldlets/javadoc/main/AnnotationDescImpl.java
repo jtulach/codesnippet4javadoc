@@ -51,7 +51,7 @@ import com.sun.tools.javac.util.Pair;
  * @since 1.5
  */
 
-@Deprecated
+
 @SuppressWarnings("removal")
 public class AnnotationDescImpl implements AnnotationDesc {
 

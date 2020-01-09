@@ -46,7 +46,7 @@ import com.sun.tools.javac.code.Symbol.VarSymbol;
  * @author Robert Field (rewrite)
  * @author Scott Seligman (generics, annotations)
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class ParameterImpl implements Parameter {
 

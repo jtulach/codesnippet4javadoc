@@ -42,7 +42,7 @@ import com.sun.tools.javac.util.List;
  * @author Mahmood Ali
  * @since 1.8
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public class AnnotatedTypeImpl
         extends AbstractTypeImpl implements AnnotatedType {

@@ -48,7 +48,7 @@ import com.sun.tools.javac.code.Type;
  * @author Scott Seligman
  * @since 1.5
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 abstract class AbstractTypeImpl implements com.sun.javadoc.Type {
 

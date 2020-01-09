@@ -41,12 +41,12 @@ package com.sun.javadoc;
  * @author Kaiyang Liu (original)
  * @author Robert Field (rewrite)
  *
- * @deprecated
+
  *   The declarations in this package have been superseded by those
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public interface ClassDoc extends ProgramElementDoc, Type {
 
@@ -338,11 +338,11 @@ public interface ClassDoc extends ProgramElementDoc, Type {
      *
      * @return an array of ClassDoc representing the imported classes.
      *
-     * @deprecated  Import declarations are implementation details that
+  Import declarations are implementation details that
      *          should not be exposed here.  In addition, not all imported
      *          classes are imported through single-type-import declarations.
      */
-    @Deprecated
+
     ClassDoc[] importedClasses();
 
     /**
@@ -352,11 +352,11 @@ public interface ClassDoc extends ProgramElementDoc, Type {
      *
      * @return an array of PackageDoc representing the imported packages.
      *
-     * @deprecated  Import declarations are implementation details that
+  Import declarations are implementation details that
      *          should not be exposed here.  In addition, this method's
      *          return type does not allow for all type-import-on-demand
      *          declarations to be returned.
      */
-    @Deprecated
+
     PackageDoc[] importedPackages();
 }

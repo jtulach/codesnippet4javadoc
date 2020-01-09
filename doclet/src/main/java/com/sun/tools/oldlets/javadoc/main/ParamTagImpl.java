@@ -42,7 +42,7 @@ import java.util.regex.*;
  * @author Robert Field
  *
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class ParamTagImpl extends TagImpl implements ParamTag {
 

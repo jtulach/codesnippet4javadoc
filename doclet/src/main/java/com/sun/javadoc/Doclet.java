@@ -48,12 +48,12 @@ package com.sun.javadoc;
  * {@code -doclet} followed by the fully-qualified
  * name of the starting class on the javadoc tool command line.
  *
- * @deprecated
+
  *   The declarations in this package have been superseded by those
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public abstract class Doclet {
 

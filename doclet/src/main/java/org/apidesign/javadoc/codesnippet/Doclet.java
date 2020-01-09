@@ -329,7 +329,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
                 c = SeeTag.class;
             }
         }
-        InvocationHandler h = new DocProxy(obj);
+        InvocationHandler h = new DocProxy<Object>(obj);
         return clazz.cast(Proxy.newProxyInstance(obj.getClass().getClassLoader(), new Class[]{c}, h));
     }
 
@@ -361,6 +361,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         return "CodesnippetDoclet";
     }
 
+    @SuppressWarnings("deprecation")
     public Set<? extends jdk.javadoc.doclet.Doclet.Option> getSupportedOptions() {
         jdk.javadoc.doclet.Doclet standardDoclet;
         try {
@@ -479,7 +480,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
     private static void enableJavacAccess() {
         try (StandardJavaFileManager fm = ToolProvider.getSystemJavaCompiler().getStandardFileManager(null, null, null)) {
-            JavaFileManager fm2 = new ForwardingJavaFileManager(fm) {
+            JavaFileManager fm2 = new ForwardingJavaFileManager<StandardJavaFileManager>(fm) {
                 @Override
                 public ClassLoader getClassLoader(JavaFileManager.Location location) {
                     return Doclet.class.getClassLoader();

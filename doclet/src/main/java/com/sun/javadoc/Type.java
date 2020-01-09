@@ -36,12 +36,12 @@ package com.sun.javadoc;
  * @author Robert Field (rewrite)
  * @author Scott Seligman (generics)
  *
- * @deprecated
+
  *   The declarations in this package have been superseded by those
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public interface Type {
 

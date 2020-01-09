@@ -47,7 +47,7 @@ import com.sun.javadoc.ExecutableMemberDoc;
  * @see ExecutableMemberDocImpl#throwsTags()
  *
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class ThrowsTagImpl extends TagImpl implements ThrowsTag {
 

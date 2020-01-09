@@ -39,7 +39,6 @@ import static com.sun.tools.javac.util.LayoutCharacters.EOI;
 /**
  * Parser to detect use of JavaScript in documentation comments.
  */
-@Deprecated
 @SuppressWarnings("removal")
 public class JavaScriptScanner {
     public static interface Reporter {

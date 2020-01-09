@@ -195,7 +195,7 @@ public class AbstractIndexWriter extends HtmlDocletWriter {
 
     /**
      * Add comment for each element in the index. If the element is deprecated
-     * and it has a @deprecated tag, use that comment. Else if the containing
+ tag, use that comment. Else if the containing
      * class for this element is deprecated, then add the word "Deprecated." at
      * the start and then print the normal comment.
      *

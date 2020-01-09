@@ -36,12 +36,10 @@ package com.sun.javadoc;
  *
  * @author Mahmood Ali
  * @since 1.8
- * @deprecated
  *   The declarations in this package have been superseded by those
  *   in the package {@code jdk.javadoc.doclet}.
  *   For more information, see the <i>Migration Guide</i> in the documentation for that package.
  */
-@Deprecated
 @SuppressWarnings("removal")
 public interface AnnotatedType extends Type {
 

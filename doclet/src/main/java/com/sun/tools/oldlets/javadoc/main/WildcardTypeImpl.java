@@ -45,7 +45,7 @@ import com.sun.tools.javac.util.List;
  * @author Scott Seligman
  * @since 1.5
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public class WildcardTypeImpl extends AbstractTypeImpl implements WildcardType {
 

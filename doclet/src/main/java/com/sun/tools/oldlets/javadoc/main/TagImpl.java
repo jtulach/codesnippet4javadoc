@@ -50,7 +50,7 @@ import com.sun.javadoc.Tag;
  * @see Doc#tags()
  *
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class TagImpl implements Tag {
 

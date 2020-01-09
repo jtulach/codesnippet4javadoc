@@ -1098,11 +1098,11 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      *
      * @return an array of ClassDocImpl representing the imported classes.
      *
-     * @deprecated  Import declarations are implementation details that
+  Import declarations are implementation details that
      *          should not be exposed here.  In addition, not all imported
      *          classes are imported through single-type-import declarations.
      */
-    @Deprecated
+
     public ClassDoc[] importedClasses() {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new ClassDoc[0];
@@ -1135,12 +1135,12 @@ public class ClassDocImpl extends ProgramElementDocImpl implements ClassDoc {
      * @return an array of PackageDocImpl representing the imported packages.
      *
      * ###NOTE: the syntax supports importing all inner classes from a class as well.
-     * @deprecated  Import declarations are implementation details that
+  Import declarations are implementation details that
      *          should not be exposed here.  In addition, this method's
      *          return type does not allow for all type-import-on-demand
      *          declarations to be returned.
      */
-    @Deprecated
+
     public PackageDoc[] importedPackages() {
         // information is not available for binary classfiles
         if (tsym.sourcefile == null) return new PackageDoc[0];

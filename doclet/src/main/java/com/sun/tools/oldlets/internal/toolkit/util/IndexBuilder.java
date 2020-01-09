@@ -204,7 +204,7 @@ public class IndexBuilder {
                 char ch = (name.length()==0)?
                     '*' :
                     Character.toUpperCase(name.charAt(0));
-                Character unicode = new Character(ch);
+                Character unicode = ch;
                 List<Doc> list = indexmap.get(unicode);
                 if (list == null) {
                     list = new ArrayList<Doc>();

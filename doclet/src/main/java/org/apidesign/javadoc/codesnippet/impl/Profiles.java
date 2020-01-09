@@ -97,7 +97,7 @@ public final class Profiles {
             Object obj;
             if (Proxy.isProxyClass(root.getClass())) {
                 InvocationHandler handler = Proxy.getInvocationHandler(root);
-                Callable<Object> callable = (Callable<Object>) handler;
+                Callable<?> callable = (Callable<?>) handler;
                 obj = callable.call();
             } else {
                 obj = root;

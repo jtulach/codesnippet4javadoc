@@ -42,7 +42,7 @@ import com.sun.tools.javac.util.Context.Factory;
  *
  *  @author Neal Gafter
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public class JavadocClassFinder extends ClassFinder {
 

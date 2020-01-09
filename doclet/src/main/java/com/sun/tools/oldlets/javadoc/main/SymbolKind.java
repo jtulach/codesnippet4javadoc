@@ -105,8 +105,8 @@ enum SymbolKind {
         Object rec, nonRec, getSym;
         try {
             Class<? extends Enum> LookupKind = Class.forName("com.sun.tools.javac.code.Scope$LookupKind").asSubclass(Enum.class);
-            rec = Enum.valueOf(LookupKind, "RECURSIVE");
-            nonRec = Enum.valueOf(LookupKind, "NON_RECURSIVE");
+            rec = findKind(LookupKind, "RECURSIVE");
+            nonRec = findKind(LookupKind, "NON_RECURSIVE");
             getSym = Scope.class.getMethod("getSymbols", LookupKind);
         } catch (ClassNotFoundException ex) {
             rec = null;
@@ -142,6 +142,12 @@ enum SymbolKind {
         NEXT = next;
     }
 
+    @SuppressWarnings("unchecked")
+    private static <E extends Enum> E findKind(Class<E> enumType, String name) {
+        Enum<?> value = Enum.valueOf(enumType, name);
+        return enumType.cast(value);
+    }
+
     static Iterable<Symbol> getSymbolsByName(Scope members, boolean recursive, Name name) {
         List<Symbol> arr = new ArrayList<>();
         for (Symbol s : getSymbols(members, recursive)) {
@@ -152,6 +158,7 @@ enum SymbolKind {
         return arr;
     }
 
+    @SuppressWarnings("unchecked")
     static Iterable<Symbol> getSymbols(Scope members, boolean recursive) {
         try {
             if (GET_SYMBOLS != null) {
@@ -328,6 +335,7 @@ enum SymbolKind {
         return invokeOrNull(thiz, thiz.getClass(), name, args);
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T invokeOrNull(Object thiz, Class<?> type, String name, Object... args) {
         for (Method m : type.getMethods()) {
             if (name.equals(m.getName()) && m.getParameterCount() == args.length) {
@@ -341,6 +349,7 @@ enum SymbolKind {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T invokeStaticOrNull(Class<?> type, String name, Object... args) {
         for (Method m : type.getMethods()) {
             if (name.equals(m.getName())) {
@@ -354,6 +363,7 @@ enum SymbolKind {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T getStaticOrElse(Class<?> type, String fieldName, T defaultValue) {
         try {
             return (T) type.getField(fieldName).get(null);
@@ -362,6 +372,7 @@ enum SymbolKind {
         }
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T getOrElse(Class<?> type, Object thiz, String fieldName, T defaultValue) {
         if (type == null) {
             type = thiz.getClass();

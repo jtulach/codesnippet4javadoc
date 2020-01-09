@@ -57,7 +57,7 @@ import com.sun.tools.javac.util.List;
  *
  * @author Neal Gafter (rewrite)
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public class DocletInvoker {
 

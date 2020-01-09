@@ -53,7 +53,7 @@ import static com.sun.tools.javac.code.TypeTag.BOOLEAN;
  * @author Neal Gafter (rewrite)
  * @author Scott Seligman (generics, enums, annotations)
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 public class FieldDocImpl extends MemberDocImpl implements FieldDoc {
 

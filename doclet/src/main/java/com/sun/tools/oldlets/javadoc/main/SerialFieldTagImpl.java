@@ -53,7 +53,7 @@ import com.sun.javadoc.MemberDoc;
  *
  * @see java.io.ObjectStreamField
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class SerialFieldTagImpl
     extends TagImpl

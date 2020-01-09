@@ -33,6 +33,7 @@ public class DocletOptionsTest {
     }
 
     @BeforeMethod
+    @SuppressWarnings("deprecation")
     public void initStandardDoclet() throws Exception {
         try {
             standardDoclet = (jdk.javadoc.doclet.Doclet) Class.forName("jdk.javadoc.doclet.StandardDoclet").newInstance();

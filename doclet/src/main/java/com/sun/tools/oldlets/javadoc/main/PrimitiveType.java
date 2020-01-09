@@ -38,7 +38,7 @@ import com.sun.javadoc.WildcardType;
  *  This code and its internal interfaces are subject to change or
  *  deletion without notice.</b>
  */
-@Deprecated
+
 @SuppressWarnings("removal")
 class PrimitiveType implements com.sun.javadoc.Type {
 

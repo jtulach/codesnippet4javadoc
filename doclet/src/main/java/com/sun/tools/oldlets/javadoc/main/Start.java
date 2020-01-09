@@ -386,8 +386,8 @@ public class Start extends ToolOption.Helper {
 
             JavaFileManager platformFM;
             try {
-                Class PlatformDescription = Class.forName("com.sun.tools.javac.platform.PlatformDescription");
-                Class PlatformUtils = Class.forName("com.sun.tools.javac.platform.PlatformUtils");
+                Class<?> PlatformDescription = Class.forName("com.sun.tools.javac.platform.PlatformDescription");
+                Class<?> PlatformUtils = Class.forName("com.sun.tools.javac.platform.PlatformUtils");
                 Object platformDescription = SymbolKind.invokeStaticOrNull(PlatformUtils, "lookupPlatformDescription", platformString);
 
                 if (platformDescription == null) {
@@ -396,7 +396,7 @@ public class Start extends ToolOption.Helper {
 
                 compOpts.put(Option.SOURCE, SymbolKind.invokeOrNull(platformDescription, "getSourceVersion"));
 
-                context.put(PlatformDescription, platformDescription);
+                putIntoContext(PlatformDescription, platformDescription);
 
                 platformFM = SymbolKind.invokeOrNull(platformDescription, "getFileManager");
             } catch (ClassNotFoundException ex) {
@@ -460,6 +460,10 @@ public class Start extends ToolOption.Helper {
         }
 
         return ok;
+    }
+
+    private <T> void putIntoContext(Class<T> type, Object value) {
+        context.put(type, type.cast(value));
     }
 
     private <T> boolean isEmpty(Iterable<T> iter) {
