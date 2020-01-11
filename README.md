@@ -200,4 +200,4 @@ Feel free to use the Codesnippet Doclet binary to generate any public or private
 
 * [Truffle](https://github.com/oracle/graal/tree/master/truffle#readme) in its [Javadoc](http://www.graalvm.org/truffle/javadoc/)
 * [Graal](https://github.com/oracle/graal/) in its [Graph I/O API](http://www.graalvm.org/graphio/javadoc/org/graalvm/graphio/package-summary.html)
-* [Apache HTML/Java API](https://github.com/apache/incubator-netbeans-html4j#readme) in its [Javadoc](https://builds.apache.org/job/incubator-netbeans-html4j-linux/javadoc/net/java/html/BrwsrCtx.html#execute-java.lang.Runnable-)
+* [Apache HTML/Java API](https://github.com/apache/incubator-netbeans-html4j#readme) in its [Javadoc](http://bits.netbeans.org/html+java/1.7/net/java/html/BrwsrCtx.html#execute-java.lang.Runnable-)
