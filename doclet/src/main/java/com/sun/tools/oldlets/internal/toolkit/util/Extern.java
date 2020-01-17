@@ -273,14 +273,12 @@ public class Extern {
             && !isUrl(path);
         if (packageListFile.exists() && packageListFile.canRead()) {
             try {
-                System.out.println("USING PACKAGE-LIST");
                 readPackageList(packageListFile.openInputStream(), path, isPathRelative);
             } catch (IOException ex) {
                 throw new Fault(configuration.getText("doclet.File_error", packageListFile.getPath()), ex);
             }
         } else if (elementListFile.exists() && elementListFile.canRead()) {
             try {
-                System.out.println("USING ELEMENT-LIST");
                 readPackageList(elementListFile.openInputStream(), path, isPathRelative);
             } catch (IOException ex) {
                 throw new Fault(configuration.getText("doclet.File_error", elementListFile.getPath()), ex);
