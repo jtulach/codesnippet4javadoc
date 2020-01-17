@@ -22,6 +22,7 @@ import static org.testng.Assert.*;
 
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.testng.annotations.Test;
 
 // BEGIN: sampleClass
@@ -235,6 +236,27 @@ public class VerifyJavadocTest {
         String text = new String(data);
         assertSnippet(text, "dollarSnippet1", "MY_MONEY = <em>\"$100.00\"</em>");
         assertSnippet(text, "dollarSnippet2", "MONEY_SIGNS = <em>\"$ € £\"</em>");
+    }
+
+    @Test
+    public void testPackageListElementListExists() {
+        String packageListFileName = "javadoc-bundle-options/package-list";
+        int javaSpecVersion;
+        String javaSpecVersionProperty = System.getProperty("java.specification.version");
+        try {
+            // JDK 9 and above have properties set as "9", "10"...
+            // JDK 8 and below have this property set as "1.8", "1.7"
+            // https://openjdk.java.net/jeps/223
+            javaSpecVersion = Integer.parseInt(javaSpecVersionProperty);
+        } catch (NumberFormatException ex) {
+            javaSpecVersion = Integer
+                .parseInt(javaSpecVersionProperty.substring(javaSpecVersionProperty.indexOf('.') + 1));
+        }
+        if (javaSpecVersion >= 10) {
+            packageListFileName = "javadoc-bundle-options/element-list";
+        }
+        File file = Paths.get("target", packageListFileName).toFile();
+        assertTrue(file.exists(), "File found " + file);
     }
 
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {

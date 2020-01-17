@@ -110,6 +110,9 @@ public class DocPaths {
     /** The name of the file for the package list. */
     public static final DocPath PACKAGE_LIST = DocPath.create("package-list");
 
+    /** The name of the file for package list since JDK 10. */
+    public static final DocPath ELEMENT_LIST = DocPath.create("element-list");
+
     /** The name of the file for the package summary. */
     public static final DocPath PACKAGE_SUMMARY = DocPath.create("package-summary.html");
 
