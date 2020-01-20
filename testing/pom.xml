@@ -75,6 +75,15 @@
 -header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc ${testing.doclint}
                     </additionalOptions>
                     <failOnWarnings>true</failOnWarnings>
+                    <links>
+                        <!-- JDK 10 and above uses element-list link -->
+                        <!-- https://docs.oracle.com/javase/10/docs/api/element-list is a downloadable file -->
+                        <link>https://docs.oracle.com/javase/10/docs/api/</link>
+
+                        <!-- Reactor uses the older filename package-list -->
+                        <!-- https://projectreactor.io/docs/core/release/api/package-list is a downloadable file -->
+                        <link>https://projectreactor.io/docs/core/release/api/</link>
+                    </links>
                 </configuration>
             </plugin>
             <plugin>

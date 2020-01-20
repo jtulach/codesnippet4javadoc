@@ -20,6 +20,7 @@ package org.apidesign.javadoc.testing;
 import java.io.File;
 import static org.testng.Assert.*;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -257,6 +258,20 @@ public class VerifyJavadocTest {
         }
         File file = Paths.get("target", packageListFileName).toFile();
         assertTrue(file.exists(), "File found " + file);
+    }
+
+    @Test
+    public void testElementListLinks() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/org/apidesign/javadoc/testing/UseFlux.html");
+        assertNotNull(url, "Generated page for package found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        byte[] data = Files.readAllBytes(file.toPath());
+        String text = new String(data);
+        assertNotEquals(text.indexOf("/Flux.html"), -1, "Checks for existence of link to Flux");
+        assertNotEquals(text.indexOf("/Integer.html"), -1, "Checks for existence of link to Integer");
     }
 
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {

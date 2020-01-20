@@ -234,7 +234,7 @@ public class Extern {
     private void readPackageListFromURL(String urlpath, URL pkglisturlpath)
             throws Fault {
         try {
-            URL link = pkglisturlpath.toURI().resolve(DocPaths.PACKAGE_LIST.getPath()).toURL();
+            URL link = getLinkForPackageList(pkglisturlpath);
             readPackageList(link.openStream(), urlpath, false);
         } catch (URISyntaxException exc) {
             throw new Fault(configuration.getText("doclet.MalformedURL", pkglisturlpath.toString()), exc);
@@ -243,6 +243,28 @@ public class Extern {
         } catch (IOException exc) {
             throw new Fault(configuration.getText("doclet.URL_error", pkglisturlpath.toString()), exc);
         }
+    }
+
+    /**
+     * Returns URL to a downloadable file containing the list of packages. This method checks if package-list
+     * exists, if not, returns a link to newer element-list file.
+     *
+     * @param pkglisturlpath The base package list URL.
+     * @return Link to a downloadable file containing package list.
+     * @throws URISyntaxException If the base package list URL is malformed.
+     * @throws IOException If connection to base package list link fails.
+     */
+    private URL getLinkForPackageList(URL pkglisturlpath) throws URISyntaxException, IOException {
+        // First check if package/list/url/path/package-list exists. If this url returns 404, then use
+        // package/list/url/path/element-list
+        URL link = pkglisturlpath.toURI().resolve(DocPaths.PACKAGE_LIST.getPath()).toURL();
+        HttpURLConnection connection = (HttpURLConnection) link.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+            link = pkglisturlpath.toURI().resolve(DocPaths.ELEMENT_LIST.getPath()).toURL();
+        }
+        return link;
     }
 
     /**
