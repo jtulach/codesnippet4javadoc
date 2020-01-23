@@ -31,7 +31,7 @@ public class UseFlux {
     }
 
     /**
-     * Returns a {@link Flux} of integers.
+     * Returns a {@link Flux} of {@link Integer integers}.
      *
      * @return A flux of integers.
      */

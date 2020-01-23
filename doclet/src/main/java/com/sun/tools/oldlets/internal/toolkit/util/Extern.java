@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.tools.DocumentationTool;
 
 import com.sun.tools.oldlets.internal.toolkit.*;
+import javax.tools.DocumentationTool.Location;
 
 /**
  * Process and manage "-link" and "-linkoffline" to external packages. The
@@ -233,7 +234,7 @@ public class Extern {
     private void readPackageListFromURL(String urlpath, URL pkglisturlpath)
             throws Fault {
         try {
-            URL link = pkglisturlpath.toURI().resolve(DocPaths.PACKAGE_LIST.getPath()).toURL();
+            URL link = getLinkForPackageList(pkglisturlpath);
             readPackageList(link.openStream(), urlpath, false);
         } catch (URISyntaxException exc) {
             throw new Fault(configuration.getText("doclet.MalformedURL", pkglisturlpath.toString()), exc);
@@ -245,36 +246,75 @@ public class Extern {
     }
 
     /**
+     * Returns URL to a downloadable file containing the list of packages. This method checks if package-list
+     * exists, if not, returns a link to newer element-list file.
+     *
+     * @param pkglisturlpath The base package list URL.
+     * @return Link to a downloadable file containing package list.
+     * @throws URISyntaxException If the base package list URL is malformed.
+     * @throws IOException If connection to base package list link fails.
+     */
+    private URL getLinkForPackageList(URL pkglisturlpath) throws URISyntaxException, IOException {
+        // First check if package/list/url/path/package-list exists. If this url returns 404, then use
+        // package/list/url/path/element-list
+        URL link = pkglisturlpath.toURI().resolve(DocPaths.PACKAGE_LIST.getPath()).toURL();
+        HttpURLConnection connection = (HttpURLConnection) link.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+            link = pkglisturlpath.toURI().resolve(DocPaths.ELEMENT_LIST.getPath()).toURL();
+        }
+        return link;
+    }
+
+    /**
      * Read the "package-list" file which is available locally.
      *
      * @param path URL or directory path to the packages.
-     * @param pkgListPath Path to the local "package-list" file.
+     * @param pkgListPath Path to the local "package-list" or "element-list" (for JDK 10 or greater) file.
      */
     private void readPackageListFromFile(String path, DocFile pkgListPath)
             throws Fault {
-        DocFile file = pkgListPath.resolve(DocPaths.PACKAGE_LIST);
-        if (! (file.isAbsolute() || linkoffline)){
-            file = file.resolveAgainst(DocumentationTool.Location.DOCUMENTATION_OUTPUT);
+        DocFile packageListFile = pkgListPath.resolve(DocPaths.PACKAGE_LIST);
+        DocFile elementListFile = pkgListPath.resolve(DocPaths.ELEMENT_LIST);
+
+        if (!(packageListFile.isAbsolute() || linkoffline)) {
+            packageListFile = packageListFile.resolveAgainst(Location.DOCUMENTATION_OUTPUT);
         }
-        try {
-            if (file.exists() && file.canRead()) {
-                boolean pathIsRelative =
-                        !DocFile.createFileForInput(configuration, path).isAbsolute()
-                        && !isUrl(path);
-                readPackageList(file.openInputStream(), path, pathIsRelative);
-            } else {
-                throw new Fault(configuration.getText("doclet.File_error", file.getPath()), null);
+
+        // JDK 10 onwards, package-list file was renamed to element-list and this method should
+        // attempt to read the package list from either of these files. The first preference is to look
+        // for package-list and if this is not found try element-list and if that's also not found, throw an
+        // exception (which will log a warning).
+        // https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8191363
+        if (!(elementListFile.isAbsolute() || linkoffline)) {
+            elementListFile = elementListFile.resolveAgainst(Location.DOCUMENTATION_OUTPUT);
+        }
+
+        boolean isPathRelative = !DocFile.createFileForInput(configuration, path).isAbsolute()
+            && !isUrl(path);
+        if (packageListFile.exists() && packageListFile.canRead()) {
+            try {
+                readPackageList(packageListFile.openInputStream(), path, isPathRelative);
+            } catch (IOException ex) {
+                throw new Fault(configuration.getText("doclet.File_error", packageListFile.getPath()), ex);
             }
-        } catch (IOException exc) {
-           throw new Fault(configuration.getText("doclet.File_error", file.getPath()), exc);
+        } else if (elementListFile.exists() && elementListFile.canRead()) {
+            try {
+                readPackageList(elementListFile.openInputStream(), path, isPathRelative);
+            } catch (IOException ex) {
+                throw new Fault(configuration.getText("doclet.File_error", elementListFile.getPath()), ex);
+            }
+        } else {
+            throw new Fault(configuration.getText("doclet.File_error", packageListFile.getPath()), null);
         }
     }
 
     /**
-     * Read the file "package-list" and for each package name found, create
+     * Read the file "package-list" or "element-list" and for each package name found, create
      * Extern object and associate it with the package name in the map.
      *
-     * @param input    InputStream from the "package-list" file.
+     * @param input    InputStream from the "package-list" or "element-list" file.
      * @param path     URL or the directory path to the packages.
      * @param relative Is path relative?
      */
