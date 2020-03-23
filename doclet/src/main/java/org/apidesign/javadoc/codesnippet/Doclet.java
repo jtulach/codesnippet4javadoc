@@ -113,7 +113,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     }
 
     enum SnippetOption implements jdk.javadoc.doclet.Doclet.Option {
-        CLASSPATH(2, "-classpath"),
+        CLASSPATH(2, "-classpath", "--class-path", "-cp"),
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
         SNIPPETCLASSES(2, "-snippetclasses"),
@@ -126,10 +126,15 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
         final int length;
         final String name;
+        final List<String> names;
 
-        private SnippetOption(int length, String name) {
+        private SnippetOption(int length, String name, String... optNames) {
             this.length = length;
             this.name = name;
+            List<String> arr = new ArrayList<>();
+            arr.add(name);
+            arr.addAll(Arrays.asList(optNames));
+            this.names = Collections.unmodifiableList(arr);
         }
 
         public boolean matches(String option) {
@@ -149,7 +154,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         }
 
         public List<String> getNames() {
-            return Arrays.asList(name);
+            return names;
         }
 
         public String getParameters() {
