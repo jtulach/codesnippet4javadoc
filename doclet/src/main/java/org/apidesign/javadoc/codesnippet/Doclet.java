@@ -34,9 +34,11 @@ import com.sun.source.util.JavacTask;
 import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.javadoc.main.Start;
+import com.sun.tools.oldlets.javadoc.main.SymbolKind;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -166,9 +168,23 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             all.add(option);
             all.addAll(arguments);
             if (allOptions == null) {
-                allOptions = all;
+                allOptions = wholeArray(option, arguments);
             }
             return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
+        }
+
+        @SuppressWarnings("unchecked")
+        private static List<String> wholeArray(String prefix, List<String> arguments) {
+            try {
+                Field root = arguments.getClass().getDeclaredField("root");
+                root.setAccessible(true);
+                return (List<String>) root.get(arguments);
+            } catch (ClassCastException | ReflectiveOperationException ex) {
+                ArrayList<String> all = new ArrayList<>();
+                all.add(prefix);
+                all.addAll(arguments);
+                return all;
+            }
         }
     }
 
@@ -371,6 +387,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         jdk.javadoc.doclet.Doclet standardDoclet;
         try {
             standardDoclet = (jdk.javadoc.doclet.Doclet) Class.forName("jdk.javadoc.doclet.StandardDoclet").newInstance();
+            SymbolKind.invokeOrNull(standardDoclet, "init", this.locale, this.reporter);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             throw new IllegalStateException(ex);
         }

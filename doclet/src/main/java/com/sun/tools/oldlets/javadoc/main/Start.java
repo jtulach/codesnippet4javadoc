@@ -52,6 +52,8 @@ import com.sun.tools.javac.util.Options;
 
 import static com.sun.tools.javac.code.Flags.*;
 import com.sun.tools.javac.util.Context.Key;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Main program of Javadoc.
@@ -276,12 +278,24 @@ public class Start extends ToolOption.Helper {
         ListBuffer<String> javaNames = new ListBuffer<>();
 
         // Preprocess @file arguments
-        try {
-            argv = CommandLine.parse(argv);
-        } catch (FileNotFoundException e) {
-            messager.error(Messager.NOPOS, "main.cant.read", e.getMessage());
-            exit();
-        } catch (IOException e) {
+        FOUND: try {
+            for (Method m : CommandLine.class.getMethods()) {
+                if (m.getName().equals("parse") && m.getParameterCount() == 1) {
+                    if (m.getParameterTypes()[0] == String[].class) {
+                        argv = (String[]) m.invoke(null, (Object) argv);
+                    } else {
+                        assert m.getParameterTypes()[0] == java.util.List.class;
+                        java.util.List<?> ret = (java.util.List<?>) m.invoke(null, Arrays.asList(argv));
+                        argv = ret.toArray(new String[0]);
+                    }
+                    break FOUND;
+                }
+            }
+        } catch (ReflectiveOperationException e) {
+            if (e.getCause() instanceof FileNotFoundException) {
+                messager.error(Messager.NOPOS, "main.cant.read", e.getCause().getMessage());
+                exit();
+            }
             e.printStackTrace(System.err);
             exit();
         }

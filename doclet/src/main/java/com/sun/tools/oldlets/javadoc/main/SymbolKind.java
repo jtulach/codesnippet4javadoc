@@ -38,7 +38,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-enum SymbolKind {
+public enum SymbolKind {
     NIL(0),
     PCK(1),
     TYP(2),
@@ -331,7 +331,7 @@ enum SymbolKind {
         messages.add(bundle);
     }
 
-    static <T> T invokeOrNull(Object thiz, String name, Object... args) {
+    public static <T> T invokeOrNull(Object thiz, String name, Object... args) {
         return invokeOrNull(thiz, thiz.getClass(), name, args);
     }
 

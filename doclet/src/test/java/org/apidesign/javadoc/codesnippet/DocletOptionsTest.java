@@ -17,10 +17,15 @@
  */
 package org.apidesign.javadoc.codesnippet;
 
+import com.sun.source.util.DocTreePath;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import javax.lang.model.element.Element;
+import javax.tools.Diagnostic;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.Doclet.Option;
+import jdk.javadoc.doclet.Reporter;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeMethod;
@@ -28,6 +33,19 @@ import org.testng.annotations.Test;
 
 public class DocletOptionsTest {
     private Doclet standardDoclet;
+    private final Reporter noReporter = new Reporter() {
+        @Override
+        public void print(Diagnostic.Kind kind, String msg) {
+        }
+
+        @Override
+        public void print(Diagnostic.Kind kind, DocTreePath dtp, String string) {
+        }
+
+        @Override
+        public void print(Diagnostic.Kind kind, Element elmnt, String string) {
+        }
+    };
 
     public DocletOptionsTest() {
     }
@@ -37,6 +55,7 @@ public class DocletOptionsTest {
     public void initStandardDoclet() throws Exception {
         try {
             standardDoclet = (jdk.javadoc.doclet.Doclet) Class.forName("jdk.javadoc.doclet.StandardDoclet").newInstance();
+            standardDoclet.init(Locale.US, noReporter);
         } catch (ClassNotFoundException ex) {
             if (System.getProperty("java.version").startsWith("1.8")) {
                 throw new SkipException("Can only run on JDK9+");
@@ -48,6 +67,7 @@ public class DocletOptionsTest {
     @Test
     public void testGetSupportedOptions() {
         Doclet instance = new org.apidesign.javadoc.codesnippet.Doclet();
+        instance.init(Locale.US, noReporter);
         Set<? extends Doclet.Option> expResult = standardDoclet.getSupportedOptions();
         Set<? extends Doclet.Option> result = instance.getSupportedOptions();
         assertOptions(expResult, result);
