@@ -174,7 +174,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            allOptions.put(option, arguments);
+            allOptions.put(option, arguments.subList(0, getArgumentCount()));
             return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
         }
     }
@@ -221,7 +221,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            allOptions.put(option, arguments);
+            allOptions.put(option, arguments.subList(0, getArgumentCount()));
             return validOptions(new String[][]{all.subList(0, getArgumentCount() + 1).toArray(new String[0])}, docErrorReporter);
         }
     }
