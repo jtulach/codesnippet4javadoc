@@ -40,3 +40,11 @@ matrix:
     # JDK 13
     - name: JDK13
       jdk: oraclejdk13
+
+    # JDK 14
+    - name: JDK14
+      jdk: oraclejdk14
+
+    # JDK 15
+    - name: JDK15
+      jdk: oraclejdk15
