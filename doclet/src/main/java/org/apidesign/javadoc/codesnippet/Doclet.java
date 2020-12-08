@@ -35,8 +35,12 @@ import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.javadoc.main.Start;
 import com.sun.tools.oldlets.javadoc.main.SymbolKind;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -50,12 +54,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
@@ -75,7 +82,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static Snippets snippets;
     private Locale locale;
     private Reporter reporter;
-    private static List<String> allOptions;
+    private static Map<String, List<String>> allOptions = new LinkedHashMap<>();
     private static DocErrorReporter docErrorReporter;
 
     public Doclet() {
@@ -167,24 +174,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            if (allOptions == null) {
-                allOptions = wholeArray(option, arguments);
-            }
+            allOptions.put(option, arguments);
             return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
-        }
-
-        @SuppressWarnings("unchecked")
-        private static List<String> wholeArray(String prefix, List<String> arguments) {
-            try {
-                Field root = arguments.getClass().getDeclaredField("root");
-                root.setAccessible(true);
-                return (List<String>) root.get(arguments);
-            } catch (ClassCastException | ReflectiveOperationException ex) {
-                ArrayList<String> all = new ArrayList<>();
-                all.add(prefix);
-                all.addAll(arguments);
-                return all;
-            }
         }
     }
 
@@ -230,9 +221,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            if (allOptions == null) {
-                allOptions = all;
-            }
+            allOptions.put(option, arguments);
             return validOptions(new String[][]{all.subList(0, getArgumentCount() + 1).toArray(new String[0])}, docErrorReporter);
         }
     }
@@ -406,7 +395,15 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
 
     public boolean run(DocletEnvironment environment) {
         Start start = new Start(getName());
-        boolean result = start.begin(Doclet.class, allOptions, Collections.emptyList());
+        List<String> all = new ArrayList<>();
+        for (Map.Entry<String, List<String>> e : allOptions.entrySet()) {
+            all.add(e.getKey());
+            all.addAll(e.getValue());
+        }
+        for (Element s : environment.getSpecifiedElements()) {
+            all.add(s.toString());
+        }
+        boolean result = start.begin(Doclet.class, all, Collections.emptyList());
         return result;
     }
 

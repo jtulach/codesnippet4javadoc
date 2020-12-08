@@ -24,6 +24,9 @@
  */
 package jdk.javadoc.doclet;
 
-public interface DocletEnvironment {
+import java.util.Set;
+import javax.lang.model.element.Element;
 
+public interface DocletEnvironment {
+    Set<? extends Element> getSpecifiedElements();
 }
