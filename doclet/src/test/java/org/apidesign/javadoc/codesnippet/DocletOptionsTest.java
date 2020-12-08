@@ -34,15 +34,12 @@ import org.testng.annotations.Test;
 public class DocletOptionsTest {
     private Doclet standardDoclet;
     private final Reporter noReporter = new Reporter() {
-        @Override
         public void print(Diagnostic.Kind kind, String msg) {
         }
 
-        @Override
         public void print(Diagnostic.Kind kind, DocTreePath dtp, String string) {
         }
 
-        @Override
         public void print(Diagnostic.Kind kind, Element elmnt, String string) {
         }
     };

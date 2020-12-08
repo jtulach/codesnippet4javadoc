@@ -29,6 +29,7 @@ import java.util.Set;
 
 public interface Doclet {
     Set<? extends Option> getSupportedOptions();
+    void init(java.util.Locale l, Reporter r);
 
     public static interface Option {
         List<String> getNames();
