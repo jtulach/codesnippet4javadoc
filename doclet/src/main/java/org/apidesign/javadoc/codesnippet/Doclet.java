@@ -35,14 +35,9 @@ import com.sun.tools.oldlets.formats.html.HtmlDoclet;
 import com.sun.tools.oldlets.internal.toolkit.Configuration;
 import com.sun.tools.oldlets.javadoc.main.Start;
 import com.sun.tools.oldlets.javadoc.main.SymbolKind;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -54,7 +49,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -82,7 +76,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     private static Snippets snippets;
     private Locale locale;
     private Reporter reporter;
-    private static Map<String, List<String>> allOptions = new LinkedHashMap<>();
+    private static List<String> allOptions = new ArrayList<>();
     private static DocErrorReporter docErrorReporter;
 
     public Doclet() {
@@ -174,7 +168,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            allOptions.put(option, arguments.subList(0, getArgumentCount()));
+            allOptions.add(option);
+            allOptions.addAll(arguments.subList(0, getArgumentCount()));
             return validOptions(new String[][] { all.subList(0, length).toArray(new String[0]) }, docErrorReporter);
         }
     }
@@ -221,7 +216,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             ArrayList<String> all = new ArrayList<>();
             all.add(option);
             all.addAll(arguments);
-            allOptions.put(option, arguments.subList(0, getArgumentCount()));
+            allOptions.add(option);
+            allOptions.addAll(arguments.subList(0, getArgumentCount()));
             return validOptions(new String[][]{all.subList(0, getArgumentCount() + 1).toArray(new String[0])}, docErrorReporter);
         }
     }
@@ -396,10 +392,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
     public boolean run(DocletEnvironment environment) {
         Start start = new Start(getName());
         List<String> all = new ArrayList<>();
-        for (Map.Entry<String, List<String>> e : allOptions.entrySet()) {
-            all.add(e.getKey());
-            all.addAll(e.getValue());
-        }
+        all.addAll(allOptions);
         for (Element s : environment.getSpecifiedElements()) {
             all.add(s.toString());
         }

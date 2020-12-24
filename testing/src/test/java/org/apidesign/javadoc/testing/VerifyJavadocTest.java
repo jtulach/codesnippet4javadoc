@@ -20,7 +20,6 @@ package org.apidesign.javadoc.testing;
 import java.io.File;
 import static org.testng.Assert.*;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -272,6 +271,20 @@ public class VerifyJavadocTest {
         String text = new String(data);
         assertNotEquals(text.indexOf("/Flux.html"), -1, "Checks for existence of link to Flux");
         assertNotEquals(text.indexOf("/Integer.html"), -1, "Checks for existence of link to Integer");
+    }
+
+    @Test
+    public void testPackageGroups() throws Exception {
+        ClassLoader l = VerifyJavadocTest.class.getClassLoader();
+        URL url = l.getResource("apidocs/overview-summary.html");
+        assertNotNull(url, "Generated page for package found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+
+        byte[] data = Files.readAllBytes(file.toPath());
+        String text = new String(data);
+        assertNotEquals(text.indexOf("Service Package"), -1, "Second group found");
+        assertNotEquals(text.indexOf("Basic Package"), -1, "First group found");
     }
 
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {

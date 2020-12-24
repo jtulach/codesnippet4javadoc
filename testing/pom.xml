@@ -72,7 +72,7 @@
 -maxLineLength 80
 -hiddingannotation java.lang.Deprecated
 -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
--header Header -bottom Bottom -group Extra org.apidesign.javadoc.testing:org.apidesign.javadoc ${testing.doclint}
+-header Header -bottom Bottom ${testing.doclint}
                     </additionalOptions>
                     <failOnWarnings>true</failOnWarnings>
                     <links>
@@ -84,6 +84,16 @@
                         <!-- https://projectreactor.io/docs/core/release/api/package-list is a downloadable file -->
                         <link>https://projectreactor.io/docs/core/release/api/</link>
                     </links>
+                    <groups>
+                        <group>
+                            <title>Basic Package</title>
+                            <packages>org.apidesign.javadoc.testing</packages>
+                        </group>
+                        <group>
+                            <title>Service Package</title>
+                            <packages>org.apidesign.javadoc.testing.spi</packages>
+                        </group>
+                    </groups>
                 </configuration>
             </plugin>
             <plugin>
