@@ -56,7 +56,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.60</version> <!-- or any newer version -->
+       <version>0.61</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath src/test/java</additionalparam>
@@ -74,7 +74,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.60'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.61'
 }
 
 javadoc {
@@ -89,7 +89,7 @@ javadoc {
 The Codesnippet doclet supports JDK11, JDK15 and newer as well as JDK8. The old
 Javadoc API has been removed in JDK13, but it seems I found a way
 to support older as well as new style. There were some additional problems
-running on JDK15, but version 0.60 works with JDK15 quite well.
+running on JDK15, but versions 0.60 and newer work with JDK15 quite well.
 
 ## Use with Command Line Javadoc Tool
 
