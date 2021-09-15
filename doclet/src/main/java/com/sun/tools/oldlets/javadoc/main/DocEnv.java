@@ -52,6 +52,7 @@ import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
+import org.apidesign.javadoc.codesnippet.impl.DocLintUtils;
 
 /**
  * Holds the environment for a run of javadoc.
@@ -840,12 +841,12 @@ public class DocEnv {
             customTags.append(customTag);
             sep = ",";
         }
-        doclintOpts.add(DocLint.XCUSTOM_TAGS_PREFIX + customTags.toString());
+        doclintOpts.add(DocLintUtils.XCUSTOM_TAGS_PREFIX + customTags.toString());
         doclintOpts.add("-XhtmlVersion:" + htmlVersion);
 
         JavacTask t = BasicJavacTask.instance(context);
-        doclint = new DocLint();
-        doclint.init(t, doclintOpts.toArray(new String[doclintOpts.size()]), false);
+        doclint = DocLintUtils.getDocLint();
+        DocLintUtils.init(doclint, t, doclintOpts.toArray(new String[doclintOpts.size()]), false);
     }
 
     JavaScriptScanner initJavaScriptScanner(boolean allowScriptInComments) {

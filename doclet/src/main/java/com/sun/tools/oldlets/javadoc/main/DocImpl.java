@@ -42,6 +42,7 @@ import com.sun.source.util.TreePath;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import com.sun.tools.javac.util.Position;
+import org.apidesign.javadoc.codesnippet.impl.DocLintUtils;
 
 /**
  * abstract base class of all Doc classes.  Doc item's are representations
@@ -143,7 +144,7 @@ public abstract class DocImpl implements Doc, Comparable<Object> {
                     && treePath != null
                     && env.shouldCheck(treePath.getCompilationUnit())
                     && d.equals(getCommentText(treePath))) {
-                env.doclint.scan(treePath);
+                DocLintUtils.scan(env.doclint, treePath);
             }
             comment = new Comment(this, d);
         }

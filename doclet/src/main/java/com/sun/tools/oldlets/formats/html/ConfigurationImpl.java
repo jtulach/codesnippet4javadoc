@@ -44,6 +44,8 @@ import com.sun.tools.javac.util.StringUtils;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+
+import org.apidesign.javadoc.codesnippet.impl.DocLintUtils;
 import org.apidesign.javadoc.codesnippet.impl.Profiles;
 
 /**
@@ -509,7 +511,7 @@ public class ConfigurationImpl extends Configuration {
                     reporter.printError(getText("doclet.Option_doclint_no_qualifiers"));
                     return false;
                 }
-                if (!DocLint.isValidOption(
+                if (!DocLintUtils.isValidOption(
                         opt.replace("-xdoclint:", DocLint.XMSGS_CUSTOM_PREFIX))) {
                     reporter.printError(getText("doclet.Option_doclint_invalid_arg"));
                     return false;
