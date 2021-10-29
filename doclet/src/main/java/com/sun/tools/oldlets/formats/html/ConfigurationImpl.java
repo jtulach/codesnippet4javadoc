@@ -39,7 +39,7 @@ import javax.tools.JavaFileManager;
 import com.sun.tools.oldlets.formats.html.markup.ContentBuilder;
 import com.sun.tools.oldlets.internal.toolkit.*;
 import com.sun.tools.oldlets.internal.toolkit.util.*;
-import com.sun.tools.doclint.DocLint;
+import com.sun.tools.oldlets.doclint.DocLint;
 import com.sun.tools.javac.util.StringUtils;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
