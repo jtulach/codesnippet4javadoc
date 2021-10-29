@@ -12,15 +12,18 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        java: [ '8', '11', '13', '14', '15' ]
+        
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 11
+    - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
         distribution: 'zulu'
+        java-version: ${{ matrix.java }}        
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
