@@ -81,6 +81,14 @@ public class Messager extends Log implements DocErrorReporter {
                             noticeWriter));
     }
 
+    private void setWriter(String type, PrintWriter w) {
+        for (WriterKind kind : WriterKind.values()) {
+            if (kind.name().equals(type)) {
+                setWriter(kind, w);
+            }
+        }
+    }
+
     public class ExitJavadoc extends Error {
         private static final long serialVersionUID = 0;
     }
@@ -119,11 +127,11 @@ public class Messager extends Log implements DocErrorReporter {
                        PrintWriter warnWriter,
                        PrintWriter noticeWriter) {
         super(context, errWriter);
-        setWriter(WriterKind.NOTICE, noticeWriter);
-        setWriter(WriterKind.ERROR, errWriter);
-        setWriter(WriterKind.WARNING, warnWriter);
-        setWriter(WriterKind.STDOUT, noticeWriter);
-        setWriter(WriterKind.STDERR, errWriter);
+        setWriter("NOTICE", noticeWriter);
+        setWriter("ERROR", errWriter);
+        setWriter("WARNING", warnWriter);
+        setWriter("STDOUT", noticeWriter);
+        setWriter("STDERR", errWriter);
         messages = JavacMessages.instance(context);
         SymbolKind.addResourceBundle(messages, "com.sun.tools.oldlets.javadoc.main.javadoc");
         javadocDiags = new JCDiagnostic.Factory(messages, "javadoc");
