@@ -119,6 +119,11 @@ public class Messager extends Log implements DocErrorReporter {
                        PrintWriter warnWriter,
                        PrintWriter noticeWriter) {
         super(context, errWriter);
+        setWriter(WriterKind.NOTICE, noticeWriter);
+        setWriter(WriterKind.ERROR, errWriter);
+        setWriter(WriterKind.WARNING, warnWriter);
+        setWriter(WriterKind.STDOUT, noticeWriter);
+        setWriter(WriterKind.STDERR, errWriter);
         messages = JavacMessages.instance(context);
         SymbolKind.addResourceBundle(messages, "com.sun.tools.oldlets.javadoc.main.javadoc");
         javadocDiags = new JCDiagnostic.Factory(messages, "javadoc");
