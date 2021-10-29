@@ -48,3 +48,7 @@ matrix:
     # JDK 15
     - name: JDK15
       jdk: oraclejdk15
+
+    # JDK 15
+    - name: JDK17
+      jdk: oraclejdk17
