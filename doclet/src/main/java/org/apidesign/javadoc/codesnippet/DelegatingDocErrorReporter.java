@@ -19,6 +19,8 @@ package org.apidesign.javadoc.codesnippet;
 
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.SourcePosition;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import javax.tools.Diagnostic;
 import jdk.javadoc.doclet.Reporter;
 
@@ -52,12 +54,25 @@ final class DelegatingDocErrorReporter implements DocErrorReporter {
 
     @Override
     public void printNotice(String msg) {
-        reporter.print(Diagnostic.Kind.NOTE, msg);
+        notice(reporter, msg);
     }
 
     @Override
     public void printNotice(SourcePosition pos, String msg) {
-        reporter.print(Diagnostic.Kind.NOTE, msg);
+        notice(reporter, msg);
     }
 
+    private static void notice(Reporter r, String m) {
+        try {
+            final Method method = Reporter.class.getMethod("getStandardWriter");
+            PrintWriter w = (PrintWriter) method.invoke(r);
+            if (w != null) {
+                w.println(m);
+                return;
+            }
+        } catch (ClassCastException | ReflectiveOperationException | SecurityException ex) {
+            // fall thru
+        }
+        r.print(Diagnostic.Kind.NOTE, m);
+    }
 }

@@ -75,6 +75,7 @@
 -header Header -bottom Bottom ${testing.doclint}
                     </additionalOptions>
                     <failOnWarnings>true</failOnWarnings>
+                    <quiet>true</quiet>
                     <links>
                         <!-- JDK 10 and above uses element-list link -->
                         <!-- https://docs.oracle.com/javase/10/docs/api/element-list is a downloadable file -->
