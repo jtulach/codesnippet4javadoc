@@ -115,6 +115,7 @@
         <module>doclet</module>
         <module>doclet-test</module>
         <module>testing</module>
+        <module>jep413</module>
     </modules>
     <dependencyManagement>
         <dependencies>

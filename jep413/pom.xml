@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Codesnippet Javadoc Doclet
+    Copyright (C) 2015-2020 Jaroslav Tulach - jaroslav.tulach@apidesign.org
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.0 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. Look for COPYING file in the top folder.
+    If not, see http://opensource.org/licenses/GPL-3.0.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apidesign.javadoc</groupId>
+        <artifactId>pom</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jep413</artifactId>
+    <name>Codesnippet for Javadoc JEP 413 Tests</name>
+    <packaging>jar</packaging>
+    <properties>
+        <debug />
+        <testing.doclint>-Xdoclint:none</testing.doclint>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>commons-lang</groupId>
+                        <artifactId>commons-lang</artifactId>
+                        <version>2.6</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>for-testing</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/test-classes/jep413/</outputDirectory>
+                            <reportOutputDirectory>${project.build.directory}/test-classes/jep413/</reportOutputDirectory>
+                            <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+                            <docletArtifact>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>codesnippet-doclet</artifactId>
+                                <version>${project.version}</version>
+                            </docletArtifact>
+                            <additionalJOption>${debug}</additionalJOption>
+                            <additionalOptions>
+        -snippetpath src/test/java
+        -snippetclasses ".*Snippet.*"
+        -maxLineLength 80
+        -hiddingannotation java.lang.Deprecated
+        -hiddingannotation org.apidesign.javadoc.testing.HiddenSnippets.Invisible
+        -header Header -bottom Bottom ${testing.doclint}
+                            </additionalOptions>
+                            <quiet>true</quiet>
+                            <links>
+                                <!-- JDK 10 and above uses element-list link -->
+                                <!-- https://docs.oracle.com/javase/10/docs/api/element-list is a downloadable file -->
+                                <link>https://docs.oracle.com/javase/10/docs/api/</link>
+
+                                <!-- Reactor uses the older filename package-list -->
+                                <!-- https://projectreactor.io/docs/core/release/api/package-list is a downloadable file -->
+                                <link>https://projectreactor.io/docs/core/release/api/</link>
+                            </links>
+                            <groups>
+                                <group>
+                                    <title>Basic Package</title>
+                                    <packages>org.apidesign.javadoc.testing</packages>
+                                </group>
+                                <group>
+                                    <title>Service Package</title>
+                                    <packages>org.apidesign.javadoc.testing.spi</packages>
+                                </group>
+                            </groups>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*Snippet*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.3.0.RELEASE</version>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <profile>
+            <activation>
+                <jdk>[18,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>for-jep413-testing</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/test-classes/jdk/</outputDirectory>
+                            <reportOutputDirectory>${project.build.directory}/test-classes/jdk/</reportOutputDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
