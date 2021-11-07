@@ -48,6 +48,7 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z#]*) *\\}");
+    private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet *([\\.\\-a-z0-9A-Z#]*) *[:\\}]");
     private static final Pattern LINKTAG = Pattern.compile("\\{ *@link *([\\.\\-a-z0-9A-Z#]*) *\\}");
     private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
     private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
@@ -71,20 +72,48 @@ final class Snippets {
         try {
             for (;;) {
                 final String txt = element.getRawCommentText();
-                Matcher match = TAG.matcher(txt);
-                if (!match.find()) {
-                    if (classes.isEmpty()) {
-                        break;
+                final String code;
+                int end;
+                Matcher match = SNIPPET.matcher(txt);
+                if (match.find()) {
+                    int s = match.start();
+                    int colon = txt.indexOf(':', s);
+                    if (colon != -1) {
+                        int curly = 1;
+                        end = colon + 1;
+                        for (;;) {
+                            char ch = txt.charAt(end++);
+                            if (ch == '}') {
+                                if (--curly <= 0) {
+                                    break;
+                                }
+                            }
+                            if (ch == '{') {
+                                curly++;
+                            }
+                        }
+                        code = "<pre>" + txt.substring(colon + 1, end - 1) + "</pre>";
+                    } else {
+                        code = "...unknown snippet...";
+                        end = match.end();
                     }
-                    match = LINKTAG.matcher(txt);
-                    if (!findLinkSnippet(match)) {
-                        break;
+                } else {
+                    match = TAG.matcher(txt);
+                    if (!match.find()) {
+                        if (classes.isEmpty()) {
+                            break;
+                        }
+                        match = LINKTAG.matcher(txt);
+                        if (!findLinkSnippet(match)) {
+                            break;
+                        }
                     }
+                    code = "<pre>" + findSnippet(element, match.group(1)) + "</pre>";
+                    end = match.end(0);
                 }
-                final String code = "<pre>" + findSnippet(element, match.group(1)) + "</pre>";
                 String newTxt = txt.substring(0, match.start(0)) +
                     code +
-                    txt.substring(match.end(0));
+                    txt.substring(end);
                 element.setRawCommentText(newTxt);
             }
             element.inlineTags();
