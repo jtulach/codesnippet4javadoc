@@ -48,6 +48,23 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "Text after.");
     }
 
+    @Test
+    public void testExternalSnippetFound() throws Exception {
+        URL url = loadResource("apidocs/org/apidesign/javadoc/jep413/SampleClass.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+
+        assertSnippet(text, "demo", "SampleClass");
+        assertSnippet(text, "demo", "show");
+        assertSnippet(text, "demo", "text");
+
+        assertContains(text, "Before file snippet");
+        assertContains(text, "After file snippet");
+    }
+
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {

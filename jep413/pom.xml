@@ -145,6 +145,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/test-classes/jdk/</outputDirectory>
                             <reportOutputDirectory>${project.build.directory}/test-classes/jdk/</reportOutputDirectory>
+                            <additionalOptions>--snippet-path ${basedir}/src/main/java/</additionalOptions>
                         </configuration>
                     </plugin>
                 </plugins>

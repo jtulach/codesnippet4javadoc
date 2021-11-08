@@ -25,7 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.FileVisitResult;
@@ -34,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -48,17 +49,18 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z#]*) *\\}");
-    private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet *([\\.\\-a-z0-9A-Z#]*) *[:\\}]");
+    private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet(( *\\w+ *= *\"[^\"]+\")*) *[:\\}]");
+    private static final Pattern SNIPPET_ATTR = Pattern.compile(" *(\\w+) *= *\"([^\"]+)\"");
     private static final Pattern LINKTAG = Pattern.compile("\\{ *@link *([\\.\\-a-z0-9A-Z#]*) *\\}");
     private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
     private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
-    private static final Pattern BEGIN = Pattern.compile(".* BEGIN: *(\\p{Graph}+)[-\\> ]*");
-    private static final Pattern END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
+    private static final Pattern BEGIN = Pattern.compile(".* (BEGIN: *|@start *region=\")(\\p{Graph}+)[\"-\\> ]*");
+    private static final Pattern END = Pattern.compile(".* (END: *|FINISH: *|@end *region=\")(\\p{Graph}+)[\"-\\> ]*");
     private final DocErrorReporter reporter;
     private final List<Path> search = new ArrayList<>();
     private final List<Path> visible = new ArrayList<>();
     private final List<Pattern> classes = new ArrayList<>();
-    private Map<String,String> snippets;
+    private SnippetCollection snippets;
     private int maxLineLength = 80;
     private String verifySince;
     private String encoding;
@@ -72,48 +74,18 @@ final class Snippets {
         try {
             for (;;) {
                 final String txt = element.getRawCommentText();
-                final String code;
-                int end;
-                Matcher match = SNIPPET.matcher(txt);
-                if (match.find()) {
-                    int s = match.start();
-                    int colon = txt.indexOf(':', s);
-                    if (colon != -1) {
-                        int curly = 1;
-                        end = colon + 1;
-                        for (;;) {
-                            char ch = txt.charAt(end++);
-                            if (ch == '}') {
-                                if (--curly <= 0) {
-                                    break;
-                                }
-                            }
-                            if (ch == '{') {
-                                curly++;
-                            }
-                        }
-                        code = "<pre>" + txt.substring(colon + 1, end - 1) + "</pre>";
-                    } else {
-                        code = "...unknown snippet...";
-                        end = match.end();
+                final String[] code = { null };
+                final int[] end = { -1 };
+                Matcher match = matchSnippet(this::getSnippet, element, txt, code, end);
+                if (match == null) {
+                    match = matchCodeSnippet(this::getSnippet, element, txt, code, end);
+                    if (match == null) {
+                        break;
                     }
-                } else {
-                    match = TAG.matcher(txt);
-                    if (!match.find()) {
-                        if (classes.isEmpty()) {
-                            break;
-                        }
-                        match = LINKTAG.matcher(txt);
-                        if (!findLinkSnippet(match)) {
-                            break;
-                        }
-                    }
-                    code = "<pre>" + findSnippet(element, match.group(1)) + "</pre>";
-                    end = match.end(0);
                 }
                 String newTxt = txt.substring(0, match.start(0)) +
-                    code +
-                    txt.substring(end);
+                    code[0] +
+                    txt.substring(end[0]);
                 element.setRawCommentText(newTxt);
             }
             element.inlineTags();
@@ -123,6 +95,67 @@ final class Snippets {
         } catch (IOException ex) {
             Logger.getLogger(Snippets.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    static Matcher matchSnippet(
+        Function<Doc, SnippetCollection> snippets, Doc element,
+        String txt, String[] code, int[] end
+    ) {
+        Matcher match = SNIPPET.matcher(txt);
+        if (match.find()) {
+            int s = match.start();
+            int colon = txt.indexOf(':', s);
+            if (colon != -1) {
+                int curly = 1;
+                end[0] = colon + 1;
+                for (;;) {
+                    char ch = txt.charAt(end[0]++);
+                    if (ch == '}') {
+                        if (--curly <= 0) {
+                            break;
+                        }
+                    }
+                    if (ch == '{') {
+                        curly++;
+                    }
+                }
+                code[0] = "<pre>" + txt.substring(colon + 1, end[0] - 1) + "</pre>";
+            } else {
+                Map<String,String> attr = parseAttributes(match.group(1));
+                code[0] = "<pre>" + snippets.apply(element).findSnippet(element, attr.get("file"), attr.get("region")) + "</pre>";
+                end[0] = match.end();
+            }
+            return match;
+        }
+        return null;
+    }
+
+    Matcher matchCodeSnippet(
+        Function<Doc, SnippetCollection> snippets, Doc element,
+        String txt, String[] code, int[] end
+    ) {
+        Matcher match = TAG.matcher(txt);
+        if (!match.find()) {
+            if (classes.isEmpty()) {
+                return null;
+            }
+            match = LINKTAG.matcher(txt);
+            if (!findLinkSnippet(match)) {
+                return null;
+            }
+        }
+        code[0] = "<pre>" + snippets.apply(element).findGlobalSnippet(element, match.group(1)) + "</pre>";
+        end[0] = match.end(0);
+        return match;
+    }
+
+    private static Map<String, String> parseAttributes(String txt) {
+        Map<String, String> attrs = new HashMap<>();
+        Matcher m = SNIPPET_ATTR.matcher(txt);
+        while (m.find()) {
+            attrs.put(m.group(1), m.group(2));
+        }
+        return attrs;
     }
 
     private boolean verifySinceTag(Doc element, Doc enclosingElement, String expVersion) throws IOException {
@@ -195,9 +228,9 @@ final class Snippets {
         }
     }
 
-    String findSnippet(Doc element, String key) {
+    SnippetCollection getSnippet(Doc element) {
         if (snippets == null) {
-            Map<String,String> tmp = new TreeMap<>();
+            SnippetCollection tmp = new SnippetCollection(reporter);
             final Map<String,String> topClasses = new TreeMap<>();
             for (Path path : visible) {
                 if (!Files.isDirectory(path)) {
@@ -223,11 +256,7 @@ final class Snippets {
             }
             snippets = tmp;
         }
-        String code = snippets.get(key);
-        if (code == null) {
-            reporter.printWarning(element.position(), code = "Snippet '" + key + "' not found.");
-        }
-        return code;
+        return snippets;
     }
 
     void addPath(Path path, boolean useLink) {
@@ -241,7 +270,7 @@ final class Snippets {
         classes.add(Pattern.compile(classRegExp));
     }
 
-    private void scanDir(Path dir, final Map<String,String> topClasses, final Map<String, String> collect) throws IOException {
+    private void scanDir(Path dir, final Map<String,String> topClasses, final SnippetCollection collect) throws IOException {
         Files.walkFileTree(dir, new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -250,6 +279,7 @@ final class Snippets {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                String fullName = fullName(dir, file);
                 String javaName = javaName(file);
                 Map<String,CharSequence> texts = new TreeMap<>();
                 Map<String,String> imports = new TreeMap<>(topClasses);
@@ -280,7 +310,7 @@ final class Snippets {
                             Matcher m = BEGIN.matcher(line);
                             if (m.matches()) {
                                 Item sb = new Item(file);
-                                CharSequence prev = texts.put(m.group(1), sb);
+                                CharSequence prev = texts.put(sectionName(m.group(2)), sb);
                                 if (prev != null) {
                                     printError(null, "Same pattern is there twice: " + m.group(1) + " in " + file);
                                 }
@@ -290,9 +320,18 @@ final class Snippets {
                         {
                             Matcher m = END.matcher(line);
                             if (m.matches()) {
-                                CharSequence s = texts.get(m.group(2));
+                                final String sectionName = sectionName(m.group(2));
+                                CharSequence s = texts.get(sectionName);
                                 if (s instanceof Item) {
-                                    texts.put(m.group(2), ((Item) s).toString(m.group(1).equals("FINISH"), imports, packages));
+                                    Boolean finish;
+                                    if (m.group(1).startsWith("FINISH")) {
+                                        finish = true;
+                                    } else if (m.group(1).startsWith("END")) {
+                                        finish = false;
+                                    } else {
+                                        finish = null;
+                                    }
+                                    texts.put(sectionName, ((Item) s).toString(finish, imports, packages));
                                     continue;
                                 }
 
@@ -322,7 +361,7 @@ final class Snippets {
                     if (v instanceof Item) {
                         printError(null, "Not closed section " + entry.getKey() + " in " + file);
                     }
-                    collect.put(entry.getKey(), v.toString());
+                    collect.registerSnippet(fullName, entry.getKey(), v.toString());
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -335,6 +374,10 @@ final class Snippets {
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 return FileVisitResult.CONTINUE;
+            }
+
+            private String sectionName(String group) {
+                return group.replaceAll("\"", "");
             }
         });
 
@@ -436,6 +479,10 @@ final class Snippets {
     static String javaName(Path file1) {
         final String name = file1.getFileName().toString();
         return name.endsWith(".java") ? name.substring(0, name.length() - 5) : null;
+    }
+
+    static String fullName(Path dir, Path f) {
+        return dir.relativize(f).toString();
     }
 
     private static final Pattern WORDS = Pattern.compile("(\\w+)|(//.*)\n|(\"[^\"]*\")");
@@ -652,7 +699,7 @@ final class Snippets {
             sb.append('\n');
         }
 
-        public String toString(boolean finish, Map<String,String> imports, Set<String> packages) {
+        public String toString(Boolean finish, Map<String,String> imports, Set<String> packages) {
             final int len = maxLineLength;
             if (remove != null) {
                 while (!remove.isEmpty()) {
@@ -679,7 +726,7 @@ final class Snippets {
 
                 int open = countChar(sb, '{');
                 int end = countChar(sb, '}');
-                if (finish) {
+                if (Boolean.TRUE.equals(finish)) {
                     for (int i = 0; i < open - end; i++) {
                         int missingBraceIndent = findMissingIndentation(sb.toString());
                         while (missingBraceIndent-- > 0) {
@@ -689,7 +736,7 @@ final class Snippets {
                     }
                 }
 
-                if (countChar(sb, '{') != countChar(sb, '}')) {
+                if (finish != null && countChar(sb, '{') != countChar(sb, '}')) {
                     printError(null, "not paired amount of braces (consider using '// FINISH:' instead of '// END:') in " + file + "\n" + sb);
                 }
 
