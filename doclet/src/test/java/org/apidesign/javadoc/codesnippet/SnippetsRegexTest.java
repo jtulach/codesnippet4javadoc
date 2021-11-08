@@ -35,7 +35,7 @@ public class SnippetsRegexTest {
         SnippetCollection coll = new SnippetCollection(null);
         String[] code = { null };
         int[] end = { -1 };
-        Matcher m = Snippets.matchSnippet((__) -> coll, null, "\n\n" +
+        Matcher m = Snippets.matchSnippet(coll, "\n\n" +
 " * Text before.\n" +
 " * {@snippet :\n" +
 " * public static void main(String... args) {\n" +
@@ -57,7 +57,7 @@ public class SnippetsRegexTest {
                 + "}\n");
         String[] code = { null };
         int[] end = { -1 };
-        Matcher m = Snippets.matchSnippet((__) -> coll, null, "\n\n" +
+        Matcher m = Snippets.matchSnippet(coll, "\n\n" +
 " * Before file snippet:\n" +
 " * {@snippet file=\"org/text/Snip.java\" region=\"demo\"}\n" +
 " * After file snippet.\n\n", code, end);

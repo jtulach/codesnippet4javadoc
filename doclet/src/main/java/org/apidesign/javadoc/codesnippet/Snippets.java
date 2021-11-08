@@ -92,6 +92,13 @@ final class Snippets {
     }
 
     static Matcher matchSnippet(
+        SnippetCollection snippets,
+        String txt, String[] code, int[] end
+    ) {
+        return matchSnippet((__) -> snippets, null, txt, code, end);
+    }
+
+    private static Matcher matchSnippet(
         Function<Doc, SnippetCollection> snippets, Doc element,
         String txt, String[] code, int[] end
     ) {
