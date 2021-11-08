@@ -49,7 +49,7 @@ final class Snippets {
     static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
     static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
     static final Pattern BEGIN = Pattern.compile(".* (BEGIN: *|@start *region=\")(\\p{Graph}+)[\"-\\> ]*");
-    static final Pattern END = Pattern.compile(".* (END: *|FINISH: *|@end *region=\")(\\p{Graph}+)[\"-\\> ]*");
+    static final Pattern END = Pattern.compile(".* (END: *|FINISH: *|@end *)(\\p{Graph}*)[\"-\\> ]*");
     private final DocErrorReporter reporter;
     private final List<Path> search = new ArrayList<>();
     private final List<Path> visible = new ArrayList<>();

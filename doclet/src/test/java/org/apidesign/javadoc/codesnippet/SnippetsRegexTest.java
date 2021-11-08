@@ -18,7 +18,10 @@
 package org.apidesign.javadoc.codesnippet;
 
 import java.util.regex.Matcher;
+import static org.apidesign.javadoc.codesnippet.CodeSnippet.sectionName;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
@@ -63,6 +66,22 @@ public class SnippetsRegexTest {
         assertContains(code[0], "static");
         assertContains(code[0], "void");
         assertContains(code[0], "main");
+    }
+
+    @Test
+    public void matchesEnd() {
+        Matcher m = Snippets.END.matcher("// @end");
+        assertTrue(m.matches());
+        assertEquals(m.groupCount(), 2, "Two groups");
+        assertEquals(sectionName(m.group(2)), "", "region name is empty");
+    }
+
+    @Test
+    public void matchesEndRegion() {
+        Matcher m = Snippets.END.matcher("// @end region=\"xyz\"");
+        assertTrue(m.matches());
+        assertEquals(m.groupCount(), 2, "Two groups");
+        assertEquals(sectionName(m.group(2)), "xyz", "region name found");
     }
 
     private static void assertContains(String txt, String token) {

@@ -26,6 +26,8 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -328,7 +330,7 @@ final class CodeSnippet implements CharSequence {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 String fullName = CodeSnippet.fullName(dir, file);
                 String javaName = CodeSnippet.javaName(file);
-                Map<String, CharSequence> texts = new TreeMap<>();
+                Map<String, CharSequence> texts = new LinkedHashMap<>();
                 Map<String, String> imports = new TreeMap<>(topClasses);
                 Set<String> packages = new LinkedHashSet<>();
                 Charset charset = snippets1.getEncoding();
@@ -364,8 +366,15 @@ final class CodeSnippet implements CharSequence {
                         {
                             Matcher m = Snippets.END.matcher(line);
                             if (m.matches()) {
-                                final String sectionName = sectionName(m.group(2));
-                                CharSequence s = texts.get(sectionName);
+                                String sectionName = sectionName(m.group(2));
+                                if (sectionName.isEmpty()) {
+                                    // find last
+                                    Iterator<String> it = texts.keySet().iterator();
+                                    while (it.hasNext()) {
+                                        sectionName = it.next();
+                                    }
+                                }
+                                final CharSequence s = texts.get(sectionName);
                                 if (s instanceof CodeSnippet) {
                                     Boolean finish;
                                     if (m.group(1).startsWith("FINISH")) {
@@ -418,10 +427,14 @@ final class CodeSnippet implements CharSequence {
                 return FileVisitResult.CONTINUE;
             }
 
-            private String sectionName(String group) {
-                return group.replaceAll("\"", "");
-            }
         });
+    }
+
+    static String sectionName(String group) {
+        if (group.startsWith("region=\"")) {
+            group = group.substring(8);
+        }
+        return group.replaceAll("\"", "");
     }
 
     static String fullName(Path dir, Path f) {

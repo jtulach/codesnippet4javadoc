@@ -65,6 +65,22 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "After file snippet");
     }
 
+    @Test
+    public void testExternalEndlessSnippetFound() throws Exception {
+        URL url = loadResource("apidocs/org/apidesign/javadoc/jep413/SampleClass.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+
+        assertSnippet(text, "endless", "simpleend");
+        assertSnippet(text, "endless", "noEnd:");
+
+        assertContains(text, "Start snippet:");
+        assertContains(text, "End snippet.");
+    }
+
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {

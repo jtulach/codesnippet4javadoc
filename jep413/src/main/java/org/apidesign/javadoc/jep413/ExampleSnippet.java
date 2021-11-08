@@ -26,4 +26,11 @@ class ExampleSnippet {
         }
         // @end region="demo"
     }
+    static void noEnd(String s) {
+        // @start region="endless"
+        if (!s.isEmpty()) {
+            SampleClass.simpleend("noEnd: " + s);
+        }
+        // @end
+    }
 }

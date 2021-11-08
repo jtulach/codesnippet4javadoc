@@ -36,4 +36,12 @@ public class SampleClass {
      */
     public static void show(String s) {
     }
+    /** Show the string, if not empty. Start snippet:
+     * {@snippet file="org/apidesign/javadoc/jep413/ExampleSnippet.java" region="endless"}
+     * End snippet.
+     *
+     * @param s the text
+     */
+    public static void simpleend(String s) {
+    }
 }
