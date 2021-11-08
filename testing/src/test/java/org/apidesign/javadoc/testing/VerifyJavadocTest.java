@@ -290,7 +290,7 @@ public class VerifyJavadocTest {
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {
-            int start = text.indexOf("<pre>", from);
+            int start = text.indexOf("<pre class='snippet'>", from);
             assertTrue(start >= 0, snippetText + " found in " + text + " from " + from);
             int end = text.indexOf("</pre>", start);
             assertTrue(end >= start, "</pre> found in " + text);

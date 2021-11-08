@@ -119,15 +119,19 @@ final class Snippets {
                         curly++;
                     }
                 }
-                code[0] = "<pre>" + txt.substring(colon + 1, end[0] - 1) + "</pre>";
+                code[0] = pre(txt.substring(colon + 1, end[0] - 1));
             } else {
                 Map<String,String> attr = parseAttributes(match.group(1));
-                code[0] = "<pre>" + snippets.apply(element).findSnippet(element, attr.get("file"), attr.get("region")) + "</pre>";
+                code[0] = pre(snippets.apply(element).findSnippet(element, attr.get("file"), attr.get("region")));
                 end[0] = match.end();
             }
             return match;
         }
         return null;
+    }
+
+    private static String pre(String code) {
+        return "<pre class='snippet'>" + code + "</pre>";
     }
 
     Matcher matchCodeSnippet(
@@ -144,7 +148,7 @@ final class Snippets {
                 return null;
             }
         }
-        code[0] = "<pre>" + snippets.apply(element).findGlobalSnippet(element, match.group(1)) + "</pre>";
+        code[0] = pre(snippets.apply(element).findGlobalSnippet(element, match.group(1)));
         end[0] = match.end(0);
         return match;
     }
