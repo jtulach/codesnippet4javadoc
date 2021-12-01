@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apidesign.javadoc</groupId>
         <artifactId>pom</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.63</version>
     </parent>
     <name>ClassFinder patch for JDK8</name>
     <artifactId>classfinderpatch</artifactId>
