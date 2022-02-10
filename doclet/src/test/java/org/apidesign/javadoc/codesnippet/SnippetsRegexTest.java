@@ -70,7 +70,10 @@ public class SnippetsRegexTest {
 
     @Test
     public void matchesEnd() {
-        Matcher m = Snippets.END.matcher("// @end");
+        Snippets s = new Snippets(null);
+        s.setModeJep413(true);
+        s.setModeLegacy(false);
+        Matcher m = s.endMatcher("// @end");
         assertTrue(m.matches());
         assertEquals(m.groupCount(), 2, "Two groups");
         assertEquals(sectionName(m.group(2)), "", "region name is empty");
@@ -78,7 +81,10 @@ public class SnippetsRegexTest {
 
     @Test
     public void matchesEndRegion() {
-        Matcher m = Snippets.END.matcher("// @end region=\"xyz\"");
+        Snippets s = new Snippets(null);
+        s.setModeJep413(true);
+        s.setModeLegacy(false);
+        Matcher m = s.endMatcher("// @end region=\"xyz\"");
         assertTrue(m.matches());
         assertEquals(m.groupCount(), 2, "Two groups");
         assertEquals(sectionName(m.group(2)), "xyz", "region name found");

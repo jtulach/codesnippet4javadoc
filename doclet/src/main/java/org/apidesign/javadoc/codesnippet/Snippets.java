@@ -46,10 +46,12 @@ final class Snippets {
     private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet(( *\\w+ *= *\"[^\"]+\")*) *[:\\}]");
     private static final Pattern SNIPPET_ATTR = Pattern.compile(" *(\\w+) *= *\"([^\"]+)\"");
     private static final Pattern LINKTAG = Pattern.compile("\\{ *@link *([\\.\\-a-z0-9A-Z#]*) *\\}");
-    static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
-    static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
-    static final Pattern BEGIN = Pattern.compile(".* (BEGIN: *|@start *region=\")(\\p{Graph}+)[\"-\\> ]*");
-    static final Pattern END = Pattern.compile(".* (END: *|FINISH: *|@end *)(\\p{Graph}*)[\"-\\> ]*");
+    private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");
+    private static final Pattern IMPORT = Pattern.compile(" *import *([\\p{Alnum}\\.\\*]+);");
+    private static final Pattern LEGACY_BEGIN = Pattern.compile(".* (BEGIN: *)(\\p{Graph}+)[-\\> ]*");
+    private static final Pattern LEGACY_END = Pattern.compile(".* (END|FINISH): *(\\p{Graph}+)[-\\> ]*");
+    private static final Pattern BEGIN = Pattern.compile(".* (@start *region=\")(\\p{Graph}+)[\"-\\> ]*");
+    private static final Pattern END = Pattern.compile(".* (@end *)(\\p{Graph}*)[\"-\\> ]*");
     private final DocErrorReporter reporter;
     private final List<Path> search = new ArrayList<>();
     private final List<Path> visible = new ArrayList<>();
@@ -59,6 +61,8 @@ final class Snippets {
     private String verifySince;
     private String encoding;
     private Set<String> hiddenAnno;
+    private boolean modeJep413 = true;
+    private boolean modeLegacy = true;
 
     Snippets(DocErrorReporter reporter) {
         this.reporter = reporter;
@@ -70,9 +74,14 @@ final class Snippets {
                 final String txt = element.getRawCommentText();
                 final String[] code = { null };
                 final int[] end = { -1 };
-                Matcher match = matchSnippet(this::getSnippet, element, txt, code, end);
+                Matcher match = null;
+                if (modeJep413) {
+                    match = matchSnippet(this::getSnippet, element, txt, code, end);
+                }
                 if (match == null) {
-                    match = matchCodeSnippet(this::getSnippet, element, txt, code, end);
+                    if (modeLegacy) {
+                        match = matchLegacyCodeSnippet(this::getSnippet, element, txt, code, end);
+                    }
                     if (match == null) {
                         break;
                     }
@@ -138,7 +147,7 @@ final class Snippets {
         return "<pre class='snippet'>" + code + "</pre>";
     }
 
-    Matcher matchCodeSnippet(
+    Matcher matchLegacyCodeSnippet(
         Function<Doc, SnippetCollection> snippets, Doc element,
         String txt, String[] code, int[] end
     ) {
@@ -354,5 +363,54 @@ final class Snippets {
             charset = Charset.forName(encoding);
         }
         return charset;
+    }
+
+    void setModeJep413(boolean b) {
+        this.modeJep413 = b;
+    }
+
+    void setModeLegacy(boolean b) {
+        this.modeLegacy = b;
+    }
+
+    Matcher packageMatcher(CharSequence line) {
+        return PACKAGE.matcher(line);
+    }
+
+    Matcher importMatcher(CharSequence line) {
+        return IMPORT.matcher(line);
+    }
+
+    Matcher startMatcher(CharSequence line) {
+        if (modeLegacy) {
+            Matcher m = LEGACY_BEGIN.matcher(line);
+            if (m.matches()) {
+                return m;
+            }
+        }
+        if (modeJep413) {
+            return BEGIN.matcher(line);
+        } else {
+            return noMatch();
+        }
+    }
+
+    Matcher endMatcher(CharSequence line) {
+        if (modeLegacy) {
+            Matcher m = LEGACY_END.matcher(line);
+            if (m.matches()) {
+                return m;
+            }
+        }
+        if (modeJep413) {
+            return END.matcher(line);
+        } else {
+            return noMatch();
+        }
+    }
+
+    private static Matcher noMatch() {
+        Pattern noMatch = PACKAGE;
+        return noMatch.matcher("");
     }
 }

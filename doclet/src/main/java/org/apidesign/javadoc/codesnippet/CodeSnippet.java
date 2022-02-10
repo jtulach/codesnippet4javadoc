@@ -293,7 +293,7 @@ final class CodeSnippet implements CharSequence {
                                 if (line == null) {
                                     break;
                                 }
-                                Matcher pkgMatch = Snippets.PACKAGE.matcher(line);
+                                Matcher pkgMatch = snippets1.packageMatcher(line);
                                 if (pkgMatch.matches()) {
                                     final String fqn = pkgMatch.group(1);
                                     topClasses.put(javaName, fqn + '.' + javaName);
@@ -319,7 +319,7 @@ final class CodeSnippet implements CharSequence {
         });
     }
 
-    static void scanDir(Path dir, final Map<String, String> topClasses, final SnippetCollection collect, Snippets snippets1) throws IOException {
+    static void scanDir(Path dir, final Map<String, String> topClasses, final SnippetCollection collect, Snippets snip) throws IOException {
         Files.walkFileTree(dir, new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -333,7 +333,7 @@ final class CodeSnippet implements CharSequence {
                 Map<String, CharSequence> texts = new LinkedHashMap<>();
                 Map<String, String> imports = new TreeMap<>(topClasses);
                 Set<String> packages = new LinkedHashSet<>();
-                Charset charset = snippets1.getEncoding();
+                Charset charset = snip.getEncoding();
                 try (final BufferedReader r = Files.newBufferedReader(file, charset)) {
                     for (;;) {
                         String line = r.readLine();
@@ -341,7 +341,7 @@ final class CodeSnippet implements CharSequence {
                             break;
                         }
                         if (javaName != null) {
-                            Matcher m = Snippets.IMPORT.matcher(line);
+                            Matcher m = snip.importMatcher(line);
                             if (m.matches()) {
                                 final String fqn = m.group(1);
                                 if (fqn.endsWith(".*")) {
@@ -353,18 +353,18 @@ final class CodeSnippet implements CharSequence {
                             }
                         }
                         {
-                            Matcher m = Snippets.BEGIN.matcher(line);
+                            Matcher m = snip.startMatcher(line);
                             if (m.matches()) {
-                                CodeSnippet sb = new CodeSnippet(file, snippets1);
+                                CodeSnippet sb = new CodeSnippet(file, snip);
                                 CharSequence prev = texts.put(sectionName(m.group(2)), sb);
                                 if (prev != null) {
-                                    snippets1.printError(null, "Same pattern is there twice: " + m.group(1) + " in " + file);
+                                    snip.printError(null, "Same pattern is there twice: " + m.group(1) + " in " + file);
                                 }
                                 continue;
                             }
                         }
                         {
-                            Matcher m = Snippets.END.matcher(line);
+                            Matcher m = snip.endMatcher(line);
                             if (m.matches()) {
                                 String sectionName = sectionName(m.group(2));
                                 if (sectionName.isEmpty()) {
@@ -388,10 +388,10 @@ final class CodeSnippet implements CharSequence {
                                     continue;
                                 }
                                 if (s == null) {
-                                    snippets1.printError(null, "Closing unknown section: " + m.group(2) + " in " + file);
+                                    snip.printError(null, "Closing unknown section: " + m.group(2) + " in " + file);
                                     continue;
                                 }
-                                snippets1.printError(null, "Closing not opened section: " + m.group(2) + " in " + file);
+                                snip.printError(null, "Closing not opened section: " + m.group(2) + " in " + file);
                                 continue;
                             }
                         }
@@ -403,14 +403,14 @@ final class CodeSnippet implements CharSequence {
                         }
                     }
                 } catch (MalformedInputException ex) {
-                    snippets1.printNotice(null, "Skipping binary file " + file.toString());
+                    snip.printNotice(null, "Skipping binary file " + file.toString());
                 } catch (IOException ex) {
-                    snippets1.printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
+                    snip.printError(null, "Cannot read " + file.toString() + " " + ex.getMessage());
                 }
                 for (Map.Entry<String, CharSequence> entry : texts.entrySet()) {
                     CharSequence v = entry.getValue();
                     if (v instanceof CodeSnippet) {
-                        snippets1.printError(null, "Not closed section " + entry.getKey() + " in " + file);
+                        snip.printError(null, "Not closed section " + entry.getKey() + " in " + file);
                     }
                     collect.registerSnippet(fullName, entry.getKey(), v.toString());
                 }
