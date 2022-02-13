@@ -63,7 +63,7 @@
                             </docletArtifact>
                             <additionalJOption>${debug}</additionalJOption>
                             <additionalOptions>
-        -snippetpath src/test/java
+        --snippet-path src/test/java
         -snippetmode jep413
         -snippetclasses ".*Snippet.*"
         -maxLineLength 80

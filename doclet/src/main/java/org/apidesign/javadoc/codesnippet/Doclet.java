@@ -119,6 +119,7 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         CLASSPATH(2, "-classpath", "--class-path", "-cp"),
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
+        SNIPPET_PATH(2, "--snippet-path"),
         SNIPPETMODE(2, "-snippetmode"),
         SNIPPETCLASSES(2, "-snippetclasses"),
         MAXLINELENGTH(2, "-maxLineLength"),
@@ -227,6 +228,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         if (SnippetOption.SNIPPETPATH.matches(option)) {
             return 2;
         }
+        if (SnippetOption.SNIPPET_PATH.matches(option)) {
+            return 2;
+        }
         if (SnippetOption.SNIPPETCLASSES.matches(option)) {
             return 2;
         }
@@ -258,6 +262,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
                 visible = true;
             }
             if (SnippetOption.SNIPPETPATH.matches(optionAndParams[0])) {
+                visible = false;
+            }
+            if (SnippetOption.SNIPPET_PATH.matches(optionAndParams[0])) {
                 visible = false;
             }
             if (visible != null) {

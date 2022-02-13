@@ -68,10 +68,10 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.63</version> <!-- or any newer version -->
+       <version>0.80</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
-     <additionalparam>-snippetpath src/test/java</additionalparam>
+     <additionalparam>--snippet-path src/test/java</additionalparam>
     </configuration>
 </plugin>
 ```
@@ -86,7 +86,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.63'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.80'
 }
 
 javadoc {
@@ -96,12 +96,16 @@ javadoc {
 }
 ```
 
-## Use with JDK11 ... JDK17
+## Compatibility with JDK18
 
-The Codesnippet doclet supports JDK8, JDK11, ..., JDK17. The original
-Javadoc API has been removed in JDK13, but it seems I found a way
-to support older as well as new style. There are constantly some
-incompatible changes but versions 0.63 and newer work with JDK17 quite well.
+The Codesnippet doclet supports JDK8, JDK11, ..., JDK18. Originally the snippet
+used slightly [different notation](docs/README-0.63.md) to indentify and refer
+to code snippets. However, version 0.80 provides support for 
+[standard JDK18 tags](https://openjdk.java.net/jeps/413) and one can choose
+whether to support both syntaxes of just the [JDK18 one](https://openjdk.java.net/jeps/413).
+
+Use `-snippetmode jep413` to support just the 
+[JDK18 syntax](https://openjdk.java.net/jeps/413).
 
 ## Use with Command Line Javadoc Tool
 
@@ -111,7 +115,7 @@ Get the Codesnippet Doclet binary. Preferrably from the [Maven Central](http://s
 $ javadoc \
   -doclet org.apidesign.javadoc.codesnippet.Doclet \
   -docletpath path/to/downloaded/codesnippet-doclet.jar \
-  -snippetpath src/test:src/sample # in case you want to pick the samples from other locations as well
+  --snippet-path src/test:src/sample # in case you want to pick the samples from other locations as well
 ```
 
 ## Embed Snippets in API files
