@@ -98,6 +98,22 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "snippet is extracted");
     }
     
+    @Test
+    public void testClassInlineSnippet() throws Exception {
+        URL url = loadResource("apidocs/org/apidesign/javadoc/demo/ClassInlineSnippet.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+        assertEquals(text.indexOf("@snippet"), -1, "No code snippet text found");
+
+        assertSnippet(text, "demo", "new");
+        assertSnippet(text, "demo", "ClassInlineSnippet");
+
+        assertContains(text, "showing inline snippet");
+        assertContains(text, "previous code instantiates this class");
+    }
+    
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {

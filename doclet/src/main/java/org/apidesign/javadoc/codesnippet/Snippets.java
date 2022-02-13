@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 
 final class Snippets {
     private static final Pattern TAG = Pattern.compile("\\{ *@codesnippet *([\\.\\-a-z0-9A-Z#]*) *\\}");
-    private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet(( *\\w+ *= *\"[^\"]+\")*) *[:\\}]");
+    private static final Pattern SNIPPET = Pattern.compile("\\{ *@snippet (( *\\w+ *= *\"[^\"]+\")*) *[:\\}]");
     private static final Pattern SNIPPET_ATTR = Pattern.compile(" *(\\w+) *= *\"([^\"]+)\"");
     private static final Pattern LINKTAG = Pattern.compile("\\{ *@link *([\\.\\-a-z0-9A-Z#]*) *\\}");
     private static final Pattern PACKAGE = Pattern.compile(" *package *([\\p{Alnum}\\.]+);");

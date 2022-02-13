@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import static org.apidesign.javadoc.codesnippet.CodeSnippet.sectionName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
@@ -88,6 +89,38 @@ public class SnippetsRegexTest {
         assertTrue(m.matches());
         assertEquals(m.groupCount(), 2, "Two groups");
         assertEquals(sectionName(m.group(2)), "xyz", "region name found");
+    }
+
+    @Test
+    public void dontMatchSnippetFollowedByColon() {
+        SnippetCollection coll = new SnippetCollection(null);
+        String[] code = { null };
+        int[] end = { -1 };
+        Matcher m = Snippets.matchSnippet(coll, "\n\n" +
+" * Before inline snippet:\n" +
+" * {@snippet:\n" +
+" * int x = 42;\n" +
+" * }\n" +
+" * After inline snippet.\n\n", code, end);
+        assertNull(m, "No match found");
+    }
+
+    @Test
+    public void matchSnippetFollowedByColonAfterASpace() {
+        SnippetCollection coll = new SnippetCollection(null);
+        String[] code = { null };
+        int[] end = { -1 };
+        Matcher m = Snippets.matchSnippet(coll, "\n\n" +
+" * Before inline snippet:\n" +
+" * {@snippet :\n" +
+" * int x = 42;\n" +
+" * }\n" +
+" * After inline snippet.\n\n", code, end);
+        assertNotNull(m, "Match found");
+        assertContains(code[0], "int");
+        assertContains(code[0], "x");
+        assertContains(code[0], "=");
+        assertContains(code[0], "42");
     }
 
     private static void assertContains(String txt, String token) {

@@ -49,6 +49,25 @@ Identify important pieces of code and add line comment **@start: region="samplen
 Put **@end region="samplename"** at the end of the code snippet. Then you can reference the snippet in Javadoc with
 the **@snippet** tag.
 
+An alternative way is to define *inline* snippets. Directly embed simple code
+into the `@snippet` tag:
+
+```java
+/** Snippet demo showing inline snippet. Just type:
+ *
+ * {@snippet:
+ * ClassInlineSnippet snippet = new ClassInlineSnippet();
+ * }
+ * 
+ * The previous code instantiates this class.
+ */
+public final class ClassInlineSnippet {
+}
+```
+and the snippet renders as
+
+![ClassInlineSnippet](docs/ClassInlineSnippet.png)
+
 Having correct samples in Javadoc has never been easier!
 
 ## Use in a Maven Project
@@ -105,7 +124,12 @@ to code snippets. However, version 0.80 provides support for
 whether to support both syntaxes of just the [JDK18 one](https://openjdk.java.net/jeps/413).
 
 Use `-snippetmode jep413` to support just the 
-[JDK18 syntax](https://openjdk.java.net/jeps/413).
+[JDK18 syntax](https://openjdk.java.net/jeps/413). This mode allows one to
+use the Codesnippet doclet on older JDKs and rely on plain *javadoc* on
+**JDK18+**. Everything the Codesnippet doclet supports (e.g. `@start` and `@end` tags
+in sources and `@snippet` tag in Javadoc comments) is fully compatible with
+**JDK18+** and renders similarly (Codesnippet is better as it automatically adds
+syntax coloring and links to referenced classes) with both systems.
 
 ## Use with Command Line Javadoc Tool
 
