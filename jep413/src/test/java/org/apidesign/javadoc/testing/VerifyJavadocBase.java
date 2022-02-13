@@ -55,7 +55,7 @@ public abstract class VerifyJavadocBase {
         File file = new File(url.toURI());
         assertTrue(file.exists(), "File found " + file);
         String text = new String(Files.readAllBytes(file.toPath()));
-        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+        assertEquals(text.indexOf("@snippet"), -1, "No code snippet text found");
 
         assertSnippet(text, "demo", "SampleClass");
         assertSnippet(text, "demo", "show");
@@ -72,7 +72,7 @@ public abstract class VerifyJavadocBase {
         File file = new File(url.toURI());
         assertTrue(file.exists(), "File found " + file);
         String text = new String(Files.readAllBytes(file.toPath()));
-        assertEquals(text.indexOf("codesnippet"), -1, "No code snippet text found");
+        assertEquals(text.indexOf("@snippet"), -1, "No code snippet text found");
 
         assertSnippet(text, "endless", "simpleend");
         assertSnippet(text, "endless", "noEnd:");
@@ -81,6 +81,23 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "End snippet.");
     }
 
+    @Test
+    public void testDemoMainSnippet() throws Exception {
+        URL url = loadResource("apidocs/org/apidesign/javadoc/demo/MainMethodContent.html");
+        assertNotNull(url, "Generated page found");
+        File file = new File(url.toURI());
+        assertTrue(file.exists(), "File found " + file);
+        String text = new String(Files.readAllBytes(file.toPath()));
+        assertEquals(text.indexOf("@snippet"), -1, "No code snippet text found");
+
+        assertSnippet(text, "demo", "main");
+        assertSnippet(text, "demo", "String");
+        assertSnippet(text, "demo", "println");
+
+        assertContains(text, "showing content of");
+        assertContains(text, "snippet is extracted");
+    }
+    
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {

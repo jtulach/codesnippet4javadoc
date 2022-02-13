@@ -2,52 +2,40 @@
 
 ![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
 
-Code snippets in Java API Documentation - in **any JDK8+**. Fully **compatible** with
-forcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say 
-farewell to **broken** or **outdated samples** in your Javadoc! 
-The *Codesnippet Doclet* helps you include real code snippets in the 
-documentation ensuring they are **always compilable**. If you make the samples
-part of your test suite, even ensuring they **execute properly**.
+Say farewell to **broken** or **outdated samples** in your Javadoc! The *Codesnippet Doclet* helps you include real code snippets in the documentation ensuring they are **always compilable**. If you make the samples part of your test suite, even ensuring they **execute properly**.
 
-Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc
-now, even when compiling with older JDKs than JDK18.
-The doclet uses similar infrastructure as was used when 
-publishing [Practical API Design](http://practical.apidesign.org) 
-and [20 API Paradoxes](http://buy.apidesign.org) books making 
-sure **all code samples** were **correct**, **compilable** and 
-printed with **pretty syntax** coloring.
+Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc! The doclet uses the same infrastructure as was used when publishing [Practical API Design](http://practical.apidesign.org) and [20 API Paradoxes](http://buy.apidesign.org) books making sure **all code samples** were **correct**, **compilable** and printed with **pretty syntax** coloring.
 
 ## How does it work?
 
 The Codesnippet Doclet introduces new tag **codesnippet** that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
 
 ```java
-/** Snippet demo showing content of {@code main} method:
- *
- * {@snippet file="org/apidesign/javadoc/demo/MainMethodContent.java" region="main"}
- *
- * The snippet is extracted from region {@code main} defined in the 
- * {@code MainMethodContent} file below.
+/** My sample class.
+ * {@codesnippet sample1}
+ * Rest of the text.
  */
-public final class MainMethodContent {
-    // @start region="main"
-    public static void main(String... args) throws Exception {
-        System.out.println("Better Javadoc for Everyone!");
+public class SampleClass {
+    private SampleClass() {
     }
-    // @end region="main"
 
-    private MainMethodContent() {
+    private static void sample1() {
+        // BEGIN: sample1
+        int x = 42;
+        // END: sample1
     }
 }
 ```
 
-The rendered Javadoc then looks like:
+The rendered Javadoc for the class will include:
+```
+My sample class.
+int x = 42;
+Rest of the text.
+```
 
-![MainMethodContent](docs/MainMethodContent.png)
-
-Identify important pieces of code and add line comment **@start: region="samplename"** before start of each snippet.
-Put **@end region="samplename"** at the end of the code snippet. Then you can reference the snippet in Javadoc with
-the **@snippet** tag.
+Identify important pieces of code and add line comment **BEGIN: samplename** before start of each snippet. Put **END: samplename** or **FINISH: samplename** at the end of the code snippet. Then you can reference the snippet in Javadoc with
+the **@codesnippet** tag.
 
 Having correct samples in Javadoc has never been easier!
 
