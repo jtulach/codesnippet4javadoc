@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apidesign.javadoc</groupId>
         <artifactId>pom</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.80</version>
     </parent>
     <artifactId>jep413</artifactId>
     <name>Codesnippet for Javadoc JEP 413 Tests</name>
