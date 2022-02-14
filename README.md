@@ -2,8 +2,8 @@
 
 ![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
 
-Code snippets in Java API Documentation - in **any JDK8+**. Fully **compatible** with
-forcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say 
+Use code snippets in your Java API documentation - in **any JDK8+**. Fully **compatible** with
+forthcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say 
 farewell to **broken** or **outdated samples** in your Javadoc! 
 The *Codesnippet Doclet* helps you include real code snippets in the 
 documentation ensuring they are **always compilable**. If you make the samples
@@ -19,7 +19,7 @@ printed with **pretty syntax** coloring.
 
 ## How does it work?
 
-The Codesnippet Doclet introduces new tag **codesnippet** that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
+The Codesnippet Doclet introduces new tag `{@snippet }` that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
 
 ```java
 /** Snippet demo showing content of {@code main} method:
@@ -27,7 +27,7 @@ The Codesnippet Doclet introduces new tag **codesnippet** that allows you to ref
  * {@snippet file="org/apidesign/javadoc/demo/MainMethodContent.java" region="main"}
  *
  * The snippet is extracted from region {@code main} defined in the 
- * {@code MainMethodContent} file below.
+ * {@code MainMethodContent} class below.
  */
 public final class MainMethodContent {
     // @start region="main"
@@ -55,7 +55,7 @@ into the `@snippet` tag:
 ```java
 /** Snippet demo showing inline snippet. Just type:
  *
- * {@snippet:
+ * {@snippet :
  * ClassInlineSnippet snippet = new ClassInlineSnippet();
  * }
  * 

@@ -1,6 +1,8 @@
-# Codesnippet Javadoc Doclet
+# Codesnippet Javadoc Doclet 0.63
 
-![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
+This is documentation for older version of the Codesnippet Javadoc Doclet.
+Read the latest [README](../README.md) to follow the most recent trends and
+suggestions.
 
 Say farewell to **broken** or **outdated samples** in your Javadoc! The *Codesnippet Doclet* helps you include real code snippets in the documentation ensuring they are **always compilable**. If you make the samples part of your test suite, even ensuring they **execute properly**.
 
