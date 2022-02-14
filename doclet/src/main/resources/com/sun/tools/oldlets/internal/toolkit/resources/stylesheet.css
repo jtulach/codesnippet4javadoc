@@ -35,6 +35,13 @@ pre {
     font-family:'DejaVu Sans Mono', monospace;
     font-size:14px;
 }
+pre.snippet {
+    background-color: #ebecee;
+    padding: 10px;
+    margin: 12px 0;
+    overflow: auto;
+    white-space: pre;    
+}
 h1 {
     font-size:20px;
 }

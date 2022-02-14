@@ -119,6 +119,8 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         CLASSPATH(2, "-classpath", "--class-path", "-cp"),
         SOURCEPATH(2, "-sourcepath"),
         SNIPPETPATH(2, "-snippetpath"),
+        SNIPPET_PATH(2, "--snippet-path"),
+        SNIPPETMODE(2, "-snippetmode"),
         SNIPPETCLASSES(2, "-snippetclasses"),
         MAXLINELENGTH(2, "-maxLineLength"),
         HIDINGANNOTATION(2, "-hiddingannotation"),
@@ -226,7 +228,13 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
         if (SnippetOption.SNIPPETPATH.matches(option)) {
             return 2;
         }
+        if (SnippetOption.SNIPPET_PATH.matches(option)) {
+            return 2;
+        }
         if (SnippetOption.SNIPPETCLASSES.matches(option)) {
+            return 2;
+        }
+        if (SnippetOption.SNIPPETMODE.matches(option)) {
             return 2;
         }
         if (SnippetOption.MAXLINELENGTH.matches(option)) {
@@ -256,6 +264,9 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             if (SnippetOption.SNIPPETPATH.matches(optionAndParams[0])) {
                 visible = false;
             }
+            if (SnippetOption.SNIPPET_PATH.matches(optionAndParams[0])) {
+                visible = false;
+            }
             if (visible != null) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     for (String elem : optionAndParams[i].split(File.pathSeparator)) {
@@ -266,6 +277,26 @@ public final class Doclet implements jdk.javadoc.doclet.Doclet {
             if (SnippetOption.SNIPPETCLASSES.matches(optionAndParams[0])) {
                 for (int i = 1; i < optionAndParams.length; i++) {
                     snippets.addClasses(optionAndParams[i]);
+                }
+            }
+            if (SnippetOption.SNIPPETMODE.matches(optionAndParams[0])) {
+                assert optionAndParams.length == 2;
+                switch (optionAndParams[1]) {
+                    case "both":
+                        snippets.setModeJep413(true);
+                        snippets.setModeLegacy(true);
+                        break;
+                    case "jep413":
+                        snippets.setModeJep413(true);
+                        snippets.setModeLegacy(false);
+                        break;
+                    case "legacy":
+                        snippets.setModeJep413(false);
+                        snippets.setModeLegacy(true);
+                        break;
+                    default:
+                        reporter.printError("Unknown value " + optionAndParams[1] + " for " + SnippetOption.SNIPPETMODE.name + " supported values: both, jep413, legacy");
+                        return false;
                 }
             }
             if (SnippetOption.MAXLINELENGTH.matches(optionAndParams[0])) {

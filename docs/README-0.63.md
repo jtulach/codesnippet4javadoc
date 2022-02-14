@@ -1,72 +1,43 @@
-# Codesnippet Javadoc Doclet
+# Codesnippet Javadoc Doclet 0.63
 
-![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
+This is documentation for older version of the Codesnippet Javadoc Doclet.
+Read the latest [README](../README.md) to follow the most recent trends and
+suggestions.
 
-Use code snippets in your Java API documentation - in **any JDK8+**. Fully **compatible** with
-forthcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say 
-farewell to **broken** or **outdated samples** in your Javadoc! 
-The *Codesnippet Doclet* helps you include real code snippets in the 
-documentation ensuring they are **always compilable**. If you make the samples
-part of your test suite, even ensuring they **execute properly**.
+Say farewell to **broken** or **outdated samples** in your Javadoc! The *Codesnippet Doclet* helps you include real code snippets in the documentation ensuring they are **always compilable**. If you make the samples part of your test suite, even ensuring they **execute properly**.
 
-Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc
-now, even when compiling with older JDKs than JDK18.
-The doclet uses similar infrastructure as was used when 
-publishing [Practical API Design](http://practical.apidesign.org) 
-and [20 API Paradoxes](http://buy.apidesign.org) books making 
-sure **all code samples** were **correct**, **compilable** and 
-printed with **pretty syntax** coloring.
+Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc! The doclet uses the same infrastructure as was used when publishing [Practical API Design](http://practical.apidesign.org) and [20 API Paradoxes](http://buy.apidesign.org) books making sure **all code samples** were **correct**, **compilable** and printed with **pretty syntax** coloring.
 
 ## How does it work?
 
-The Codesnippet Doclet introduces new tag `{@snippet }` that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
+The Codesnippet Doclet introduces new tag **codesnippet** that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
 
 ```java
-/** Snippet demo showing content of {@code main} method:
- *
- * {@snippet file="org/apidesign/javadoc/demo/MainMethodContent.java" region="main"}
- *
- * The snippet is extracted from region {@code main} defined in the 
- * {@code MainMethodContent} class below.
+/** My sample class.
+ * {@codesnippet sample1}
+ * Rest of the text.
  */
-public final class MainMethodContent {
-    // @start region="main"
-    public static void main(String... args) throws Exception {
-        System.out.println("Better Javadoc for Everyone!");
+public class SampleClass {
+    private SampleClass() {
     }
-    // @end region="main"
 
-    private MainMethodContent() {
+    private static void sample1() {
+        // BEGIN: sample1
+        int x = 42;
+        // END: sample1
     }
 }
 ```
 
-The rendered Javadoc then looks like:
-
-![MainMethodContent](docs/MainMethodContent.png)
-
-Identify important pieces of code and add line comment **@start: region="samplename"** before start of each snippet.
-Put **@end region="samplename"** at the end of the code snippet. Then you can reference the snippet in Javadoc with
-the **@snippet** tag.
-
-An alternative way is to define *inline* snippets. Directly embed simple code
-into the `@snippet` tag:
-
-```java
-/** Snippet demo showing inline snippet. Just type:
- *
- * {@snippet :
- * ClassInlineSnippet snippet = new ClassInlineSnippet();
- * }
- * 
- * The previous code instantiates this class.
- */
-public final class ClassInlineSnippet {
-}
+The rendered Javadoc for the class will include:
 ```
-and the snippet renders as
+My sample class.
+int x = 42;
+Rest of the text.
+```
 
-![ClassInlineSnippet](docs/ClassInlineSnippet.png)
+Identify important pieces of code and add line comment **BEGIN: samplename** before start of each snippet. Put **END: samplename** or **FINISH: samplename** at the end of the code snippet. Then you can reference the snippet in Javadoc with
+the **@codesnippet** tag.
 
 Having correct samples in Javadoc has never been easier!
 
@@ -87,10 +58,10 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.80</version> <!-- or any newer version -->
+       <version>0.63</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
-     <additionalparam>--snippet-path src/test/java</additionalparam>
+     <additionalparam>-snippetpath src/test/java</additionalparam>
     </configuration>
 </plugin>
 ```
@@ -105,7 +76,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.80'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.63'
 }
 
 javadoc {
@@ -115,21 +86,12 @@ javadoc {
 }
 ```
 
-## Compatibility with JDK18
+## Use with JDK11 ... JDK17
 
-The Codesnippet doclet supports JDK8, JDK11, ..., JDK18. Originally the snippet
-used slightly [different notation](docs/README-0.63.md) to indentify and refer
-to code snippets. However, version 0.80 provides support for 
-[standard JDK18 tags](https://openjdk.java.net/jeps/413) and one can choose
-whether to support both syntaxes of just the [JDK18 one](https://openjdk.java.net/jeps/413).
-
-Use `-snippetmode jep413` to support just the 
-[JDK18 syntax](https://openjdk.java.net/jeps/413). This mode allows one to
-use the Codesnippet doclet on older JDKs and rely on plain *javadoc* on
-**JDK18+**. Everything the Codesnippet doclet supports (e.g. `@start` and `@end` tags
-in sources and `@snippet` tag in Javadoc comments) is fully compatible with
-**JDK18+** and renders similarly (Codesnippet is better as it automatically adds
-syntax coloring and links to referenced classes) with both systems.
+The Codesnippet doclet supports JDK8, JDK11, ..., JDK17. The original
+Javadoc API has been removed in JDK13, but it seems I found a way
+to support older as well as new style. There are constantly some
+incompatible changes but versions 0.63 and newer work with JDK17 quite well.
 
 ## Use with Command Line Javadoc Tool
 
@@ -139,7 +101,7 @@ Get the Codesnippet Doclet binary. Preferrably from the [Maven Central](http://s
 $ javadoc \
   -doclet org.apidesign.javadoc.codesnippet.Doclet \
   -docletpath path/to/downloaded/codesnippet-doclet.jar \
-  --snippet-path src/test:src/sample # in case you want to pick the samples from other locations as well
+  -snippetpath src/test:src/sample # in case you want to pick the samples from other locations as well
 ```
 
 ## Embed Snippets in API files

@@ -47,9 +47,27 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
 
         assertEquals("<b>public</b> <b>interface</b> {@link ahoj.I} {\n}\n", r);
+    }
+
+    @Test public void testStartEnd() throws Exception {
+        String c1
+            = "package ahoj;\n"
+            + "// @start region=\"xyz\"\n"
+            + "public interface I {\n"
+            + "// @end region=\"xyz\"\n"
+            + "  public void get();\n"
+            + "}"
+            + "";
+        Path src = createPath(1, "I.java", c1);
+
+        Snippets snippets = new Snippets(null);
+        addPath(snippets, src.getParent());
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
+
+        assertEquals("<b>public</b> <b>interface</b> {@link ahoj.I} {\n", r);
     }
 
     @Test
@@ -67,7 +85,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
 
         assertEquals(""
             + "<b>public</b> <b>interface</b> {@link ahoj.I} {\n"
@@ -91,7 +109,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.lang.String} get();\n", r);
     }
@@ -110,7 +128,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.io.File} get();\n", r);
     }
@@ -129,7 +147,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
 
         assertEquals("<b>public</b> {@link java.io.File} get();\n", r);
     }
@@ -149,7 +167,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "xyz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
         String result = "<b>public</b> <b>interface</b> {@link ahoj.I} {\n"
             + "  <b>public</b> <b>void</b> ahoj();\n"
             + "}\n";
@@ -173,7 +191,7 @@ public class SnippetsTest {
         addPath(snippets, src.getParent());
 
         try {
-            String r = snippets.findSnippet(null, "xyz");
+            String r = snippets.getSnippet(null).findGlobalSnippet(null, "xyz");
         } catch (IllegalStateException ex) {
             assertTrue(ex.getMessage(), ex.getMessage().contains("not paired"));
             return;
@@ -196,7 +214,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "clazz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "clazz");
 
         if (r.indexOf("BEGIN") >= 0) {
             fail("BEGIN is there: " + r);
@@ -225,7 +243,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "method");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "method");
 
         if (r.indexOf("&=") >= 0) {
             fail("Wrong XML: " + r);
@@ -249,7 +267,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "method");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "method");
 
         if (r.indexOf("&=") >= 0) {
             fail("Wrong XML: " + r);
@@ -316,7 +334,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "day.end.bridges.Digest");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "day.end.bridges.Digest");
 
         if (r.indexOf("&=") >= 0) {
             fail("Wrong XML: " + r);
@@ -342,7 +360,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "comment");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "comment");
 
         String assume = ""
             + "<b>class</b> Comment {\n"
@@ -367,7 +385,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "str");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "str");
 
         String assume = ""
             + "<b>public</b> {@link java.lang.String} str = <em>\"this is my long string\"</em>;\n"
@@ -392,7 +410,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "str");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "str");
 
         String assume = ""
             + "<b>private</b> <b>static</b> {@link java.lang.String} str = <em>\"Jaroslav\"</em> + space + <em>\"Tulach\"</em>;\n"
@@ -431,7 +449,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "str");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "str");
 
         int at = -1;
         int counter = 0;
@@ -460,7 +478,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "clazz");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "clazz");
 
         if (r.indexOf("BEGIN") >= 0) {
             fail("BEGIN is there: " + r);
@@ -496,7 +514,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "x");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "x");
 
         assertNotNull(r);
     }
@@ -524,7 +542,7 @@ public class SnippetsTest {
         addPath(snippets, src.getParent());
 
         try {
-            String r = snippets.findSnippet(null, "day.end.bridges.Digest");
+            String r = snippets.getSnippet(null).findGlobalSnippet(null, "day.end.bridges.Digest");
         } catch (IllegalStateException ex) {
             assertTrue(ex.getMessage(), ex.getMessage().startsWith("Line is too long"));
             // OK
@@ -554,7 +572,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "day.end.bridges.Digest");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "day.end.bridges.Digest");
 
         assertNotNull(r);
     }
@@ -571,7 +589,7 @@ public class SnippetsTest {
         addPath(snippets, src.getParent());
 
         try {
-            String r = snippets.findSnippet(null, "clazz");
+            String r = snippets.getSnippet(null).findGlobalSnippet(null, "clazz");
             fail("Has to fail");
         } catch (IllegalStateException ex) {
             // ok
@@ -601,7 +619,7 @@ public class SnippetsTest {
 
         Snippets snippets = new Snippets(null);
         addPath(snippets, src.getParent());
-        String r = snippets.findSnippet(null, "day.end.bridges.Digest");
+        String r = snippets.getSnippet(null).findGlobalSnippet(null, "day.end.bridges.Digest");
 
         assertNotNull(r);
     }
