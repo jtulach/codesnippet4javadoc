@@ -26,7 +26,7 @@
         </packagings>
         <goals>
             <goal>process-classes</goal>
-            <goal>javadoc:javadoc@for-testing</goal>
+            <goal>javadoc:javadoc@attach-javadocs</goal>
         </goals>
         <properties>
             <jpda.listen>true</jpda.listen>

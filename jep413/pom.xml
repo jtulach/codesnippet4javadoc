@@ -47,7 +47,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>for-testing</id>
+                        <id>attach-javadocs</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>javadoc</goal>
