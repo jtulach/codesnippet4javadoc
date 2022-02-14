@@ -79,6 +79,7 @@ public class DocLint implements Plugin {
     private static final String STATS = "-stats";
     public static final String XIMPLICIT_HEADERS = "-XimplicitHeaders:";
     public static final String XCUSTOM_TAGS_PREFIX = "-XcustomTags:";
+    public static final String XHTML_VERSION_PREFIX = "-XhtmlVersion:";
     public static final String TAGS_SEPARATOR = ",";
 
     // <editor-fold defaultstate="collapsed" desc="Command-line entry point">
@@ -267,6 +268,8 @@ public class DocLint implements Plugin {
                 char ch = arg.charAt(arg.length() - 1);
                 env.setImplicitHeaders(Character.digit(ch, 10));
             } else if (arg.startsWith(XCUSTOM_TAGS_PREFIX)) {
+                env.setCustomTags(arg.substring(arg.indexOf(":") + 1));
+            } else if (arg.startsWith(XHTML_VERSION_PREFIX)) {
                 env.setCustomTags(arg.substring(arg.indexOf(":") + 1));
             } else
                 throw new IllegalArgumentException(arg);
