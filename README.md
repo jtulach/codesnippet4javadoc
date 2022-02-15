@@ -17,6 +17,9 @@ and [20 API Paradoxes](http://buy.apidesign.org) books making
 sure **all code samples** were **correct**, **compilable** and 
 printed with **pretty syntax** coloring.
 
+This is the documentation for version 0.80 or newer. Read elsewhere about
+using [older](docs/README-0.63.md) or the [oldest](docs/README-0.30.md) versions.
+
 ## How does it work?
 
 The Codesnippet Doclet introduces new tag `{@snippet }` that allows you to reference real code snippets in your project. Identify the snippets in your code and then reference them from a Javadoc:
