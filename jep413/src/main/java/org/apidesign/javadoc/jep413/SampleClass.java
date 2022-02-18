@@ -38,7 +38,9 @@ public class SampleClass {
     }
     /** Show the string, if not empty. Start snippet:
      * {@snippet file="org/apidesign/javadoc/jep413/ExampleSnippet.java" region="endless"}
-     * End snippet.
+     * End snippet and another start:
+     * {@snippet file="org/apidesign/javadoc/jep413/ExampleSnippet.java" region="asInt"}
+     * Second snippet end.
      *
      * @param s the text
      */

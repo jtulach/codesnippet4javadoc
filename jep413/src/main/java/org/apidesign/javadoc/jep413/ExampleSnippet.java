@@ -33,4 +33,9 @@ class ExampleSnippet {
         }
         // @end
     }
+    static int asInt(String s) {
+        // @start region="asInt"
+        return Integer.valueOf(s);
+        // @end
+    }
 }

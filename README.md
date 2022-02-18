@@ -3,21 +3,21 @@
 ![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
 
 Use code snippets in your Java API documentation - in **any JDK8+**. Fully **compatible** with
-forthcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say 
-farewell to **broken** or **outdated samples** in your Javadoc! 
-The *Codesnippet Doclet* helps you include real code snippets in the 
+forthcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say
+farewell to **broken** or **outdated samples** in your Javadoc!
+The *Codesnippet Doclet* helps you include real code snippets in the
 documentation ensuring they are **always compilable**. If you make the samples
 part of your test suite, even ensuring they **execute properly**.
 
 Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc
 now, even when compiling with older JDKs than JDK18.
-The doclet uses similar infrastructure as was used when 
-publishing [Practical API Design](http://practical.apidesign.org) 
-and [20 API Paradoxes](http://buy.apidesign.org) books making 
-sure **all code samples** were **correct**, **compilable** and 
+The doclet uses similar infrastructure as was used when
+publishing [Practical API Design](http://practical.apidesign.org)
+and [20 API Paradoxes](http://buy.apidesign.org) books making
+sure **all code samples** were **correct**, **compilable** and
 printed with **pretty syntax** coloring.
 
-This is the documentation for version 0.80 or newer. Read elsewhere about
+This is the documentation for version 0.81 or newer. Read elsewhere about
 using [older](docs/README-0.63.md) or the [oldest](docs/README-0.30.md) versions.
 
 ## How does it work?
@@ -29,7 +29,7 @@ The Codesnippet Doclet introduces new tag `{@snippet }` that allows you to refer
  *
  * {@snippet file="org/apidesign/javadoc/demo/MainMethodContent.java" region="main"}
  *
- * The snippet is extracted from region {@code main} defined in the 
+ * The snippet is extracted from region {@code main} defined in the
  * {@code MainMethodContent} class below.
  */
 public final class MainMethodContent {
@@ -61,7 +61,7 @@ into the `@snippet` tag:
  * {@snippet :
  * ClassInlineSnippet snippet = new ClassInlineSnippet();
  * }
- * 
+ *
  * The previous code instantiates this class.
  */
 public final class ClassInlineSnippet {
@@ -90,7 +90,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.80</version> <!-- or any newer version -->
+       <version>0.81</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>--snippet-path src/test/java</additionalparam>
@@ -108,7 +108,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.80'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.81'
 }
 
 javadoc {
@@ -122,11 +122,11 @@ javadoc {
 
 The Codesnippet doclet supports JDK8, JDK11, ..., JDK18. Originally the snippet
 used slightly [different notation](docs/README-0.63.md) to indentify and refer
-to code snippets. However, version 0.80 provides support for 
+to code snippets. However, version 0.80 and newer provides support for
 [standard JDK18 tags](https://openjdk.java.net/jeps/413) and one can choose
 whether to support both syntaxes of just the [JDK18 one](https://openjdk.java.net/jeps/413).
 
-Use `-snippetmode jep413` to support just the 
+Use `-snippetmode jep413` to support just the
 [JDK18 syntax](https://openjdk.java.net/jeps/413). This mode allows one to
 use the Codesnippet doclet on older JDKs and rely on plain *javadoc* on
 **JDK18+**. Everything the Codesnippet doclet supports (e.g. `@start` and `@end` tags
@@ -221,12 +221,12 @@ to hide multiple annotations at once.
 
 ## Linking types
 
-The doclet searches existing `import` statements in the code snippet and tries to link the Java files in the package. 
-When a matching type is found, the identifier is wrapped with `@link`. Note that the linking is best-effort only and when 
-the type is not found, a warning message is logged `Tag @link: reference not found: <classname>`. 
+The doclet searches existing `import` statements in the code snippet and tries to link the Java files in the package.
+When a matching type is found, the identifier is wrapped with `@link`. Note that the linking is best-effort only and when
+the type is not found, a warning message is logged `Tag @link: reference not found: <classname>`.
 
-You can suppress the warning by passing the parameter `-suppressMissingLinkWarnings` as shown below. This parameter will 
-convert the warning to an informational message, so, you can continue to see the types that are missing links and not 
+You can suppress the warning by passing the parameter `-suppressMissingLinkWarnings` as shown below. This parameter will
+convert the warning to an informational message, so, you can continue to see the types that are missing links and not
 fail the build on warnings if `failOnWarnings` flag is set in your javadoc configuration.
 
 ```bash

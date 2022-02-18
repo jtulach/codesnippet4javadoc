@@ -115,7 +115,7 @@ final class Snippets {
         if (match.find()) {
             int s = match.start();
             int colon = txt.indexOf(':', s);
-            if (colon != -1) {
+            if (colon != -1 && colon < match.end()) {
                 int curly = 1;
                 end[0] = colon + 1;
                 for (;;) {

@@ -78,7 +78,14 @@ public abstract class VerifyJavadocBase {
         assertSnippet(text, "endless", "noEnd:");
 
         assertContains(text, "Start snippet:");
-        assertContains(text, "End snippet.");
+        assertContains(text, "End snippet");
+
+        assertSnippet(text, "asInt", "return");
+        assertSnippet(text, "asInt", "Integer");
+        assertSnippet(text, "asInt", "valueOf");
+
+        assertContains(text, "another start:");
+        assertContains(text, "Second snippet end.");
     }
 
     @Test
@@ -97,7 +104,7 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "showing content of");
         assertContains(text, "snippet is extracted");
     }
-    
+
     @Test
     public void testClassInlineSnippet() throws Exception {
         URL url = loadResource("apidocs/org/apidesign/javadoc/demo/ClassInlineSnippet.html");
@@ -113,7 +120,7 @@ public abstract class VerifyJavadocBase {
         assertContains(text, "showing inline snippet");
         assertContains(text, "previous code instantiates this class");
     }
-    
+
     private void assertSnippet(String text, final String snippetKey, final String snippetText) {
         int from = 0;
         for (;;) {
