@@ -3,7 +3,7 @@
 ![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
 
 Use code snippets in your Java API documentation - in **any JDK8+**. Fully **compatible** with
-forthcoming [snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say
+[snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say
 farewell to **broken** or **outdated samples** in your Javadoc!
 The *Codesnippet Doclet* helps you include real code snippets in the
 documentation ensuring they are **always compilable**. If you make the samples
@@ -124,7 +124,7 @@ The Codesnippet doclet supports JDK8, JDK11, ..., JDK18. Originally the snippet
 used slightly [different notation](docs/README-0.63.md) to indentify and refer
 to code snippets. However, version 0.80 and newer provides support for
 [standard JDK18 tags](https://openjdk.java.net/jeps/413) and one can choose
-whether to support both syntaxes of just the [JDK18 one](https://openjdk.java.net/jeps/413).
+whether to support both syntaxes or just the [JDK18 one](https://openjdk.java.net/jeps/413).
 
 Use `-snippetmode jep413` to support just the
 [JDK18 syntax](https://openjdk.java.net/jeps/413). This mode allows one to
