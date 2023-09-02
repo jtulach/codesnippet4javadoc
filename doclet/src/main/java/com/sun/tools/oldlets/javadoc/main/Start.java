@@ -39,7 +39,6 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
 import com.sun.tools.javac.file.JavacFileManager;
-import com.sun.tools.javac.main.CommandLine;
 import com.sun.tools.javac.main.Option;
 import com.sun.tools.javac.main.OptionHelper;
 import com.sun.tools.javac.main.OptionHelper.GrumpyHelper;
@@ -278,27 +277,7 @@ public class Start extends ToolOption.Helper {
         ListBuffer<String> javaNames = new ListBuffer<>();
 
         // Preprocess @file arguments
-        FOUND: try {
-            for (Method m : CommandLine.class.getMethods()) {
-                if (m.getName().equals("parse") && m.getParameterCount() == 1) {
-                    if (m.getParameterTypes()[0] == String[].class) {
-                        argv = (String[]) m.invoke(null, (Object) argv);
-                    } else {
-                        assert m.getParameterTypes()[0] == java.util.List.class;
-                        java.util.List<?> ret = (java.util.List<?>) m.invoke(null, Arrays.asList(argv));
-                        argv = ret.toArray(new String[0]);
-                    }
-                    break FOUND;
-                }
-            }
-        } catch (ReflectiveOperationException e) {
-            if (e.getCause() instanceof FileNotFoundException) {
-                messager.error(Messager.NOPOS, "main.cant.read", e.getCause().getMessage());
-                exit();
-            }
-            e.printStackTrace(System.err);
-            exit();
-        }
+        argv = CommandLine.parse(Arrays.asList(argv)).toArray(new String[0]);
 
 
         fileManager = context.get(JavaFileManager.class);

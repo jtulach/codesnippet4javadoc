@@ -33,7 +33,7 @@ public final class EmbeddingSampleCode {
      * {@link EmbeddedSnippet#fourtyTwo}
      * Put the class at the end of the API file (it needs to be package private)
      * and it is guaranteed your snippet code will properly compile every
-     * time your {@link Compiler API compiles}.
+     * time your API compiles.
      *
      * @param x first number
      * @param y second number
