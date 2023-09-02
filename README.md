@@ -2,15 +2,15 @@
 
 ![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
 
-Use code snippets in your Java API documentation - in **any JDK8+**. Fully **compatible** with
-[snippet support](https://openjdk.java.net/jeps/413) in **JDK18**. Say
+Use code snippets in your Java API documentation - on **any JDK8+**. Fully **compatible** with
+[snippet support](https://openjdk.java.net/jeps/413) in the latest **JDKs**. Say
 farewell to **broken** or **outdated samples** in your Javadoc!
 The *Codesnippet Doclet* helps you include real code snippets in the
 documentation ensuring they are **always compilable**. If you make the samples
 part of your test suite, even ensuring they **execute properly**.
 
 Use *org.apidesign.javadoc.codesnippet.Doclet* to **increase quality** of your Javadoc
-now, even when compiling with older JDKs than JDK18.
+now, even when compiling with older JDKs than JDK21 (which is also supported).
 The doclet uses similar infrastructure as was used when
 publishing [Practical API Design](http://practical.apidesign.org)
 and [20 API Paradoxes](http://buy.apidesign.org) books making
@@ -118,21 +118,21 @@ javadoc {
 }
 ```
 
-## Compatibility with JDK18
+## Compatibility with the Latest JDKs
 
-The Codesnippet doclet supports JDK8, JDK11, ..., JDK18. Originally the snippet
+The Codesnippet doclet supports JDK8, JDK11, ..., JDK21. Originally the snippet
 used slightly [different notation](docs/README-0.63.md) to indentify and refer
 to code snippets. However, version 0.80 and newer provides support for
-[standard JDK18 tags](https://openjdk.java.net/jeps/413) and one can choose
-whether to support both syntaxes or just the [JDK18 one](https://openjdk.java.net/jeps/413).
+[standard JDK snippet tags](https://openjdk.java.net/jeps/413) and one can choose
+whether to support both syntaxes or just the [JDK one](https://openjdk.java.net/jeps/413).
 
 Use `-snippetmode jep413` to support just the
-[JDK18 syntax](https://openjdk.java.net/jeps/413). This mode allows one to
+[JDK snippet syntax](https://openjdk.java.net/jeps/413). This mode allows one to
 use the Codesnippet doclet on older JDKs and rely on plain *javadoc* on
-**JDK18+**. Everything the Codesnippet doclet supports (e.g. `@start` and `@end` tags
-in sources and `@snippet` tag in Javadoc comments) is fully compatible with
-**JDK18+** and renders similarly (Codesnippet is better as it automatically adds
-syntax coloring and links to referenced classes) with both systems.
+the latest **JDKs**. Everything the Codesnippet doclet supports (e.g. `@start` and `@end` tags
+in sources and `@snippet` tag in Javadoc comments) is _fully compatible_ with
+the JDK syntax and renders similarly (Codesnippet is _better as it automatically adds
+syntax coloring_ and _links to referenced classes_) with both systems.
 
 ## Use with Command Line Javadoc Tool
 
