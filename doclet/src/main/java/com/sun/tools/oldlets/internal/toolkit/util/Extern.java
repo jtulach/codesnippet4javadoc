@@ -190,6 +190,7 @@ public class Extern {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private URL toURL(String url) throws Fault {
         try {
             return new URL(url);
@@ -347,6 +348,7 @@ public class Extern {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public boolean isUrl (String urlCandidate) {
         try {
             new URL(urlCandidate);

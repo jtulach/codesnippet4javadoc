@@ -57,6 +57,9 @@ final class SnippetCollection {
         String code = snip == null ? null : snip.get(key);
         if (code == null) {
             reporter.printWarning(element.position(), code = "Snippet '" + key + "' in file '" + file + "' not found.");
+            for (String f : perFileSnippets.keySet()) {
+                reporter.printWarning(element.position(), code = "  ... some snippets found in " + f);
+            }
         }
         return code;
     }

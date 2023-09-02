@@ -466,7 +466,7 @@ public class ConfigurationImpl extends Configuration {
                 nohelp = true;
             } else if (opt.equals("-xdocrootparent")) {
                 try {
-                    new URL(os[1]);
+                    verifyURL(os[1]);
                 } catch (MalformedURLException e) {
                     reporter.printError(getText("doclet.MalformedURL", os[1]));
                     return false;
@@ -517,6 +517,11 @@ public class ConfigurationImpl extends Configuration {
             }
         }
         return true;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void verifyURL(String url) throws MalformedURLException {
+        new URL(url);
     }
 
     /**
