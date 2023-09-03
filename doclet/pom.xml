@@ -59,6 +59,14 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <url>https://github.com/jtulach/codesnippet4javadoc</url>
+    <developers>
+        <developer>
+            <id>jtulach</id>
+            <email>jaroslav.tulach@apidesign.org</email>
+            <name>Jaroslav Tulach</name>
+        </developer>
+    </developers>
     <organization>
         <name>API Design</name>
         <url>http://apidesign.org</url>
