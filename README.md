@@ -90,7 +90,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>0.81</version> <!-- or any newer version -->
+       <version>1.0</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>--snippet-path src/test/java</additionalparam>
@@ -108,7 +108,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '0.81'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '1.0'
 }
 
 javadoc {
@@ -122,8 +122,8 @@ javadoc {
 
 The Codesnippet doclet supports JDK8, JDK11, ..., JDK21. Originally the snippet
 used slightly [different notation](docs/README-0.63.md) to indentify and refer
-to code snippets. However, version 0.80 and newer provides support for
-[standard JDK snippet tags](https://openjdk.java.net/jeps/413) and one can choose
+to code snippets. However, since version 0.80 and newer support for
+[standard JDK snippet tags](https://openjdk.java.net/jeps/413) is provided and one can choose
 whether to support both syntaxes or just the [JDK one](https://openjdk.java.net/jeps/413).
 
 Use `-snippetmode jep413` to support just the
@@ -244,4 +244,4 @@ Feel free to use the Codesnippet Doclet binary to generate any public or private
 
 * [Truffle](https://github.com/oracle/graal/tree/master/truffle#readme) in its [Javadoc](http://www.graalvm.org/truffle/javadoc/)
 * [Graal](https://github.com/oracle/graal/) in its [Graph I/O API](http://www.graalvm.org/graphio/javadoc/org/graalvm/graphio/package-summary.html)
-* [Apache HTML/Java API](https://github.com/apache/incubator-netbeans-html4j#readme) in its [Javadoc](http://bits.netbeans.org/html+java/1.7/net/java/html/BrwsrCtx.html#execute-java.lang.Runnable-)
+* [Apache HTML/Java API](https://github.com/apache/netbeans-html4j#readme) in its [Javadoc](http://bits.netbeans.org/html+java/1.7/net/java/html/BrwsrCtx.html#execute-java.lang.Runnable-)

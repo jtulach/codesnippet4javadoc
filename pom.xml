@@ -6,11 +6,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Codesnippet Javadoc Doclet</name>
-    <parent>
-        <groupId>net.java</groupId>
-        <artifactId>jvnet-parent</artifactId>
-        <version>5</version>
-    </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
@@ -32,13 +27,6 @@
         <url>https://github.com/jtulach/codesnippet4javadoc</url>
         <tag>release-0.81</tag>
     </scm>
-    <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -104,8 +92,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.3</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <source>8</source>
+                        <target>8</target>
                     </configuration>
                 </plugin>
             </plugins>
