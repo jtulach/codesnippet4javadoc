@@ -47,6 +47,28 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <description>
+        The Codesnippet Doclet introduces new tag `{@snippet }` that allows
+        you to reference real code snippets in your project. Identify
+        the snippets in your code and then reference them from a Javadoc.
+    </description>
+    <licenses>
+        <license>
+            <name>GPL-3.0</name>
+            <url>http://opensource.org/licenses/GPL-3.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>API Design</name>
+        <url>http://apidesign.org</url>
+    </organization>
+    <scm>
+        <connection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</connection>
+        <developerConnection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</developerConnection>
+        <url>https://github.com/jtulach/codesnippet4javadoc</url>
+        <tag>release-1.0</tag>
+    </scm>
     <build>
         <plugins>
             <plugin>
@@ -107,8 +129,4 @@
             </dependencies>
         </profile>
     </profiles>
-
-  <scm>
-    <tag>release-1.0</tag>
-  </scm>
 </project>
