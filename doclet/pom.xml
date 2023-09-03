@@ -23,7 +23,7 @@
     <groupId>org.apidesign.javadoc</groupId>
     <artifactId>codesnippet-doclet</artifactId>
     <name>Codesnippet Doclet Code</name>
-    <version>1.0</version>
+    <version>2.0-SNAPSHOT</version>
     <properties>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </properties>
@@ -105,6 +105,6 @@
     </profiles>
 
   <scm>
-    <tag>release-1.0</tag>
+    <tag>release-0.81</tag>
   </scm>
 </project>
