@@ -62,6 +62,11 @@ Add the doclet to your Maven Javadoc plugin configuration
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalparam>-snippetpath src/test/java</additionalparam>
+     <!-- since 3.0 version of maven-javadoc-plugin -- >
+     <additionalOptions>
+       <additionalOption>--snippet-path src/test/java</additionalOption>
+     </additionalOptions>
+     -->
     </configuration>
 </plugin>
 ```
