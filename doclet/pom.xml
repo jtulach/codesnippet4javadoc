@@ -25,6 +25,7 @@
     <name>Codesnippet Doclet Code</name>
     <version>2.0-SNAPSHOT</version>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </properties>
     <packaging>jar</packaging>
