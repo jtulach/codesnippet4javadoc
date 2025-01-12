@@ -21,6 +21,7 @@ import java.io.File;
 import static org.testng.Assert.*;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.testng.annotations.Test;
@@ -233,7 +234,7 @@ public class VerifyJavadocTest {
         assertTrue(file.exists(), "File found " + file);
 
         byte[] data = Files.readAllBytes(file.toPath());
-        String text = new String(data);
+        String text = new String(data, StandardCharsets.UTF_8);
         assertSnippet(text, "dollarSnippet1", "MY_MONEY = <em>\"$100.00\"</em>");
         assertSnippet(text, "dollarSnippet2", "MONEY_SIGNS = <em>\"$ € £\"</em>");
     }
