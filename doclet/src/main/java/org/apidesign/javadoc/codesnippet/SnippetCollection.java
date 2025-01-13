@@ -19,6 +19,7 @@ package org.apidesign.javadoc.codesnippet;
 
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ final class SnippetCollection {
 
     final void registerSnippet(String file, String key, String code) {
         this.snippets.put(key, code);
-
+        file = file.replace(File.separatorChar, '/'); // normalize the path separator
         Map<String, String> local = this.perFileSnippets.get(file);
         if (local == null) {
             local = new HashMap<>();

@@ -44,6 +44,8 @@ public final class MainMethodContent {
 }
 ```
 
+**Warning:** the path specified by `file` should use forward-slashes (`/`) regardless the OS.
+
 The rendered Javadoc then looks like:
 
 ![MainMethodContent](docs/MainMethodContent.png)
@@ -86,7 +88,12 @@ Add the doclet to your Maven Javadoc plugin configuration
   <artifactId>maven-javadoc-plugin</artifactId>
   <version>3.11.2</version>
   <configuration>
-     ...
+     <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+     <docletArtifact>
+       <groupId>org.apidesign.javadoc</groupId>
+       <artifactId>codesnippet-doclet</artifactId>
+       <version>1.0</version> <!-- or any newer version -->
+     </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalOptions>
        <additionalOption>--snippet-path src/test/java</additionalOption>
