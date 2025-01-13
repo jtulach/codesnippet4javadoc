@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.11.2</version>
                 <dependencies>
                     <dependency>
                         <groupId>commons-lang</groupId>
@@ -141,7 +141,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.1.1</version>
+                        <version>3.11.2</version>
                         <executions>
                             <execution>
                                 <id>for-jep413-testing</id>
