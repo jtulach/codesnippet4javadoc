@@ -1,6 +1,6 @@
 # Codesnippet Javadoc Doclet
 
-![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)
+[![Build Status](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml/badge.svg)](https://github.com/jtulach/codesnippet4javadoc/actions/workflows/maven.yml)
 
 Use code snippets in your Java API documentation - on **any JDK8+**. Fully **compatible** with
 [snippet support](https://openjdk.java.net/jeps/413) in the latest **JDKs**. Say
