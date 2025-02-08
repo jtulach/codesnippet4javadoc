@@ -23,7 +23,7 @@
     <groupId>org.apidesign.javadoc</groupId>
     <artifactId>codesnippet-doclet</artifactId>
     <name>Codesnippet Doclet Code</name>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.1</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
@@ -76,7 +76,7 @@
         <connection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</connection>
         <developerConnection>scm:git:https://github.com/jtulach/codesnippet4javadoc.git</developerConnection>
         <url>https://github.com/jtulach/codesnippet4javadoc</url>
-        <tag>release-1.0</tag>
+        <tag>release-1.1</tag>
     </scm>
     <build>
         <plugins>
