@@ -70,6 +70,6 @@
     </build>
 
   <scm>
-    <tag>release-0.81</tag>
+    <tag>release-1.1</tag>
   </scm>
 </project>

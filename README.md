@@ -92,7 +92,7 @@ Add the doclet to your Maven Javadoc plugin configuration
      <docletArtifact>
        <groupId>org.apidesign.javadoc</groupId>
        <artifactId>codesnippet-doclet</artifactId>
-       <version>1.0</version> <!-- or any newer version -->
+       <version>1.1</version> <!-- or any newer version -->
      </docletArtifact>
      <!-- if you want to reference snippets from your test directory, also include -->
      <additionalOptions>
@@ -112,7 +112,7 @@ configurations {
 }
 
 dependencies {
-    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '1.0'
+    snippetdoclet group: 'org.apidesign.javadoc', name: 'codesnippet-doclet', version: '1.1'
 }
 
 javadoc {
